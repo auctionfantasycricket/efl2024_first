@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/efl2024_first/static/css/main.b3944a73.css",
+    "main.css": "/efl2024_first/static/css/main.e12c816f.css",
     "main.js": "/efl2024_first/static/js/main.b7da3318.js",
     "static/media/logo-no-background.svg": "/efl2024_first/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
     "static/media/cricket.jpg": "/efl2024_first/static/media/cricket.85387996f498f1f914bd.jpg",
@@ -11,11 +11,11 @@
     "index.html": "/efl2024_first/index.html",
     "static/media/nav-icon1.svg": "/efl2024_first/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
     "static/media/nav-icon2.svg": "/efl2024_first/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
-    "main.b3944a73.css.map": "/efl2024_first/static/css/main.b3944a73.css.map",
+    "main.e12c816f.css.map": "/efl2024_first/static/css/main.e12c816f.css.map",
     "main.b7da3318.js.map": "/efl2024_first/static/js/main.b7da3318.js.map"
   },
   "entrypoints": [
-    "static/css/main.b3944a73.css",
+    "static/css/main.e12c816f.css",
     "static/js/main.b7da3318.js"
   ]
 }
