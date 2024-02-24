@@ -1,8 +1,11 @@
 {
   "files": {
-    "main.css": "/efl2024_first/static/css/main.11feb7f6.css",
-    "main.js": "/efl2024_first/static/js/main.12829a80.js",
+    "main.css": "/efl2024_first/static/css/main.5a1442f9.css",
+    "main.js": "/efl2024_first/static/js/main.881293de.js",
     "static/media/logo-no-background.svg": "/efl2024_first/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
+    "static/media/red.png": "/efl2024_first/static/media/red.24ed3d370cfbbc8ecc10.png",
+    "static/media/blue.png": "/efl2024_first/static/media/blue.1400958ca08d2893f0bf.png",
+    "static/media/orange.png": "/efl2024_first/static/media/orange.40b36be12d52bfd5445d.png",
     "static/media/cricket.jpg": "/efl2024_first/static/media/cricket.85387996f498f1f914bd.jpg",
     "static/media/CentraNo2-Bold.ttf": "/efl2024_first/static/media/CentraNo2-Bold.2faff7f7d3fc92a2fcd9.ttf",
     "static/media/CentraNo2-Medium.ttf": "/efl2024_first/static/media/CentraNo2-Medium.f94be5b326d78bb32b95.ttf",
@@ -11,11 +14,11 @@
     "index.html": "/efl2024_first/index.html",
     "static/media/nav-icon1.svg": "/efl2024_first/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
     "static/media/nav-icon2.svg": "/efl2024_first/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
-    "main.11feb7f6.css.map": "/efl2024_first/static/css/main.11feb7f6.css.map",
-    "main.12829a80.js.map": "/efl2024_first/static/js/main.12829a80.js.map"
+    "main.5a1442f9.css.map": "/efl2024_first/static/css/main.5a1442f9.css.map",
+    "main.881293de.js.map": "/efl2024_first/static/js/main.881293de.js.map"
   },
   "entrypoints": [
-    "static/css/main.11feb7f6.css",
-    "static/js/main.12829a80.js"
+    "static/css/main.5a1442f9.css",
+    "static/js/main.881293de.js"
   ]
 }
