@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/efl2024_first/static/css/main.c74fc225.css",
-    "main.js": "/efl2024_first/static/js/main.715d5d74.js",
-    "static/media/logo-no-background.svg": "/efl2024_first/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
-    "static/media/red.png": "/efl2024_first/static/media/red.24ed3d370cfbbc8ecc10.png",
-    "static/media/blue.png": "/efl2024_first/static/media/blue.1400958ca08d2893f0bf.png",
-    "static/media/orange.png": "/efl2024_first/static/media/orange.40b36be12d52bfd5445d.png",
-    "static/media/cricket.jpg": "/efl2024_first/static/media/cricket.85387996f498f1f914bd.jpg",
-    "static/media/CentraNo2-Bold.ttf": "/efl2024_first/static/media/CentraNo2-Bold.2faff7f7d3fc92a2fcd9.ttf",
-    "static/media/CentraNo2-Medium.ttf": "/efl2024_first/static/media/CentraNo2-Medium.f94be5b326d78bb32b95.ttf",
-    "static/media/CentraNo2-Book.ttf": "/efl2024_first/static/media/CentraNo2-Book.2b143fa4b734a3584043.ttf",
-    "static/media/contact-img.svg": "/efl2024_first/static/media/contact-img.87eac2b29352fa01abb2f9510ef6ac7e.svg",
-    "static/media/nav-icon3.svg": "/efl2024_first/static/media/nav-icon3.08b285abb8e118b52637efa5d65c5367.svg",
-    "index.html": "/efl2024_first/index.html",
-    "static/media/nav-icon1.svg": "/efl2024_first/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
-    "static/media/nav-icon2.svg": "/efl2024_first/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
-    "main.c74fc225.css.map": "/efl2024_first/static/css/main.c74fc225.css.map",
-    "main.715d5d74.js.map": "/efl2024_first/static/js/main.715d5d74.js.map"
+    "main.css": "/static/css/main.bb6f3085.css",
+    "main.js": "/static/js/main.ea584cb0.js",
+    "static/media/logo-no-background.svg": "/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
+    "static/media/red.png": "/static/media/red.24ed3d370cfbbc8ecc10.png",
+    "static/media/blue.png": "/static/media/blue.1400958ca08d2893f0bf.png",
+    "static/media/orange.png": "/static/media/orange.40b36be12d52bfd5445d.png",
+    "static/media/cricket.jpg": "/static/media/cricket.85387996f498f1f914bd.jpg",
+    "static/media/CentraNo2-Bold.ttf": "/static/media/CentraNo2-Bold.2faff7f7d3fc92a2fcd9.ttf",
+    "static/media/CentraNo2-Medium.ttf": "/static/media/CentraNo2-Medium.f94be5b326d78bb32b95.ttf",
+    "static/media/CentraNo2-Book.ttf": "/static/media/CentraNo2-Book.2b143fa4b734a3584043.ttf",
+    "static/media/contact-img.svg": "/static/media/contact-img.87eac2b29352fa01abb2f9510ef6ac7e.svg",
+    "static/media/nav-icon3.svg": "/static/media/nav-icon3.08b285abb8e118b52637efa5d65c5367.svg",
+    "static/media/nav-icon1.svg": "/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
+    "index.html": "/index.html",
+    "static/media/nav-icon2.svg": "/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
+    "main.bb6f3085.css.map": "/static/css/main.bb6f3085.css.map",
+    "main.ea584cb0.js.map": "/static/js/main.ea584cb0.js.map"
   },
   "entrypoints": [
-    "static/css/main.c74fc225.css",
-    "static/js/main.715d5d74.js"
+    "static/css/main.bb6f3085.css",
+    "static/js/main.ea584cb0.js"
   ]
 }
