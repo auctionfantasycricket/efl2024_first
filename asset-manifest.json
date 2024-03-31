@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/efl2024_first/static/css/main.77ac4d98.css",
-    "main.js": "/efl2024_first/static/js/main.e8190423.js",
+    "main.css": "/efl2024_first/static/css/main.9cc90bac.css",
+    "main.js": "/efl2024_first/static/js/main.ce490e52.js",
     "static/media/logo-no-background.svg": "/efl2024_first/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
     "static/media/red.png": "/efl2024_first/static/media/red.24ed3d370cfbbc8ecc10.png",
     "static/media/blue.png": "/efl2024_first/static/media/blue.1400958ca08d2893f0bf.png",
@@ -16,11 +16,11 @@
     "index.html": "/efl2024_first/index.html",
     "static/media/nav-icon1.svg": "/efl2024_first/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
     "static/media/nav-icon2.svg": "/efl2024_first/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
-    "main.77ac4d98.css.map": "/efl2024_first/static/css/main.77ac4d98.css.map",
-    "main.e8190423.js.map": "/efl2024_first/static/js/main.e8190423.js.map"
+    "main.9cc90bac.css.map": "/efl2024_first/static/css/main.9cc90bac.css.map",
+    "main.ce490e52.js.map": "/efl2024_first/static/js/main.ce490e52.js.map"
   },
   "entrypoints": [
-    "static/css/main.77ac4d98.css",
-    "static/js/main.e8190423.js"
+    "static/css/main.9cc90bac.css",
+    "static/js/main.ce490e52.js"
   ]
 }
