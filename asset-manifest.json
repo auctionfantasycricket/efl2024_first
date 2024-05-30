@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/efl2024_first/static/css/main.e7314ad0.css",
-    "main.js": "/efl2024_first/static/js/main.a3f094c9.js",
+    "main.js": "/efl2024_first/static/js/main.1cdad19b.js",
     "static/media/logo-no-background.svg": "/efl2024_first/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
     "static/media/red.png": "/efl2024_first/static/media/red.24ed3d370cfbbc8ecc10.png",
     "static/media/blue.png": "/efl2024_first/static/media/blue.1400958ca08d2893f0bf.png",
@@ -10,17 +10,17 @@
     "static/media/CentraNo2-Bold.ttf": "/efl2024_first/static/media/CentraNo2-Bold.2faff7f7d3fc92a2fcd9.ttf",
     "static/media/CentraNo2-Medium.ttf": "/efl2024_first/static/media/CentraNo2-Medium.f94be5b326d78bb32b95.ttf",
     "static/media/CentraNo2-Book.ttf": "/efl2024_first/static/media/CentraNo2-Book.2b143fa4b734a3584043.ttf",
+    "static/media/contact-img.svg": "/efl2024_first/static/media/contact-img.87eac2b29352fa01abb2f9510ef6ac7e.svg",
     "static/media/auction_hand.png": "/efl2024_first/static/media/auction_hand.5f736284011b0c5b66bf.png",
-    "static/media/contact-img.svg": "/efl2024_first/static/media/contact-img.62aa99e0f3b968b5d1ce9eb047f34fc7.svg",
-    "static/media/nav-icon3.svg": "/efl2024_first/static/media/nav-icon3.72cef43bc93b04f52e29f022ef720f8b.svg",
+    "static/media/nav-icon3.svg": "/efl2024_first/static/media/nav-icon3.08b285abb8e118b52637efa5d65c5367.svg",
     "index.html": "/efl2024_first/index.html",
-    "static/media/nav-icon1.svg": "/efl2024_first/static/media/nav-icon1.dff40ae802524d8fc0cbce3f312abe4f.svg",
-    "static/media/nav-icon2.svg": "/efl2024_first/static/media/nav-icon2.a39f0e5e47e442dafcc5c9c320f19f6f.svg",
+    "static/media/nav-icon1.svg": "/efl2024_first/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
+    "static/media/nav-icon2.svg": "/efl2024_first/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
     "main.e7314ad0.css.map": "/efl2024_first/static/css/main.e7314ad0.css.map",
-    "main.a3f094c9.js.map": "/efl2024_first/static/js/main.a3f094c9.js.map"
+    "main.1cdad19b.js.map": "/efl2024_first/static/js/main.1cdad19b.js.map"
   },
   "entrypoints": [
     "static/css/main.e7314ad0.css",
-    "static/js/main.a3f094c9.js"
+    "static/js/main.1cdad19b.js"
   ]
 }
