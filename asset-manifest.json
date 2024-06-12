@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/efl2024_first/static/css/main.2d8e10c4.css",
+    "main.css": "/efl2024_first/static/css/main.36510d7e.css",
     "main.js": "/efl2024_first/static/js/main.402083d0.js",
     "static/media/waiver_results.gif": "/efl2024_first/static/media/waiver_results.12e22d78fd53977588a9.gif",
     "static/media/logo-no-background.svg": "/efl2024_first/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
@@ -17,11 +17,11 @@
     "index.html": "/efl2024_first/index.html",
     "static/media/nav-icon1.svg": "/efl2024_first/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
     "static/media/nav-icon2.svg": "/efl2024_first/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
-    "main.2d8e10c4.css.map": "/efl2024_first/static/css/main.2d8e10c4.css.map",
+    "main.36510d7e.css.map": "/efl2024_first/static/css/main.36510d7e.css.map",
     "main.402083d0.js.map": "/efl2024_first/static/js/main.402083d0.js.map"
   },
   "entrypoints": [
-    "static/css/main.2d8e10c4.css",
+    "static/css/main.36510d7e.css",
     "static/js/main.402083d0.js"
   ]
 }
