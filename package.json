@@ -1,7 +1,7 @@
 {
   "name": "efl2024_first",
   "version": "0.1.0",
-  "homepage": "https://auctionfantasycricket.github.io/efl2024_first/#",
+  "homepage": "https://auctionfantasycricket.com/efl2024_first",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
