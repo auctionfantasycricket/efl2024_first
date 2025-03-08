@@ -15,6 +15,8 @@ import { Linegraph } from './pages/Linegraph';
 import { WaiverSystem } from './pages/WaiverSystem';
 import SnakeDraft from './pages/Snakedraft';
 import DraftTeams from './pages/DraftTeams';
+import SignIn from './pages/SignIn';
+import LandingPage from './pages/LandingPage';
 
 const queryClient = new QueryClient();
 
@@ -39,6 +41,8 @@ function App() {
         <Route path ="/teampoints" element = {<TeamPoints />} />
         <Route path ="/linegraph" element = {<Linegraph />} />
         <Route path="/waiver" element = {<WaiverSystem/>} />
+        <Route path="/SignIn" element = {<SignIn />} />
+        <Route path='/league' element={<LandingPage />} />
         </Routes>
         </HashRouter>
         </Provider>

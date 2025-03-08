@@ -20,7 +20,7 @@ export const Banner = () => {
                 <h1><span className="wrap">Baap of Fantasy Cricket</span></h1>
                   <p>Bid Play Win Your Fantasy Cricket Auction Destination</p>
                   <button>
-                    <a href = "/SignIn">Let’s Play <ArrowRightCircle size={25} /></a> 
+                    <a href = '#/SignIn'>Let’s Play <ArrowRightCircle size={25} /></a> 
                     </button>
               </div>}
             </TrackVisibility>

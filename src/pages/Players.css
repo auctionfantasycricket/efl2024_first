@@ -3,14 +3,14 @@
   margin-top: 0;
   padding: 10px 0 0px 0;
   background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
-  height: 100vh;
+ height: 100vh;
 }
 
 .ag-page .ag-container {
   margin-top: 160px;
   margin-left: 10px 20px;
   margin-bottom: -160px;
-  background: #d5c4c4;
+  background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
   width: 100%;
   height: 75vh;
   display: flex;

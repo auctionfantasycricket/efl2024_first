@@ -11,6 +11,11 @@ import {useGoogleLogin, googleLogout} from '@react-oauth/google';
 import axios from "axios"
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoginSuccess, setLogoutSuccess } from './redux/reducer/authReducer'
+//import SignIn from "../pages/SignIn";
+import { FaRegUserCircle  } from "react-icons/fa";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+const baseURL = process.env.REACT_APP_BASE_URL;
 
 export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,6 +27,14 @@ export const NavBar = () => {
   const userProfile = useSelector((state) => state.login.userProfile);
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      dispatch(setLoginSuccess(user));
+    }
+  }, [dispatch]);
 
 
   useEffect(() => {
@@ -56,26 +69,25 @@ export const NavBar = () => {
 
   const handleClose = () => setIsMenuOpen(false);
 
+  
+
 
   ///Login Functionality
-  const handlelogin = useGoogleLogin({
-    onSuccess: async respose => {
-        try {
-            const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-                headers: {
-                    "Authorization": `Bearer ${respose.access_token}`
-                }
-            })
 
-            //console.log(res.data)
-            dispatch(setLoginSuccess(res.data));
-        } catch (err) {
-            console.log(err)
+  const handlelogin =() => {
+    // const token = localStorage.getItem('token');
+    // if (token) {
+    //   const user = JSON.parse(atob(token.split('.')[1]));
+    //   dispatch(setLoginSuccess(user));
+    // }else{
+      
+    //   login();
 
-        }
+    // }
+    navigate('/SignIn')
 
-    }
-  });
+  }
+  
 
   const handlelogOut = () => {
     googleLogout();
@@ -108,7 +120,7 @@ export const NavBar = () => {
             <Nav.Link as={Link} to="/players" className='navbar-link'>
               Players List
             </Nav.Link>
-            <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
+            {/* <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
             Teams
             </Nav.Link>
             <Nav.Link as={Link} 
@@ -128,7 +140,7 @@ export const NavBar = () => {
             </Nav.Link>
             <Nav.Link as={Link} to="/" className='navbar-link' onClick={() => handleScrollToSection('contact')}>
               Contact Us
-            </Nav.Link>
+            </Nav.Link> */}
           </Nav>
           <span className="navbar-text">
             <div className="social-icon">
@@ -136,15 +148,15 @@ export const NavBar = () => {
               <a href="#"><img src={navIcon3} alt="" /></a>
             </div>
             {isLoggedIn ? (
-                <NavDropdown title={<img src={userProfile.picture} alt={userProfile.name} className="user-avatar" />} id="user-dropdown">
+                <NavDropdown title={<AccountCircleIcon  className="user-avatar" />} id="user-dropdown">
                   <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                   <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <Nav.Link as={Link} to='/'>
-                  <button className="vvd" onClick={handlelogin}><span>SignIn</span></button>
+                <Nav.Link as={Link} to = '/SignIn'>
+                  <button className="vvd" ><span>LogIn</span></button>
                 </Nav.Link>
               )}
           </span>
@@ -165,7 +177,7 @@ export const NavBar = () => {
             <Nav.Link as={Link} to="/players" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
               Players List
             </Nav.Link>
-            <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
+            {/* <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
             Teams
             </Nav.Link>
             <Nav.Link as={Link} 
@@ -185,22 +197,22 @@ export const NavBar = () => {
             </Nav.Link>
             <Nav.Link as={Link} to="/" className='navbar-link' onClick={() => handleScrollToSection('contact')}>
               Contact Us
-            </Nav.Link>
+            </Nav.Link> */}
               </Nav>
               <div className="social-icon">
                 <a href="#"><img src={navIcon2} alt="" /></a>
                 <a href="#"><img src={navIcon3} alt="" /></a>
               </div>
               {isLoggedIn ? (
-                <NavDropdown title={<img src={userProfile.picture} alt={userProfile.name} className="user-avatar" />} id="user-dropdown">
+                <NavDropdown title={<AccountCircleIcon className="user-avatar" />} id="user-dropdown">
                   <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                   <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <Nav.Link as={Link} to='/'>
-                  <button className="vvd" onClick={handlelogin}><span>SignIn</span></button>
+                <Nav.Link as={Link} to='/SigIn'>
+                  <button className="vvd"><span>LogIn</span></button>
                 </Nav.Link>
               )}
             </Offcanvas.Body>

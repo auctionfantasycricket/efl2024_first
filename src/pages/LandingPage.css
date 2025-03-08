@@ -1,0 +1,57 @@
+.landingbody {
+    margin-top: 0;
+    padding: 275px 0 100px 0;
+    background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+  .landingcontainer {
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: wheat;
+  }
+  
+  .landingcontainer h1 {
+    text-align: center;
+  }
+  
+  .landingcontainer .button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .landingcontainer button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .landingcontainer .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .landingcontainer input {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  @media (max-width: 600px) {
+    .landingcontainer .button-group {
+      flex-direction: column;
+      gap: 10px;
+    }
+  
+    .landingcontainer button {
+      width: 100%;
+    }
+  }
+  

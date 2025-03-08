@@ -10,9 +10,9 @@ const HomePage = () => {
   return (
     <div>
         <Banner/>
-        <Carousels />
+        {/* <Carousels />
         <Rules />
-        <Contactus />
+        <Contactus /> */}
         <Footer />
      
     </div>
