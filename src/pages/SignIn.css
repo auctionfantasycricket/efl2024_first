@@ -7,3 +7,34 @@
   justify-content: center;
   align-items: center;
   }
+
+.signin-page h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  @media (max-width: 768px) {
+    .signin-page {
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .signin-page h2 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .signin-page {
+      padding: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .signin-page h2 {
+      font-size: 1.2rem;
+    }
+  }

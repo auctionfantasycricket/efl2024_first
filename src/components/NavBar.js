@@ -74,17 +74,45 @@ export const NavBar = () => {
 
   ///Login Functionality
 
-  const handlelogin =() => {
-    // const token = localStorage.getItem('token');
-    // if (token) {
-    //   const user = JSON.parse(atob(token.split('.')[1]));
-    //   dispatch(setLoginSuccess(user));
-    // }else{
-      
-    //   login();
+  const login = useGoogleLogin({
+  
+    onSuccess: async respose => {
+      try {
+          const res = await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
+              headers: {
+                  "Authorization": `Bearer ${respose.access_token}`
+              }
+          })
 
-    // }
-    navigate('/SignIn')
+          const backendtoken = await axios.post(baseURL+'/google_auth', {
+            email: res.data.email,
+            name: res.data.name
+          });
+
+          localStorage.setItem('token', backendtoken.data.token);
+          // console.log(backendtoken)
+          // console.log(backendtoken.data)
+          dispatch(setLoginSuccess(res.data));
+          navigate('/players')
+      } catch (err) {
+          console.log(err)
+
+      }
+
+    }
+  });
+
+  const handlelogin =() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      dispatch(setLoginSuccess(user));
+    }else{
+      
+      login();
+
+    }
+    //navigate('/SignIn')
 
   }
   
@@ -155,8 +183,8 @@ export const NavBar = () => {
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <Nav.Link as={Link} to = '/SignIn'>
-                  <button className="vvd" ><span>LogIn</span></button>
+                <Nav.Link as={Link}>
+                  <button className="vvd" onClick={handlelogin} ><span>LogIn</span></button>
                 </Nav.Link>
               )}
           </span>
@@ -211,8 +239,8 @@ export const NavBar = () => {
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <Nav.Link as={Link} to='/SigIn'>
-                  <button className="vvd"><span>LogIn</span></button>
+                <Nav.Link as={Link}>
+                  <button className="vvd" onClick={handlelogin}><span>LogIn</span></button>
                 </Nav.Link>
               )}
             </Offcanvas.Body>
