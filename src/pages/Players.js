@@ -8,6 +8,10 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { useDispatch, useSelector } from 'react-redux';
+import RoleCellRenderer from '../components/RoleCellRenderer';
+import TeamCellRenderer from '../components/TeamCellRenderer';
+import DownloadIcon from '@mui/icons-material/Download';
+import { calc } from "antd/es/theme/internal";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -44,35 +48,32 @@ export const AllPlayers = () => {
     gridRef.current.api.exportDataAsCsv();
   }, [gridRef]);
 
-  if (isLoading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',marginTop:'250px' }}>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  // if (isLoading) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',marginTop:'250px' }}>Loading...</div>;
+  // if (error) return <div>Error: {error.message}</div>;
 
 
 
   //setAllPlayerslist(data)
 
-  console.log(isLoggedIn)
-  console.log(userProfile)
-
   const defaultColDef = {
     sortable: true,
     resizable: true,
-    //filter: true,
+    filter: true
   };
 
   const columnDefs = [
-    { field: "player_name", headerName: "Name", width: 250, filter: true},
-    { field: "ipl_team_name", headerName: "IPL Team", width: 200, filter: true },
+    { field: "player_name", headerName: "Name", width: 250},
+    { field: "ipl_team_name", headerName: "IPL Team", width: 250, cellRenderer: 'teamCellRenderer' },
     //{ field: "status", headerName: "Status", width: 150,filter: true },
-    { field: "player_role", headerName: "Role", width: 200, filter: true },
+    { field: "player_role", headerName: "Role", width: 200,  cellRenderer: 'roleCellRenderer' },
    //{ field: "country", headerName: "Country", width: 220,filter: true,sort:'asc'},
-   { field: "tier", headerName: "Tier", width: 80, filter: true },
-   { field: "isOverseas", headerName: "Overseas", width: 80, filter: true },
+   { field: "tier", headerName: "Tier", width: 80},
+   { field: "isOverseas", headerName: "Overseas", width: 100 },
     //{ field: "ownerTeam", headerName: "Owner", width: 95 },
     //{ field: "boughtFor", headerName: "BoughtFor", width: 95 },
     { field: "ipl_salary", headerName: "Salary", width: 100 },
-    { field: "afc_base_salary", headerName: "EFL Base Salary", width: 150 },
-   { field: "rank", headerName: "Rank",sort:'asc', width: 100 },
+    { field: "afc_base_salary", headerName: "EFL Base Salary", width: 180 },
+   { field: "rank", headerName: "Rank",sort:'asc', width: 140 },
   ];
 
   
@@ -136,29 +137,43 @@ export const AllPlayers = () => {
     };
     style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',flexDirection:'column' }}
     */
+
+    const components = {
+      roleCellRenderer: RoleCellRenderer,
+      teamCellRenderer: TeamCellRenderer,
+    };
   
   
     return (
       <>
       {isLoggedIn ?
-      (<div className ="ag-page">
-        <div className="ag-container">
-        <div style={{backgroundColor:'red',marginTop:'10px'}}>
-          <button onClick={onBtnExport}>Download CSV export file</button>
-        </div>
-            <div className="ag-theme-alpine" style={{height: '71vh',width:"95%"}}>
+      (
+        <div className="player-page">
+          <div className="player-container">
+            <div className="header-container">
+              <button className="download-button" onClick={onBtnExport}>
+                Download <DownloadIcon />
+              </button>
+            </div>
+            <div className="ag-theme-alpine player-main-container">
               <AgGridReact
                 ref={gridRef}
+                loading={isLoading}
                 rowData={Allplayers}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
-               // getRowStyle={getRowStyle}
+                //pagination={true}
+                //paginationPageSize={50}
+                components={components}
                 suppressExcelExport={true}
+                animateRows={true}
               />
             </div>
-            </div>
-      </div>):(
-        <div className ="ag-page">
+          </div>
+        </div>
+
+      ):(
+        <div className ="player-page">
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',marginTop:'250px' }}>
           <h1>Please Login to view Players</h1>
         </div>
