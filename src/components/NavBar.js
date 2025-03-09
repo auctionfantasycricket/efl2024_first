@@ -25,6 +25,7 @@ export const NavBar = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const userProfile = useSelector((state) => state.login.userProfile);
+  const isAdmin = useSelector((state) => state.login.isAdmin);
 
   const navigate = useNavigate()
 
@@ -179,6 +180,7 @@ export const NavBar = () => {
                 <NavDropdown title={<AccountCircleIcon  className="user-avatar" />} id="user-dropdown">
                   <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                   <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
+                  {isAdmin && <NavDropdown.Item>Admin</NavDropdown.Item>}
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
@@ -235,6 +237,7 @@ export const NavBar = () => {
                 <NavDropdown title={<AccountCircleIcon className="user-avatar" />} id="user-dropdown">
                   <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                   <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
+                  {isAdmin && <NavDropdown.Item>Admin</NavDropdown.Item>}
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
