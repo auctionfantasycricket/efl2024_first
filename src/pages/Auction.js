@@ -6,6 +6,7 @@ import settings from '../settings.json'
 import OwnerStats from '../components/OwnerStats'
 
 const baseURL = process.env.REACT_APP_BASE_URL;
+const auctionleagueid = process.env.REACT_APP_AUCTION_LEAGUE_ID;
 
 export const Auction = () => {
 
@@ -23,10 +24,11 @@ export const Auction = () => {
         "status": "unsold",
         "tier": 4,
         "player_role": "Type",
-        "country": "Country Name",
+        "isOverseas": true,
+        //"country": "Country Name",
         "ipl_team_name": "Franchise",
-        "ownerTeam": "",
-        "boughtFor": 0,
+        //"ownerTeam": "",
+        //"boughtFor": 0,
         "afc_base_salary": 20,
         "rank": 172,
         "points":0,
@@ -55,7 +57,7 @@ export const Auction = () => {
         if(requestedPlayer!=="")
         {
           try{
-          const response = await fetch(baseURL+'/getspecificplayer?playerName='+requestedPlayer);
+          const response = await fetch(baseURL+'/getspecificplayer?leagueId='+auctionleagueid+'&player_name='+requestedPlayer);
           if(response.ok)
           {
             const json = await response.json();
@@ -72,7 +74,7 @@ export const Auction = () => {
           
         }
         try {
-          const response = await fetch(baseURL+'/getplayer?collectionName=efl_playersCentral_test');
+          const response = await fetch(baseURL+'/getplayer?leagueId='+auctionleagueid);
           if(response.ok){
             const json = await response.json();
             actionsAfterGetPlayer(json);
@@ -90,10 +92,10 @@ export const Auction = () => {
       async function getOwnersData(prop)
     {
     try {
-      const response = await fetch(baseURL+'/get_data?collectionName=efl_ownerTeams_test');
+      const response = await fetch(baseURL+'/get_data?leagueId='+auctionleagueid+'&collectionName=teams');
       if(response.ok){
         const json = await response.json();
-        //console.log(json)
+        //console.log("teams",json)
         setOwnersData(json)
         const data = json.reduce((acc, curr) => {
           acc[curr.teamName] = {maxBid:curr.maxBid,currentPurse: curr.currentPurse};
@@ -162,7 +164,7 @@ export const Auction = () => {
     }
     setAmount(amount+increment)
     const disableMapTemp = ownersData.reduce((map, curr) => {
-      if(curr.totalCount===settings.squadSize||(curr.fCount===6 && playercountry !== 'India')||curr.maxBid<amount)
+      if(curr.totalCount===settings.squadSize||(curr.fCount===6 && playercountry !== false )||curr.maxBid<amount)
       {
         map[curr.ownerName]=true;
       }
@@ -202,7 +204,7 @@ export const Auction = () => {
 
     const handleSoldClick = (inStatus,inBidder,inAmount) => {
 
-        const payload = { ownerTeam: inBidder , status: inStatus, boughtFor: inAmount, player_role: getPlayer.player_role, country: getPlayer.country};
+        const payload = { ownerTeam: inBidder , status: inStatus, boughtFor: inAmount, player_role: getPlayer.player_role, isOverseas: getPlayer.isOverseas};
         //console.log(inStatus,inBidder,inAmount)
         if (inStatus === 'sold')
         {
@@ -248,7 +250,7 @@ export const Auction = () => {
         <Row className='itemstoprow'>
         <div className="player-card-container">
         <PlayerCard playerName={getPlayer.player_name}
-         country={getPlayer.country} 
+         country={getPlayer.isOverseas? "Foreign":"Indian"} 
          type={getPlayer.player_role} 
          franchise={getPlayer.ipl_team_name}/>
          
@@ -299,7 +301,7 @@ export const Auction = () => {
         <div key={index} className="team-button-containers">
           <img src={require('../assets/images/auction_hand.png')} alt="my-image" className="my-image" style={{ display: selectedButton === index ? 'block' : 'none'}}/>
           <button id= {text} disabled={disableMap[text]} onClick={() => {setSelectedButton(index)
-          setBidder(text);increaseAmount(getPlayer.country);setTimer(10);}} >{text}</button>
+          setBidder(text);increaseAmount(getPlayer.isOverseas);setTimer(10);}} >{text}</button>
          </div>
       ))}
         </Col>

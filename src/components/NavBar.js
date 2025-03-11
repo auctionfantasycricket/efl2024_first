@@ -149,6 +149,9 @@ export const NavBar = () => {
             <Nav.Link as={Link} to="/players" className='navbar-link'>
               Players List
             </Nav.Link>
+            {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
+              Auction
+            </Nav.Link>}
             {/* <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
             Teams
             </Nav.Link>

@@ -53,13 +53,13 @@ export default function OwnerStats(props) {
       cell: row => <div style={{ backgroundColor: row.ballCount >= 4 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
       height: '50%' }}>{row.ballCount}</div>,
     },
-    {
-      name: 'WK(1)',
-      selector: row=> row.wkCount,
-      width:'60px',
-      cell: row => <div style={{ backgroundColor: row.wkCount >= 1 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
-      height: '50%' }}>{row.wkCount}</div>,
-    },
+    // {
+    //   name: 'WK(1)',
+    //   selector: row=> row.wkCount,
+    //   width:'60px',
+    //   cell: row => <div style={{ backgroundColor: row.wkCount >= 1 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
+    //   height: '50%' }}>{row.wkCount}</div>,
+    // },
     {
       name: 'AR(2)',
       selector: row=> row.arCount,
