@@ -11,7 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import RoleCellRenderer from '../components/RoleCellRenderer';
 import TeamCellRenderer from '../components/TeamCellRenderer';
 import DownloadIcon from '@mui/icons-material/Download';
-import { calc } from "antd/es/theme/internal";
+import CustomLoadingOverlay from "../components/CustomLoadingOverlay";
+
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -33,6 +34,12 @@ export const AllPlayers = () => {
   const userProfile = useSelector((state) => state.login.userProfile);
 
   const gridRef = useRef();
+
+  const [gridApi, setGridApi] = useState(null);
+
+  const onGridReady = useCallback((params) => {
+    setGridApi(params.api);
+  }, []);
 
   //const playoffteams = ['Afghanistan','Australia','Bangladesh','England','India','South-africa','United-states-of-america','West-indies']
 
@@ -137,12 +144,25 @@ export const AllPlayers = () => {
     };
     style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',flexDirection:'column' }}
     */
+  
+    // useEffect(() => {
+    //   if (gridApi){
+    //     if (isLoading) {
+    //       gridApi.showLoadingOverlay();
+    //     } else if (error) {
+    //       gridApi.showNoRowsOverlay();
+    //     } else {
+    //       gridApi.hideOverlay();
+    //     }
+    //   }
+    // }, [isLoading, error, data]);
 
     const components = {
       roleCellRenderer: RoleCellRenderer,
       teamCellRenderer: TeamCellRenderer,
+      loadingOverlay: CustomLoadingOverlay
     };
-  
+
   
     return (
       <>
@@ -167,6 +187,9 @@ export const AllPlayers = () => {
                 components={components}
                 suppressExcelExport={true}
                 animateRows={true}
+                onGridReady={onGridReady}
+                // overlayLoadingTemplate={'<span class="ag-overlay-loading-center">Loading...</span>'}
+                // overlayNoRowsTemplate={'<span class="ag-overlay-no-rows-center">No data available</span>'}
               />
             </div>
           </div>

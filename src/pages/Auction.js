@@ -4,9 +4,10 @@ import './Auction.css'
 import PlayerCard from './PlayerCard';
 import settings from '../settings.json'
 import OwnerStats from '../components/OwnerStats'
+import { useSelector } from 'react-redux';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
-const auctionleagueid = process.env.REACT_APP_AUCTION_LEAGUE_ID;
+//const auctionleagueid = process.env.REACT_APP_AUCTION_LEAGUE_ID;
 
 export const Auction = () => {
 
@@ -14,6 +15,10 @@ export const Auction = () => {
     const [bidder, setBidder] = useState('');
     const [amount, setAmount] = useState(20);
     const [disableMap, setDisableMap] = useState({})
+
+    const auctionleagueid = useSelector((state) => state.login.selectedLeagueId);
+
+    console.log("aaa",auctionleagueid);
 
     const buttonTexts = settings.setup.teamNames;
 
@@ -218,7 +223,7 @@ export const Auction = () => {
         }
         //console.log(payload)
         fetch(baseURL+'/updateplayer/'+getPlayer._id.$oid, {
-            method: 'PUT',
+            method: 'POST',
             headers: {
             'Content-Type': 'application/json'
             },

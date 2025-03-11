@@ -10,9 +10,7 @@ import { FaTimes } from 'react-icons/fa';
 import {useGoogleLogin, googleLogout} from '@react-oauth/google';
 import axios from "axios"
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoginSuccess, setLogoutSuccess } from './redux/reducer/authReducer'
-//import SignIn from "../pages/SignIn";
-import { FaRegUserCircle  } from "react-icons/fa";
+import { setLoginSuccess, setLogoutSuccess, setSelectedLeagueId } from './redux/reducer/authReducer'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
@@ -28,12 +26,18 @@ export const NavBar = () => {
   const isAdmin = useSelector((state) => state.login.isAdmin);
 
   const navigate = useNavigate()
+ 
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
       dispatch(setLoginSuccess(user));
+    }
+
+    if (leagueId){
+      dispatch(setSelectedLeagueId(leagueId));
     }
   }, [dispatch]);
 
@@ -94,7 +98,7 @@ export const NavBar = () => {
           // console.log(backendtoken)
           // console.log(backendtoken.data)
           dispatch(setLoginSuccess(res.data));
-          navigate('/players')
+          navigate('/league')
       } catch (err) {
           console.log(err)
 
@@ -105,15 +109,19 @@ export const NavBar = () => {
 
   const handlelogin =() => {
     const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
+    if (leagueId){
+      dispatch(setSelectedLeagueId(leagueId));
+    }
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
       dispatch(setLoginSuccess(user));
+      navigate('/league');
     }else{
       
       login();
 
     }
-    //navigate('/SignIn')
 
   }
   
@@ -184,6 +192,7 @@ export const NavBar = () => {
                   <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                   <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
                   {isAdmin && <NavDropdown.Item>Admin</NavDropdown.Item>}
+                  <NavDropdown.Item href="#/league"style={{background:'lightblue'}}>Select League</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
@@ -210,6 +219,9 @@ export const NavBar = () => {
             <Nav.Link as={Link} to="/players" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
               Players List
             </Nav.Link>
+            {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
+              Auction
+            </Nav.Link>}
             {/* <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
             Teams
             </Nav.Link>
@@ -258,16 +270,3 @@ export const NavBar = () => {
     </>
   );
 };
-
-/*<Link to ='/ ' className='navbar-brand' onClick={() => handleScrollToSection('home')}>
-
-
-<Nav.Link as={Link} className='navbar-link' to="/" onClick={() => handleScrollToSection('league')}>
-              League Setup
-            </Nav.Link>
-
-                        <Nav.Link as={Link} className='navbar-link' to="/" onClick={() => handleScrollToSection('rules')}>
-              Rules
-            </Nav.Link>
-
-*/

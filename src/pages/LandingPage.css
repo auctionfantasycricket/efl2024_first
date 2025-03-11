@@ -1,6 +1,6 @@
 .landingbody {
     margin-top: 0;
-    padding: 275px 0 100px 0;
+    padding: 180px 0 100px 0;
     background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
     height: 100vh;
     display: flex;
@@ -9,19 +9,22 @@
 }
   
   .landingcontainer {
-    width: 100%;
-    max-width: 500px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    /*max-width: 500px;*/
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    background: wheat;
+    background: rgb(197, 197, 177);
   }
   
   .landingcontainer h1 {
     text-align: center;
+    margin-bottom: 20px;
   }
   
-  .landingcontainer .button-group {
+  /* .landingcontainer .button-group {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
@@ -53,5 +56,5 @@
     .landingcontainer button {
       width: 100%;
     }
-  }
+  } */
   
