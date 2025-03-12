@@ -222,7 +222,7 @@ export const Auction = () => {
         }
         //console.log(payload)
         fetch(baseURL+'/updateplayer/'+getPlayer._id.$oid, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
             'Content-Type': 'application/json'
             },

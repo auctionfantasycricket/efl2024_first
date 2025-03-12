@@ -37,7 +37,7 @@ function App() {
         <Route path="/auction" element = {<Auction />}/>
         <Route path="/draft" element = {<SnakeDraft />}/>
         <Route path="/manageteam" element = {<ManageTeam />}/>
-        <Route path="/teams" element = {<DraftTeams />}/>
+        <Route path="/teams" element = {<Teams />}/>
         <Route path ="/teampoints" element = {<TeamPoints />} />
         <Route path ="/linegraph" element = {<Linegraph />} />
         <Route path="/waiver" element = {<WaiverSystem/>} />

@@ -4,6 +4,8 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Modal} from 'antd';
+import { useSelector } from 'react-redux';
+
 
 
 
@@ -23,12 +25,12 @@ export default function Teams() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
+  const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
 
   useEffect(() => {
     async function getallsoldteamplayers(){
       try {
-        const response = await fetch(baseURL+'/get_data?collectionName=efl_playersCentral_test');
+        const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+selectedLeagueId);
         if(response.ok){
           const playerdata = await response.json();
           //console.log(playerdata)
@@ -48,7 +50,7 @@ export default function Teams() {
   useEffect(() => {
     async function getallteamspurse(){
       try {
-        const response = await fetch(baseURL+'/get_data?collectionName=efl_ownerTeams_test');
+        const response = await fetch(baseURL+'/get_data?collectionName=teams&leagueId='+selectedLeagueId);
         if(response.ok){
           const stats = await response.json();
           console.log(stats)
@@ -67,7 +69,7 @@ export default function Teams() {
     if (!acc[player.ownerTeam]) {
       acc[player.ownerTeam] = [];
     }
-    acc[player.ownerTeam].push({ name: player.player_name, iplTeam: player.ipl_team_name, role: player.player_role, country: player.country, boughtfor: player.boughtFor, tier: player.tier });
+    acc[player.ownerTeam].push({ name: player.player_name, iplTeam: player.ipl_team_name, role: player.player_role, isOverseas: player.isOverseas, boughtfor: player.boughtFor, tier: player.tier });
     return acc;
   }, {});
 
@@ -122,7 +124,7 @@ export default function Teams() {
   const playerColumns = [
     { headerName: 'Name', field: 'name' },
     { headerName: 'IPLTeam', field: 'iplTeam' ,width:100},
-    { headerName: 'Country', field: 'country',width:100},
+    { headerName: 'isOverseas', field: 'isOverseas',width:100},
     { headerName: 'Tier', field: 'tier',width:100,sort: "asc"},
     { headerName: 'BoughtFor', field: 'boughtfor',width:100},
     { headerName: 'Role', field: 'role',width:100},

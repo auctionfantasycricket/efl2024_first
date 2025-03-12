@@ -167,6 +167,9 @@ export const NavBar = () => {
             {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
               Auction
             </Nav.Link>}
+            {<Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
+            Teams
+            </Nav.Link>}
             {/* <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
             Teams
             </Nav.Link>
@@ -229,6 +232,11 @@ export const NavBar = () => {
             {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
               Auction
             </Nav.Link>}
+            {
+              <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
+              Teams
+              </Nav.Link>
+            }
             {/* <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
             Teams
             </Nav.Link>
