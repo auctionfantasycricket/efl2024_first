@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setLoginSuccess, setSelectedLeagueId } from '../components/redux/reducer/authReducer';
+import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
 import { useNavigate } from 'react-router-dom';
 import './SignIn.css';
 
@@ -41,9 +42,9 @@ const SignIn = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const leagueId = localStorage.getItem('leagueId');
-    console.log("leb",leagueId)
+    
     if (leagueId){
-      dispatch(setSelectedLeagueId(leagueId));
+      dispatch(setselectedLeagueId(leagueId));
     }
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));

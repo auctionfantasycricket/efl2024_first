@@ -2,28 +2,47 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedLeagueId } from '../components/redux/reducer/authReducer';
-import { Card, CardContent, CardActions, Button, Typography, TextField, CircularProgress } from '@mui/material';
+import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
+import { Card, CardContent, CardActions, Button, Typography, TextField, CircularProgress, MenuItem, Modal, Box } from '@mui/material';
 import './LandingPage.css';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
 const LandingPage = () => {
-  const [mode, setMode] = useState(null);
+  
   const [leagueCode, setLeagueCode] = useState('');
   const [myLeagues, setMyLeagues] = useState([]);
   const [leagueName, setLeagueName] = useState('');
-  const [participants, setParticipants] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [leagueType, setLeagueType] = useState('');
+  const [isLoadingJoin, setIsLoadingJoin] = useState(false);
+  const [isLoadingCreate, setIsLoadingCreate] = useState(false);
   const dispatch = useDispatch();
   const userProfile = useSelector((state) => state.login.userProfile);
+  const league = useSelector((state) => state.league.selectedLeagueId);
 
-  const handleJoinLeague = () => {
-    setIsLoading(true);
+  const [successPopupOpen, setSuccessPopupOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState(""); 
+
+  useEffect(() => {
+      const token = localStorage.getItem('token');
+      const leagueId = localStorage.getItem('leagueId');
+      if (token) {
+        const user = JSON.parse(atob(token.split('.')[1]));
+        dispatch(setLoginSuccess(user));
+      }
+  
+      if (leagueId){
+        dispatch(setselectedLeagueId(leagueId));
+      }
+    }, [dispatch]);
+
+  const handleJoinLeague = async() => {
+    setIsLoadingJoin(true);
     const payload = {"email": userProfile.email,"leagueId": leagueCode};
-    let response;
+    //let response;
     try{
-      response = fetch(baseURL+'join_league', {
+      const response = await fetch(baseURL+'join_league', {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'
@@ -31,18 +50,46 @@ const LandingPage = () => {
         body: JSON.stringify(payload)
       });
       if(response.ok){
-        let data = response.json()
-        dispatch(setSelectedLeagueId(leagueCode))
+        await response.json()
+        dispatch(setselectedLeagueId(leagueCode))
         localStorage.setItem('leagueId', leagueCode)
-        //Navigate to league page
+        setSuccessMessage("Successfuly Joined the League");
+        setSuccessPopupOpen(true);
       }
       }catch(error) {
         console.error(error);
-        setIsLoading(false);
+        setIsLoadingJoin(false);
     } finally {
-      setIsLoading(false); // Hide loading indicator
+      setIsLoadingJoin(false);
     };
   };
+
+  const handleCreateLeague = async() => {
+    setIsLoadingCreate(true);
+    const payload = {"useremail": userProfile.email,"league_name": leagueName,"league_type":leagueType};
+    
+    try{
+      const response = await fetch(baseURL+'create_league', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      if(response.ok){
+        const data = await response.json()
+        dispatch(setselectedLeagueId(data.leagueId))
+        localStorage.setItem('leagueId', data.leagueId)
+        setSuccessMessage(data.message);
+        setSuccessPopupOpen(true); 
+      }
+      }catch(error) {
+        console.error(error);
+        setIsLoadingCreate(false);
+    } finally {
+      setIsLoadingCreate(false);
+    };
+  }
 
   useEffect(() => {
     const fetchMyLeagues = async () => {
@@ -54,6 +101,7 @@ const LandingPage = () => {
         const data = await response.json();
         //console.log(data);
         setMyLeagues(data.leagues || []);
+        dispatch(setmemberof(data.leagues))
       } catch (error) {
         console.error(error);
         setMyLeagues([]);
@@ -65,9 +113,14 @@ const LandingPage = () => {
   }, [userProfile.email]);
 
   const handleLeagueClick = (leagueId) => {
-    dispatch(setSelectedLeagueId(leagueId));
+    dispatch(setselectedLeagueId(leagueId));
     localStorage.setItem('leagueId', leagueId)
     //Navigate to league page
+  };
+
+  const handleCloseSuccessPopup = () => {
+    setSuccessPopupOpen(false);
+    //navigate to the page
   };
 
 
@@ -86,7 +139,6 @@ const LandingPage = () => {
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
                   Enter the league code to join an existing league.
                 </Typography>
-                {mode === 'join' && (
                   <TextField 
                     label="League Code" 
                     variant="outlined" 
@@ -94,18 +146,10 @@ const LandingPage = () => {
                     onChange={(e) => setLeagueCode(e.target.value)} 
                     fullWidth 
                   />
-                )}
               </CardContent>
               <CardActions>
-                <Button variant="contained" onClick={() => setMode('join')}>Join League</Button>
-                <Button 
-                  variant="contained" 
-                  onClick={handleJoinLeague} 
-                  disabled={!leagueCode || isLoading}>
-                  {isLoading ? 
-                  ( <CircularProgress size={24} />) 
-                  : 
-                  ("Submit")}
+                <Button variant="contained" onClick={handleJoinLeague} disabled={!leagueCode || isLoadingJoin}>
+                  {isLoadingJoin ? <CircularProgress size={24} /> : "Join League"}
                 </Button>
               </CardActions>
             </Card>
@@ -120,7 +164,6 @@ const LandingPage = () => {
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
                   Start a new league and invite your friends!
                 </Typography>
-                {mode === 'create' && (
                   <>
                     <TextField 
                       label="League Name" 
@@ -130,25 +173,23 @@ const LandingPage = () => {
                       fullWidth 
                       sx={{ marginBottom: '10px' }}
                     />
-                    <TextField 
-                      label="Number of Participants" 
-                      type="number" 
-                      variant="outlined" 
-                      value={participants} 
-                      onChange={(e) => {const value = parseInt(e.target.value, 10); // Parse the value as an integer
-                        setParticipants(value < 0 ? 0 : value);} }
-                      fullWidth 
-                      // slotProps={{ 
-                      //   input: { min: 0 }
-                      // }}
-                      inputProps={{ min: 0 }} 
-                    />
+                    <TextField
+                      label="Type of League"
+                      select
+                      variant="outlined"
+                      value={leagueType}
+                      onChange={(e) => setLeagueType(e.target.value)}
+                      fullWidth
+                    >
+                      <MenuItem value="auction">Auction</MenuItem>
+                      <MenuItem value="draft">Draft</MenuItem>
+                    </TextField>
                   </>
-                )}
               </CardContent>
               <CardActions>
-                <Button variant="contained" onClick={() => setMode('create')}>Create League</Button>
-                {/* <Button variant="contained" onClick={handleCreateLeague}>Submit</Button> */}
+                <Button variant="contained" onClick={handleCreateLeague} disabled={!leagueName || !leagueType || isLoadingCreate}>
+                {isLoadingCreate ? <CircularProgress size={24} /> : "Create League"}
+                </Button>
               </CardActions>
             </Card>
           </Col>
@@ -192,12 +233,47 @@ const LandingPage = () => {
                 )}
                 </CardActions>
               </CardContent>
-              
             </Card>
           </Col>
         </Row>
       </Container>
       </div>
+      <Modal
+        open={successPopupOpen}
+        onClose={handleCloseSuccessPopup}
+        aria-labelledby="success-modal-title"
+        aria-describedby="success-modal-description"
+        slotProps={{backdrop: {
+          onClick: () => {},
+        },}}
+        // BackdropProps={{
+        //   disablePortal: true,
+        // }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id="success-modal-title" variant="h6" component="h2" sx={{color:'green', fontWeight:'bold'}}>
+            Success!
+          </Typography>
+          <Typography id="success-modal-description" sx={{ mt: 2, color: 'black' }}>
+            {successMessage}
+          </Typography>
+          <Button onClick={handleCloseSuccessPopup} sx={{ mt: 2 }}>
+            Close
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 }

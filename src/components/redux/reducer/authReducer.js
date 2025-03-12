@@ -3,8 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isLoggedIn: false,
   userProfile: null,
-  isAdmin: false,
-  selectedLeagueId: null
+  isAdmin: false
 };
 
 export const loginSlice = createSlice({
@@ -20,14 +19,10 @@ export const loginSlice = createSlice({
       state.isLoggedIn = false;
       state.userProfile = null;
       state.isAdmin = false;
-      state.selectedLeagueId = null;
-    },
-    setSelectedLeagueId: (state, action) => {
-      state.selectedLeagueId = action.payload;
-    },
+    }
   },
 });
 
-export const { setLoginSuccess, setLogoutSuccess, setSelectedLeagueId } = loginSlice.actions;
+export const { setLoginSuccess, setLogoutSuccess } = loginSlice.actions;
 
 export default loginSlice.reducer;

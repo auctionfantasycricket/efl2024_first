@@ -145,17 +145,17 @@ export const AllPlayers = () => {
     style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',flexDirection:'column' }}
     */
   
-    // useEffect(() => {
-    //   if (gridApi){
-    //     if (isLoading) {
-    //       gridApi.showLoadingOverlay();
-    //     } else if (error) {
-    //       gridApi.showNoRowsOverlay();
-    //     } else {
-    //       gridApi.hideOverlay();
-    //     }
-    //   }
-    // }, [isLoading, error, data]);
+    useEffect(() => {
+      if (gridApi) {
+        if (isLoading) {
+          gridApi.showLoadingOverlay();
+        } else if (error) {
+          gridApi.showNoRowsOverlay(); // Or a custom "No Data" overlay
+        } else {
+          gridApi.hideOverlay();
+        }
+      }
+    }, [gridApi, isLoading, error]);
 
     const components = {
       roleCellRenderer: RoleCellRenderer,

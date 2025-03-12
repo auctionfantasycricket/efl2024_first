@@ -10,7 +10,8 @@ import { FaTimes } from 'react-icons/fa';
 import {useGoogleLogin, googleLogout} from '@react-oauth/google';
 import axios from "axios"
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoginSuccess, setLogoutSuccess, setSelectedLeagueId } from './redux/reducer/authReducer'
+import { setLoginSuccess, setLogoutSuccess } from './redux/reducer/authReducer'
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof, clearLeagueState } from '../components/redux/reducer/leagueReducer';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
@@ -34,10 +35,14 @@ export const NavBar = () => {
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
       dispatch(setLoginSuccess(user));
+    }else{
+      if(isLoggedIn){
+        handlelogOut();
+      }
     }
 
     if (leagueId){
-      dispatch(setSelectedLeagueId(leagueId));
+      dispatch(setselectedLeagueId(leagueId));
     }
   }, [dispatch]);
 
@@ -111,7 +116,7 @@ export const NavBar = () => {
     const token = localStorage.getItem('token');
     const leagueId = localStorage.getItem('leagueId');
     if (leagueId){
-      dispatch(setSelectedLeagueId(leagueId));
+      dispatch(setselectedLeagueId(leagueId));
     }
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
@@ -127,8 +132,10 @@ export const NavBar = () => {
   
 
   const handlelogOut = () => {
-    googleLogout();
+    localStorage.removeItem('leagueId')
     dispatch(setLogoutSuccess());
+    dispatch(clearLeagueState());
+    googleLogout();
     //navigate('/efl2024_first')
     navigate('/')
   };
@@ -253,6 +260,7 @@ export const NavBar = () => {
                   <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                   <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
                   {isAdmin && <NavDropdown.Item>Admin</NavDropdown.Item>}
+                  <NavDropdown.Item href="#/league"style={{background:'lightblue'}}>Select League</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>

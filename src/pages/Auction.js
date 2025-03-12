@@ -16,9 +16,8 @@ export const Auction = () => {
     const [amount, setAmount] = useState(20);
     const [disableMap, setDisableMap] = useState({})
 
-    const auctionleagueid = useSelector((state) => state.login.selectedLeagueId);
+    const auctionleagueid = useSelector((state) => state.league.selectedLeagueId);
 
-    console.log("aaa",auctionleagueid);
 
     const buttonTexts = settings.setup.teamNames;
 
