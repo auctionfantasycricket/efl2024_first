@@ -13,12 +13,15 @@ import {
     CircularProgress,
     Box,
     Snackbar,
+    IconButton,
+    Alert,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
 import './LeagueManagement.css';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -32,6 +35,7 @@ const LeagueManagement = () => {
     const [editTeamName, setEditTeamName] = useState('');
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [copysnackbarOpen, setCopySnackbarOpen] = useState(false);
 
     const leagueId = useSelector((state) => state.league.selectedLeagueId);
     const userProfile = useSelector((state) => state.login.userProfile);
@@ -166,7 +170,15 @@ const LeagueManagement = () => {
             return;
         }
         setSnackbarOpen(false);
+        setCopySnackbarOpen(false);
     };
+
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text);
+        // Optional: Provide visual feedback (e.g., a snackbar or alert)
+        // console.log('Copied to clipboard:', text);
+        setCopySnackbarOpen(true)
+      };
 
     const columns = [
         { field: 'name', headerName: 'Team Name', width: 200 },
@@ -197,17 +209,31 @@ const LeagueManagement = () => {
         <div className='leaguemgmtbody'>
             <div className='leaguemgmtcontainer'>
                 <Card sx={{ marginBottom: '20px' }}>
-                    <CardContent>
-                        <Typography variant="h8" component="div" gutterBottom>
-                            League Name: {leagueinfo?.league_name || 'Loading...'}
-                        </Typography>
-                        <Typography variant="h9" component="div" gutterBottom>
-                            League Id: {leagueinfo?._id || 'Loading...'}
-                        </Typography>
-                        <Typography sx={{ color: 'black' }}>
-                            Admin: {isAdmin ? 'Yes' : 'NO'}
-                        </Typography>
+                    <CardContent style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ flex: 1 , fontWeight:'bold'}}> {/* Take up available space */}
+                            <Typography variant="h8" component="div" gutterBottom>
+                                {leagueinfo?.league_name || 'Loading...'}
+                            </Typography>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center',fontWeight:'bold' }}>
+                            <Typography variant="h8" color="textSecondary" style={{ marginRight: '8px' }}>
+                                {leagueinfo?._id || 'Loading...'}
+                            </Typography>
+                            <IconButton onClick={() => handleCopy(leagueinfo?._id)}>
+                                <FileCopyIcon />
+                            </IconButton>
+                        </div>
                     </CardContent>
+                    <Snackbar
+                        open={copysnackbarOpen}
+                        autoHideDuration={3000}
+                        onClose={handleSnackbarClose}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                    >
+                        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                            League ID copied to clipboard!
+                        </Alert>
+                    </Snackbar>
                 </Card>
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>

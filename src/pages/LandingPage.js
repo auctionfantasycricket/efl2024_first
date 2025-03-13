@@ -234,6 +234,7 @@ const LandingPage = () => {
                     >
                       {league.league_name}
                     </Button>
+                    {league.admins.includes(userProfile?.email) && (
                      <Button
                      variant = "contained" color="error"
                      onClick={() => handleManageLeagueClick(league)}
@@ -244,6 +245,7 @@ const LandingPage = () => {
                    >
                      Manage
                    </Button>
+                    )}
                    </div>
                   ))}
                 </div>):(

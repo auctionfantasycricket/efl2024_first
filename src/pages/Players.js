@@ -12,12 +12,15 @@ import RoleCellRenderer from '../components/RoleCellRenderer';
 import TeamCellRenderer from '../components/TeamCellRenderer';
 import DownloadIcon from '@mui/icons-material/Download';
 import CustomLoadingOverlay from "../components/CustomLoadingOverlay";
+import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
+
 
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-const fetchPlayerslist = async () => {
-    const response = await fetch(baseURL+'/get_data?collectionName=players');
+const fetchPlayerslist = async (id) => {
+    const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+id);
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
@@ -32,6 +35,8 @@ export const AllPlayers = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const userProfile = useSelector((state) => state.login.userProfile);
+  const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+  
 
   const gridRef = useRef();
 
@@ -41,9 +46,35 @@ export const AllPlayers = () => {
     setGridApi(params.api);
   }, []);
 
-  const { isLoading, error, data } = useQuery({queryKey:['players'], queryFn:fetchPlayerslist});
-
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
+    if (token) {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      dispatch(setLoginSuccess(user));
+    }
+
+    if (leagueId){
+      dispatch(setselectedLeagueId(leagueId));
+    }
+  }, [dispatch]);
+
+  const { isLoading, error, data } = useQuery({
+    queryKey:['players'], 
+    queryFn:async()=>{
+      let response;
+      try{
+        response = await fetchPlayerslist(selectedLeagueId);
+      }catch(error){
+        console.log(error)
+      }
+      return response
+    },
+    enabled: selectedLeagueId !== null,
+  }
+);
+
+useEffect(() => {
     if (data) {
       setAllPlayerslist(data);
     }
@@ -69,7 +100,7 @@ export const AllPlayers = () => {
   const columnDefs = [
     { field: "player_name", headerName: "Name", width: 250},
     { field: "ipl_team_name", headerName: "IPL Team", width: 250, cellRenderer: 'teamCellRenderer' },
-    //{ field: "status", headerName: "Status", width: 150,filter: true },
+    { field: "status", headerName: "Status", width: 150,filter: true },
     { field: "player_role", headerName: "Role", width: 200,  cellRenderer: 'roleCellRenderer' },
    //{ field: "country", headerName: "Country", width: 220,filter: true,sort:'asc'},
    { field: "tier", headerName: "Tier", width: 80},

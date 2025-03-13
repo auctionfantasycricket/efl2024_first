@@ -24,7 +24,11 @@ export const Banner = () => {
                 <span className="tagline">Auction Fantasy Cricket</span>
                 <h1><span className="wrap">Baap of Fantasy Cricket</span></h1>
                   <p>Bid Play Win Your Fantasy Cricket Auction Destination</p>
-                  {isLoggedIn ?<button>Let’s Play <ArrowRightCircle size={25} /></button>:<button>
+                  {isLoggedIn ?<button>
+                    <a href = '#/league'>Let’s Play <ArrowRightCircle size={25} /></a>
+                  </button>
+                  :
+                  <button>
                     <a href = '#/SignIn'>Let’s Play <ArrowRightCircle size={25} /></a> 
                     </button>}
               </div>}
