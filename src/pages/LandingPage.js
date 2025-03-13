@@ -6,6 +6,7 @@ import { setLoginSuccess } from '../components/redux/reducer/authReducer';
 import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
 import { Card, CardContent, CardActions, Button, Typography, TextField, CircularProgress, MenuItem, Modal, Box } from '@mui/material';
 import './LandingPage.css';
+import { useNavigate } from "react-router-dom";
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -24,6 +25,10 @@ const LandingPage = () => {
   const [successPopupOpen, setSuccessPopupOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState(""); 
 
+  const [refreshLeagues, setRefreshLeagues] = useState(0);
+
+  const navigate = useNavigate()
+
   useEffect(() => {
       const token = localStorage.getItem('token');
       const leagueId = localStorage.getItem('leagueId');
@@ -36,6 +41,27 @@ const LandingPage = () => {
         dispatch(setselectedLeagueId(leagueId));
       }
     }, [dispatch]);
+  
+  useEffect(() => {
+    const fetchMyLeagues = async () => {
+      try {
+        const response = await fetch(`${baseURL}get_leagues_by_email?email=${userProfile?.email}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        
+        setMyLeagues(data.leagues || []);
+        dispatch(setmemberof(data.leagues))
+      } catch (error) {
+        console.error(error);
+        setMyLeagues([]);
+      }
+    };
+    if (userProfile?.email) {
+      fetchMyLeagues();
+    }
+  }, [userProfile?.email, refreshLeagues]);
 
   const handleJoinLeague = async() => {
     setIsLoadingJoin(true);
@@ -55,6 +81,7 @@ const LandingPage = () => {
         localStorage.setItem('leagueId', leagueCode)
         setSuccessMessage("Successfuly Joined the League");
         setSuccessPopupOpen(true);
+        setRefreshLeagues((prev) => prev + 1);
       }
       }catch(error) {
         console.error(error);
@@ -81,7 +108,8 @@ const LandingPage = () => {
         dispatch(setselectedLeagueId(data.leagueId))
         localStorage.setItem('leagueId', data.leagueId)
         setSuccessMessage(data.message);
-        setSuccessPopupOpen(true); 
+        setSuccessPopupOpen(true);
+        setRefreshLeagues((prev) => prev + 1);
       }
       }catch(error) {
         console.error(error);
@@ -91,36 +119,24 @@ const LandingPage = () => {
     };
   }
 
-  useEffect(() => {
-    const fetchMyLeagues = async () => {
-      try {
-        const response = await fetch(`${baseURL}get_leagues_by_email?email=${userProfile?.email}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const data = await response.json();
-        //console.log(data);
-        setMyLeagues(data.leagues || []);
-        dispatch(setmemberof(data.leagues))
-      } catch (error) {
-        console.error(error);
-        setMyLeagues([]);
-      }
-    };
-    if (userProfile?.email) {
-      fetchMyLeagues();
-    }
-  }, [userProfile?.email]);
-
-  const handleLeagueClick = (leagueId) => {
-    dispatch(setselectedLeagueId(leagueId));
-    localStorage.setItem('leagueId', leagueId)
+  const handleLeagueClick = (league) => {
+    dispatch(setselectedLeagueId(league._id));
+    localStorage.setItem('leagueId', league._id)
+    dispatch(setCurrentLeague(league))
     //Navigate to league page
+    navigate('/teams')
+  };
+
+  const handleManageLeagueClick = (league) => {
+    dispatch(setselectedLeagueId(league._id));
+    localStorage.setItem('leagueId', league._id)
+    dispatch(setCurrentLeague(league))
+    //Navigate to league page
+    navigate('/manageleague')
   };
 
   const handleCloseSuccessPopup = () => {
     setSuccessPopupOpen(false);
-    //navigate to the page
   };
 
 
@@ -204,12 +220,13 @@ const LandingPage = () => {
                   View and manage your existing leagues.
                 </Typography>
                 <CardActions>
-                {myLeagues && myLeagues.length > 0 ? (<div>
+                {myLeagues && myLeagues.length > 0 ? (
+                  <div>
                   {myLeagues.map((league) => (
+                    <div key={league._id} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                     <Button 
-                      key={league._id} // Add a unique key for each button
                       variant="contained" 
-                      onClick={() => handleLeagueClick(league._id)}
+                      onClick={() => handleLeagueClick(league)}
                       sx={{ 
                         display: 'block', // Make the buttons stack vertically
                         marginBottom: '5px' // Add some space between buttons
@@ -217,6 +234,17 @@ const LandingPage = () => {
                     >
                       {league.league_name}
                     </Button>
+                     <Button
+                     variant = "contained" color="error"
+                     onClick={() => handleManageLeagueClick(league)}
+                     sx={{ 
+                       display: 'block',
+                       marginBottom: '5px'
+                     }}
+                   >
+                     Manage
+                   </Button>
+                   </div>
                   ))}
                 </div>):(
                   <div>
@@ -243,12 +271,9 @@ const LandingPage = () => {
         onClose={handleCloseSuccessPopup}
         aria-labelledby="success-modal-title"
         aria-describedby="success-modal-description"
-        slotProps={{backdrop: {
-          onClick: () => {},
-        },}}
-        // BackdropProps={{
-        //   disablePortal: true,
-        // }}
+        // slotProps={{backdrop: {
+        //   onClick: () => {},
+        // },}}
       >
         <Box
           sx={{

@@ -1,8 +1,8 @@
 .landingbody {
     margin-top: 0;
-    padding: 180px 0 100px 0;
+    padding: 160px 0 100px 0;
     background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;

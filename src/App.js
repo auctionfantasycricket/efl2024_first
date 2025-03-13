@@ -17,6 +17,7 @@ import SnakeDraft from './pages/Snakedraft';
 import DraftTeams from './pages/DraftTeams';
 import SignIn from './pages/SignIn';
 import LandingPage from './pages/LandingPage';
+import LeagueManagement from './pages/LeagueManagement'
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ function App() {
         <Route path="/waiver" element = {<WaiverSystem/>} />
         <Route path="/SignIn" element = {<SignIn />} />
         <Route path='/league' element={<LandingPage />} />
+        <Route path="/manageleague" element = {<LeagueManagement />}/>
         </Routes>
         </HashRouter>
         </Provider>

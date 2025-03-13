@@ -1,235 +1,235 @@
 .auctionpage{
-    margin-top: 0;
-    padding: 10px 0 0px 0;
-    background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
-    height: 100vh;
-  }
+  margin-top: 0;
+  padding: 10px 0 0px 0;
+  background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
+  height: 100vh;
+}
 
 .auctionpage .auctioncontainer{
-  margin-top: 90px;
-  margin-left: 10px 20px;
-  margin-bottom: -100px;
-  background: #cecfcf80;
+margin-top: 90px;
+margin-left: 10px 20px;
+margin-bottom: -100px;
+background: #cecfcf80;
+width: 100%;
+height: 85vh;
+display: flex;
+flex-direction: column;
+border-radius: 10px;
+}
+
+/*
+.auctionpage .auctioncontainer .container{
   width: 100%;
-  height: 85vh;
-  display: flex;
-  flex-direction: column;
-  border-radius: 10px;
-  }
 
-  /*
-  .auctionpage .auctioncontainer .container{
-    width: 100%;
-
-  }*/
+}*/
 
 .auctionpage .auctioncontainer .autiontoprow{
-    flex: 0 0 80%;
-    display: flex;
-  }
+  flex: 0 0 80%;
+  display: flex;
+}
 
 .auctionpage .auctioncontainer .autiontoprow > div:first-child {
-    flex: 0 0 50%; /* First column occupies 40% of the width */
-   /* background-color: blue;*/
-   display: flex;
-   flex-direction: column;
-  }
+  flex: 0 0 50%; /* First column occupies 40% of the width */
+ /* background-color: blue;*/
+ display: flex;
+ flex-direction: column;
+}
 
 .auctionpage .auctioncontainer .autiontoprow .owner-table-item {
-    flex: 1;
-    display: flex;
-    align-items: left;
-    justify-content: left;
-    margin-left: 10px;
-  }
-  
-  .auctionpage .auctioncontainer .autiontoprow > div:last-child {
-    flex: 0 0 50%; /* Second column occupies 60% of the width */
-   /* background-color: brown;*/
-    display: flex;
-    flex-direction: column;
-  }
+  flex: 1;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+  margin-left: 10px;
+}
 
-  .auctionpage .auctioncontainer .autiontoprow .player-card-container {
-    margin-top: 15px;
-    flex: 1;
-    margin-right: 5px;
-  }
+.auctionpage .auctioncontainer .autiontoprow > div:last-child {
+  flex: 0 0 50%; /* Second column occupies 60% of the width */
+ /* background-color: brown;*/
+  display: flex;
+  flex-direction: column;
+}
 
-
-  .auctionpage .auctioncontainer .autiontoprow .itemsbottomrow {
-    flex: 0 0 auto; /* Reset flex value for the bottom row */
-  }
-  
-  .auctionpage .auctioncontainer .autiontoprow .text-boxes-container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    justify-content: space-between;
-    margin-top: 15px;
-  }
-
-  .auctionpage .auctioncontainer .autiontoprow .text-boxes-container .shiny-text {
-    background-color: #ff0606; /* vibrant color */
-    color: #fff; /* white text */
-    padding: 10px;
-    border-radius: 10px; /* rounded edges */
-    text-align: center; /* center align text */
-    font-size: 18px; /* large font size */
-    font-weight: bold; /* bold text */
-    text-shadow: 2px 2px #d57171; /* adds a subtle shadow to text */
-    box-shadow: 0 0 10px #d57171; /* adds a shiny effect to the background */
-    animation: shine 1s ease-in-out infinite; /* adds a shining animation to the background */
-    width: 300px
-  }
-
-  @keyframes shine {
-    from {
-      box-shadow: 0 0 10px #ebda90;
-    }
-    to {
-      box-shadow: 0 0 20px #ebda90;
-    }
-  }
-  
-  .auctionpage .auctioncontainer .autiontoprow .timer-container {
-    margin-top: 15px;
-    flex: 1;
-    font-size: 18px;
-    font-weight: bold;
-  }
+.auctionpage .auctioncontainer .autiontoprow .player-card-container {
+  margin-top: 15px;
+  flex: 1;
+  margin-right: 5px;
+}
 
 
-  .auctionpage .auctioncontainer .autiontoprow .buttons-container{
-    display: flex;
-  flex-direction: row;
+.auctionpage .auctioncontainer .autiontoprow .itemsbottomrow {
+  flex: 0 0 auto; /* Reset flex value for the bottom row */
+}
+
+.auctionpage .auctioncontainer .autiontoprow .text-boxes-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   justify-content: space-between;
   margin-top: 15px;
-  }
+}
 
-  .auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button {
-    /*display: inline-block;*/
-    padding: 15px 32px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    outline: none;
-    color: #fff;
-    background-color: #059905;
-    border-radius: 10px;
-    border: none;
-    margin: 4px 2px;
-  }
-  
-  /* Add hover effect */
-  .auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button:hover {
-    background-color: #8e4a3e; /* Darken background on hover */
-  }
-  
-  .auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button:active {
-    background-color: #ad2e0b;
-    transform: translateY(4px);
-  }
-  
-  .auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button:disabled {
-    background-color: rgb(86, 84, 84);
-    cursor: not-allowed;
-    transform: translateY(4px);
-  }
+.auctionpage .auctioncontainer .autiontoprow .text-boxes-container .shiny-text {
+  background-color: rgb(199, 116, 83) ; /* vibrant color */
+  color: #fff; /* white text */
+  padding: 10px;
+  border-radius: 10px; /* rounded edges */
+  text-align: center; /* center align text */
+  font-size: 18px; /* large font size */
+  font-weight: bold; /* bold text */
+  text-shadow: 2px 2px #d57171; /* adds a subtle shadow to text */
+  box-shadow: 0 0 10px #d57171; /* adds a shiny effect to the background */
+  animation: shine 1s ease-in-out infinite; /* adds a shining animation to the background */
+  width: 300px
+}
 
-
-  .auctionpage .auctioncontainer .autionbottomrow{
-    flex: 0 0 20%;
-    display: flex;
-    margin-left: 10px;
+@keyframes shine {
+  from {
+    box-shadow: 0 0 10px #ebda90;
   }
-
-  .auctionpage .auctioncontainer .autionbottomrow > div:first-child {
-    flex: 0 0 80%; /* First column occupies 40% of the width */
-   /* background-color: aqua;*/
-    display: flex;
-    flex-direction: row;
+  to {
+    box-shadow: 0 0 20px #ebda90;
   }
+}
+
+.auctionpage .auctioncontainer .autiontoprow .timer-container {
+  margin-top: 15px;
+  flex: 1;
+  font-size: 18px;
+  font-weight: bold;
+}
 
 
+.auctionpage .auctioncontainer .autiontoprow .buttons-container{
+  display: flex;
+flex-direction: row;
+justify-content: space-between;
+margin-top: 15px;
+}
 
-  .auctionpage .auctioncontainer .autionbottomrow .team-button-containers {
-    background: linear-gradient(to bottom, #2244da, #2257bb);
-    border-radius: 10px;
-    color: white;
-    font-size: 15px;
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    margin-right: 9px;
-    position: relative;
-    height: 70px;
-    margin-top: 15px;
+.auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button {
+  /*display: inline-block;*/
+  padding: 15px 32px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #059905;
+  border-radius: 10px;
+  border: none;
+  margin: 4px 2px;
+}
 
-  }
+/* Add hover effect */
+.auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button:hover {
+  background-color: #8e4a3e; /* Darken background on hover */
+}
 
-  .auctionpage .auctioncontainer .autionbottomrow .team-button-containers-disabled {
-    background: gray;
-    border-radius: 10px;
-    background-color: gray;
-    cursor: not-allowed;
-    margin-right: 10px;
-    height: 75px;
-  }
-  
-  
-  /* Add a hover effect */
-  .auctionpage .auctioncontainer .autionbottomrow .team-button-containers:hover {
-    background: linear-gradient(to bottom, #ff9100, #ff9900);
-  }
+.auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button:active {
+  background-color: #9e8077;
+  transform: translateY(4px);
+}
 
-  
-  .auctionpage .auctioncontainer .autionbottomrow .team-button-containers .my-image {
-    position: absolute;
-    top: -25px; /* Adjust this value to move the image above the button */
+.auctionpage .auctioncontainer .autiontoprow .buttons-container .action-button:disabled {
+  background-color: rgb(86, 84, 84);
+  cursor: not-allowed;
+  transform: translateY(4px);
+}
+
+
+.auctionpage .auctioncontainer .autionbottomrow{
+  flex: 0 0 20%;
+  display: flex;
+  margin-left: 10px;
+}
+
+.auctionpage .auctioncontainer .autionbottomrow > div:first-child {
+  flex: 0 0 80%; /* First column occupies 40% of the width */
+ /* background-color: aqua;*/
+  display: flex;
+  flex-direction: row;
+}
+
+
+
+.auctionpage .auctioncontainer .autionbottomrow .team-button-containers {
+  background: linear-gradient(to bottom, #4b68ea, #425e92);
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  margin-right: 9px;
+  position: relative;
+  height: 70px;
+  margin-top: 15px;
+
+}
+
+.auctionpage .auctioncontainer .autionbottomrow .team-button-containers-disabled {
+  background: gray;
+  border-radius: 10px;
+  background-color: gray;
+  cursor: not-allowed;
+  margin-right: 10px;
+  height: 75px;
+}
+
+
+/* Add a hover effect */
+.auctionpage .auctioncontainer .autionbottomrow .team-button-containers:hover {
+  background: linear-gradient(to bottom, #ff9100, #ff9900);
+}
+
+
+.auctionpage .auctioncontainer .autionbottomrow .team-button-containers .my-image {
+  position: absolute;
+  top: -25px; /* Adjust this value to move the image above the button */
   left: 50%; /* Adjust this value to horizontally center the image */
   transform: translateX(-50%); 
-    width: 70px;
-    height: 70px;
-  }
-
-  
-  .auctionpage .auctioncontainer .autionbottomrow > div:last-child {
-    flex: 0 0 20%; /* Second column occupies 60% of the width */
-   /* background-color: rgb(196, 10, 112);*/
-    
-  }
+  width: 70px;
+  height: 70px;
+}
 
 
+.auctionpage .auctioncontainer .autionbottomrow > div:last-child {
+  flex: 0 0 20%; /* Second column occupies 60% of the width */
+ /* background-color: rgb(196, 10, 112);*/
+  
+}
 
-  .auctionpage .auctioncontainer .autionbottomrow .action-button {
-    display: inline-block;
-    padding: 15px 32px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    outline: none;
-    color: #fff;
-    background-color: #4CAF50;
-    border-radius: 10px;
-    border: none;
-    margin: 4px 2px;
-  }
-  
-  /* Add hover effect */
-  .auctionpage .auctioncontainer .autionbottomrow .action-button:hover {
-    background-color: #3e8e41; /* Darken background on hover */
-  }
-  
-  .auctionpage .auctioncontainer .autionbottomrow .action-button:active {
-    background-color: #3e8e41;
-    transform: translateY(4px);
-  }
-  
-  .auctionpage .auctioncontainer .autionbottomrow .action-button:disabled {
-    background-color: grey;
-    cursor: not-allowed;
-    transform: translateY(4px);
-  }
+
+
+.auctionpage .auctioncontainer .autionbottomrow .action-button {
+  display: inline-block;
+  padding: 15px 32px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border-radius: 10px;
+  border: none;
+  margin: 4px 2px;
+}
+
+/* Add hover effect */
+.auctionpage .auctioncontainer .autionbottomrow .action-button:hover {
+  background-color: #3e8e41; /* Darken background on hover */
+}
+
+.auctionpage .auctioncontainer .autionbottomrow .action-button:active {
+  background-color: #3e8e41;
+  transform: translateY(4px);
+}
+
+.auctionpage .auctioncontainer .autionbottomrow .action-button:disabled {
+  background-color: grey;
+  cursor: not-allowed;
+  transform: translateY(4px);
+}

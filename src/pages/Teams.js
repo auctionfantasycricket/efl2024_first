@@ -4,7 +4,9 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Modal} from 'antd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
 
 
 
@@ -25,7 +27,22 @@ export default function Teams() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+   const dispatch = useDispatch();
+
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
+    if (token) {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      dispatch(setLoginSuccess(user));
+    }
+
+    if (leagueId){
+      dispatch(setselectedLeagueId(leagueId));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     async function getallsoldteamplayers(){
@@ -132,29 +149,29 @@ export default function Teams() {
 
   return(
     <div className="teampage">
-    <div className="teampagecontainer">
-      <div className="ag-theme-alpine-dark" style={ {height:"72vh",width:"82vw"} }>
-    <AgGridReact
-    rowData={data}
-    columnDefs={columnDefs}
-    defaultColDef={defaultColDef}
-    gridOptions={gridOptions}
-    />
-     </div>
-     <div>
-      <Modal title={teamname + " players"} style={{ top: 30, width: 700, zIndex:9999 }} open={isModalOpen} onOk={handleOk} onCancel={handleOk} cancelButtonProps={{ style: { display: 'none' } }}>
-      {
-          <div className="ag-theme-alpine" style={ {height:"72vh"} }>
+      <div className="teampagecontainer">
+        <div className="ag-theme-alpine-dark teams-main-container" >
           <AgGridReact
-          rowData={showplayers}
-          columnDefs={playerColumns}
-          defaultColDef={defaultColDef}/>
-          </div>
-        }
-      </Modal>
-     </div>
+          rowData={data}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          gridOptions={gridOptions}
+          />
+        </div>
+        <div>
+          <Modal title={teamname + " players"} style={{ top: 30, width: 700, zIndex:9999 }} open={isModalOpen} onOk={handleOk} onCancel={handleOk} cancelButtonProps={{ style: { display: 'none' } }}>
+          {
+              <div className="ag-theme-alpine teams-main-container" style={ {height:"72vh"} }>
+                <AgGridReact
+                rowData={showplayers}
+                columnDefs={playerColumns}
+                defaultColDef={defaultColDef}/>
+              </div>
+            }
+          </Modal>
+        </div>
       </div>
-      </div>
+    </div>
   )
   
 }

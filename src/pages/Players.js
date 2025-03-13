@@ -41,8 +41,6 @@ export const AllPlayers = () => {
     setGridApi(params.api);
   }, []);
 
-  //const playoffteams = ['Afghanistan','Australia','Bangladesh','England','India','South-africa','United-states-of-america','West-indies']
-
   const { isLoading, error, data } = useQuery({queryKey:['players'], queryFn:fetchPlayerslist});
 
   useEffect(() => {
@@ -83,85 +81,32 @@ export const AllPlayers = () => {
    { field: "rank", headerName: "Rank",sort:'asc', width: 140 },
   ];
 
-  
-  // const getRowStyle = (params) => {
-  //   const country = params.data.country;
-  //   switch (country) {
-  //     case 'Afghanistan':
-  //       return { backgroundColor: "lightsteelblue" };
-  //     case 'Australia':
-  //       return { backgroundColor: "gold" };
-  //     case 'Bangladesh':
-  //       return { backgroundColor: "forestgreen" };
-  //     case 'Canada':
-  //       return { backgroundColor: "firebrick" };
-  //     case 'England':
-  //       return { backgroundColor: "deepskyblue" };
-  //     case 'India':
-  //       return { backgroundColor: "dodgerblue" };
-  //     case 'Ireland':
-  //       return { backgroundColor: "limegreen" };
-  //     case 'Namibia':
-  //       return { backgroundColor: "cornflowerblue" };
-  //     case 'Nepal':
-  //       return { backgroundColor: "lightblue" };
-  //     case 'Netherlands':
-  //       return { backgroundColor: "orange" };
-  //     case 'New-zealand':
-  //       return { backgroundColor: "lightgrey" };
-  //     case 'Oman':
-  //       return { backgroundColor: "tomato" };
-  //     case 'Pakistan':
-  //       return { backgroundColor: "green" };
-  //     case 'Papua-new-guinea':
-  //       return { backgroundColor: "lightpink" };
-  //     case 'Scotland':
-  //       return { backgroundColor: "skyblue" };
-  //     case 'South-africa':
-  //       return { backgroundColor: "lightgreen" };
-  //     case 'Sri-lanka':
-  //       return { backgroundColor: "royalblue" };
-  //     case 'Uganda':
-  //       return { backgroundColor: "yellow" };
-  //     case 'United-states-of-america':
-  //       return { backgroundColor: "steelblue" };
-  //     case 'West-indies':
-  //       return { backgroundColor: "indianred" };
-  //     default:
-  //       return null;
-  //   }
-  // };
+  const gridOptions = {
+    overlayLoadingTemplate: CustomLoadingOverlay,
+    overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">No data available</span>'
+  };
 
-    /*
-    const handleFilter = (e) => {
-    const value = e.target.value;
-    const filtered = soldPlayers.filter((player) =>
-    player.name.toLowerCase().includes(value.toLowerCase()) ||
-    player.iplTeam.toLowerCase().includes(value.toLowerCase()) ||
-    player.role.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredPlayers(filtered);
-    };
-    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',flexDirection:'column' }}
-    */
   
-    useEffect(() => {
-      if (gridApi) {
-        if (isLoading) {
-          gridApi.showLoadingOverlay();
-        } else if (error) {
-          gridApi.showNoRowsOverlay(); // Or a custom "No Data" overlay
-        } else {
-          gridApi.hideOverlay();
-        }
+  useEffect(() => {
+    if (gridApi) {
+      if (isLoading) {
+        gridApi.showLoadingOverlay();
+      } else if (error) {
+        gridApi.showNoRowsOverlay();
+      } else if (Allplayers && Allplayers.length === 0) {
+        gridApi.showNoRowsOverlay();
+      } else {
+        gridApi.hideOverlay();
       }
-    }, [gridApi, isLoading, error]);
+    }
+  }, [gridApi, isLoading, error, Allplayers]);
 
-    const components = {
-      roleCellRenderer: RoleCellRenderer,
-      teamCellRenderer: TeamCellRenderer,
-      loadingOverlay: CustomLoadingOverlay
-    };
+  const components = {
+    roleCellRenderer: RoleCellRenderer,
+    teamCellRenderer: TeamCellRenderer,
+    //loadingOverlay: CustomLoadingOverlay
+    overlayLoadingTemplate: CustomLoadingOverlay
+  };
 
   
     return (
@@ -188,8 +133,7 @@ export const AllPlayers = () => {
                 suppressExcelExport={true}
                 animateRows={true}
                 onGridReady={onGridReady}
-                // overlayLoadingTemplate={'<span class="ag-overlay-loading-center">Loading...</span>'}
-                // overlayNoRowsTemplate={'<span class="ag-overlay-no-rows-center">No data available</span>'}
+                //overlayNoRowsTemplate='<span class="ag-overlay-no-rows-center">No data available</span>'
               />
             </div>
           </div>

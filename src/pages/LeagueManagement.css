@@ -1,0 +1,46 @@
+.leaguemgmtbody {
+    margin-top: 0;
+    padding: 140px 0 100px 0;
+    background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .leaguemgmtcontainer {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background: rgb(240, 213, 123);
+  }
+  
+  .datagrid-container {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  /* Custom styling for MUI components */
+  .MuiButton-root {
+    text-transform: none;
+    font-weight: 500;
+  }
+  
+  .MuiDataGrid-root {
+    font-family: inherit;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .leaguemgmtbody {
+      padding: 120px 0 60px 0;
+    }
+    
+    .leaguemgmtcontainer {
+      width: 95%;
+      padding: 15px;
+    }
+  }
