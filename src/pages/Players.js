@@ -113,7 +113,7 @@ useEffect(() => {
   ];
 
   const gridOptions = {
-    overlayLoadingTemplate: CustomLoadingOverlay,
+    //overlayLoadingTemplate: CustomLoadingOverlay,
     overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">No data available</span>'
   };
 
@@ -135,8 +135,7 @@ useEffect(() => {
   const components = {
     roleCellRenderer: RoleCellRenderer,
     teamCellRenderer: TeamCellRenderer,
-    //loadingOverlay: CustomLoadingOverlay
-    overlayLoadingTemplate: CustomLoadingOverlay
+    loadingOverlay: CustomLoadingOverlay
   };
 
   
@@ -164,6 +163,7 @@ useEffect(() => {
                 suppressExcelExport={true}
                 animateRows={true}
                 onGridReady={onGridReady}
+                loadingOverlayComponent="loadingOverlay"
                 //overlayNoRowsTemplate='<span class="ag-overlay-no-rows-center">No data available</span>'
               />
             </div>

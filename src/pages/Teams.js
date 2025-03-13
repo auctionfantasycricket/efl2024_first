@@ -7,8 +7,7 @@ import { Modal} from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoginSuccess } from '../components/redux/reducer/authReducer';
 import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
-
-
+import TeamCellRenderer from '../components/TeamCellRenderer';
 
 
 export default function Teams() {
@@ -140,12 +139,16 @@ export default function Teams() {
 
   const playerColumns = [
     { headerName: 'Name', field: 'name' },
-    { headerName: 'IPLTeam', field: 'iplTeam' ,width:100},
+    { headerName: 'IPLTeam', field: 'iplTeam' ,width:100, cellRenderer: 'teamCellRenderer'},
     { headerName: 'isOverseas', field: 'isOverseas',width:100},
     { headerName: 'Tier', field: 'tier',width:100,sort: "asc"},
     { headerName: 'BoughtFor', field: 'boughtfor',width:100},
     { headerName: 'Role', field: 'role',width:100},
   ];
+
+  const components = {
+    teamCellRenderer: TeamCellRenderer,
+  };
 
   return(
     <div className="teampage">
@@ -165,7 +168,8 @@ export default function Teams() {
                 <AgGridReact
                 rowData={showplayers}
                 columnDefs={playerColumns}
-                defaultColDef={defaultColDef}/>
+                defaultColDef={defaultColDef}
+                components={components}/>
               </div>
             }
           </Modal>
