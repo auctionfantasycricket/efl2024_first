@@ -39,7 +39,7 @@ const LandingPage = () => {
 
   const handleJoinLeague = async() => {
     setIsLoadingJoin(true);
-    const payload = {"email": userProfile.email,"leagueId": leagueCode};
+    const payload = {"email": userProfile?.email,"leagueId": leagueCode};
     //let response;
     try{
       const response = await fetch(baseURL+'join_league', {
@@ -66,7 +66,7 @@ const LandingPage = () => {
 
   const handleCreateLeague = async() => {
     setIsLoadingCreate(true);
-    const payload = {"useremail": userProfile.email,"league_name": leagueName,"league_type":leagueType};
+    const payload = {"useremail": userProfile?.email,"league_name": leagueName,"league_type":leagueType};
     
     try{
       const response = await fetch(baseURL+'create_league', {
@@ -94,7 +94,7 @@ const LandingPage = () => {
   useEffect(() => {
     const fetchMyLeagues = async () => {
       try {
-        const response = await fetch(`${baseURL}get_leagues_by_email?email=${userProfile.email}`);
+        const response = await fetch(`${baseURL}get_leagues_by_email?email=${userProfile?.email}`);
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
@@ -110,7 +110,7 @@ const LandingPage = () => {
     if (userProfile?.email) {
       fetchMyLeagues();
     }
-  }, [userProfile.email]);
+  }, [userProfile?.email]);
 
   const handleLeagueClick = (leagueId) => {
     dispatch(setselectedLeagueId(leagueId));
