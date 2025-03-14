@@ -474,6 +474,9 @@ export const NavBar = () => {
               <Nav.Link as={Link} to="/players" className='navbar-link'>
                 Players List
               </Nav.Link>
+              <Nav.Link as={Link} to="/teampoints" className='navbar-link'>
+                Leaderboard 2024
+              </Nav.Link>
               {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
                 Auction
               </Nav.Link>}
@@ -517,6 +520,9 @@ export const NavBar = () => {
                   </Nav.Link>
                   <Nav.Link as={Link} to="/players" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Players List
+                  </Nav.Link>
+                  <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    Leaderboard 2024
                   </Nav.Link>
                   {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
                     Auction

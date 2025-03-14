@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query';
 const baseURL = process.env.REACT_APP_BASE_URL;
 
 const getallplayerslist = async () => {
-    const response = await fetch(baseURL+'/get_data?collectionName=eflDraft_playersCentral');
+    const response = await fetch(baseURL+'/get_data?collectionName=efl_playersCentral_test');
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
@@ -19,7 +19,7 @@ const getallplayerslist = async () => {
 
 
   const getallownerslist = async () => {
-    const response = await fetch(baseURL+'/get_data?collectionName=eflDraft_ownerTeams');
+    const response = await fetch(baseURL+'/get_data?collectionName=efl_ownerTeams_test');
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
