@@ -1,11 +1,11 @@
-.teampage{
+.draftteampage{
     margin-top: 0;
     padding: 10px 0 0px 0;
     background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
     height: 100vh;
   }
 
-  .teampage .teampagecontainer{
+  .draftteampage .draftteampagecontainer{
     margin-top: 160px;
   margin-left: 10px 20px;
   margin-bottom: -160px;
@@ -18,7 +18,7 @@
   align-items: center;
   }
 
-  .teampage .teampagecontainer .ant-modal {
+  .draftteampage .draftteampagecontainer .ant-modal {
     width: 690px;
 
     /* Center the modal horizontally */

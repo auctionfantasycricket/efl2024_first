@@ -11,12 +11,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import RoleCellRenderer from '../components/RoleCellRenderer';
 import TeamCellRenderer from '../components/TeamCellRenderer';
 import DownloadIcon from '@mui/icons-material/Download';
-import { calc } from "antd/es/theme/internal";
+import CustomLoadingOverlay from "../components/CustomLoadingOverlay";
+import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
+
+
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-const fetchPlayerslist = async () => {
-    const response = await fetch(baseURL+'/get_data?collectionName=players');
+const fetchPlayerslist = async (id) => {
+    const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+id);
     if (!response.ok) {
       throw new Error('Failed to fetch data');
     }
@@ -31,14 +35,46 @@ export const AllPlayers = () => {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const userProfile = useSelector((state) => state.login.userProfile);
+  const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+  
 
   const gridRef = useRef();
 
-  //const playoffteams = ['Afghanistan','Australia','Bangladesh','England','India','South-africa','United-states-of-america','West-indies']
+  const [gridApi, setGridApi] = useState(null);
 
-  const { isLoading, error, data } = useQuery({queryKey:['players'], queryFn:fetchPlayerslist});
+  const onGridReady = useCallback((params) => {
+    setGridApi(params.api);
+  }, []);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
+    if (token) {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      dispatch(setLoginSuccess(user));
+    }
+
+    if (leagueId){
+      dispatch(setselectedLeagueId(leagueId));
+    }
+  }, [dispatch]);
+
+  const { isLoading, error, data } = useQuery({
+    queryKey:['players'], 
+    queryFn:async()=>{
+      let response;
+      try{
+        response = await fetchPlayerslist(selectedLeagueId);
+      }catch(error){
+        console.log(error)
+      }
+      return response
+    },
+    enabled: selectedLeagueId !== null,
+  }
+);
+
+useEffect(() => {
     if (data) {
       setAllPlayerslist(data);
     }
@@ -64,7 +100,7 @@ export const AllPlayers = () => {
   const columnDefs = [
     { field: "player_name", headerName: "Name", width: 250},
     { field: "ipl_team_name", headerName: "IPL Team", width: 250, cellRenderer: 'teamCellRenderer' },
-    //{ field: "status", headerName: "Status", width: 150,filter: true },
+    { field: "status", headerName: "Status", width: 150,filter: true },
     { field: "player_role", headerName: "Role", width: 200,  cellRenderer: 'roleCellRenderer' },
    //{ field: "country", headerName: "Country", width: 220,filter: true,sort:'asc'},
    { field: "tier", headerName: "Tier", width: 80},
@@ -76,73 +112,32 @@ export const AllPlayers = () => {
    { field: "rank", headerName: "Rank",sort:'asc', width: 140 },
   ];
 
-  
-  // const getRowStyle = (params) => {
-  //   const country = params.data.country;
-  //   switch (country) {
-  //     case 'Afghanistan':
-  //       return { backgroundColor: "lightsteelblue" };
-  //     case 'Australia':
-  //       return { backgroundColor: "gold" };
-  //     case 'Bangladesh':
-  //       return { backgroundColor: "forestgreen" };
-  //     case 'Canada':
-  //       return { backgroundColor: "firebrick" };
-  //     case 'England':
-  //       return { backgroundColor: "deepskyblue" };
-  //     case 'India':
-  //       return { backgroundColor: "dodgerblue" };
-  //     case 'Ireland':
-  //       return { backgroundColor: "limegreen" };
-  //     case 'Namibia':
-  //       return { backgroundColor: "cornflowerblue" };
-  //     case 'Nepal':
-  //       return { backgroundColor: "lightblue" };
-  //     case 'Netherlands':
-  //       return { backgroundColor: "orange" };
-  //     case 'New-zealand':
-  //       return { backgroundColor: "lightgrey" };
-  //     case 'Oman':
-  //       return { backgroundColor: "tomato" };
-  //     case 'Pakistan':
-  //       return { backgroundColor: "green" };
-  //     case 'Papua-new-guinea':
-  //       return { backgroundColor: "lightpink" };
-  //     case 'Scotland':
-  //       return { backgroundColor: "skyblue" };
-  //     case 'South-africa':
-  //       return { backgroundColor: "lightgreen" };
-  //     case 'Sri-lanka':
-  //       return { backgroundColor: "royalblue" };
-  //     case 'Uganda':
-  //       return { backgroundColor: "yellow" };
-  //     case 'United-states-of-america':
-  //       return { backgroundColor: "steelblue" };
-  //     case 'West-indies':
-  //       return { backgroundColor: "indianred" };
-  //     default:
-  //       return null;
-  //   }
-  // };
+  const gridOptions = {
+    //overlayLoadingTemplate: CustomLoadingOverlay,
+    overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">No data available</span>'
+  };
 
-    /*
-    const handleFilter = (e) => {
-    const value = e.target.value;
-    const filtered = soldPlayers.filter((player) =>
-    player.name.toLowerCase().includes(value.toLowerCase()) ||
-    player.iplTeam.toLowerCase().includes(value.toLowerCase()) ||
-    player.role.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredPlayers(filtered);
-    };
-    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',flexDirection:'column' }}
-    */
-
-    const components = {
-      roleCellRenderer: RoleCellRenderer,
-      teamCellRenderer: TeamCellRenderer,
-    };
   
+  useEffect(() => {
+    if (gridApi) {
+      if (isLoading) {
+        gridApi.showLoadingOverlay();
+      } else if (error) {
+        gridApi.showNoRowsOverlay();
+      } else if (Allplayers && Allplayers.length === 0) {
+        gridApi.showNoRowsOverlay();
+      } else {
+        gridApi.hideOverlay();
+      }
+    }
+  }, [gridApi, isLoading, error, Allplayers]);
+
+  const components = {
+    roleCellRenderer: RoleCellRenderer,
+    teamCellRenderer: TeamCellRenderer,
+    loadingOverlay: CustomLoadingOverlay
+  };
+
   
     return (
       <>
@@ -167,6 +162,9 @@ export const AllPlayers = () => {
                 components={components}
                 suppressExcelExport={true}
                 animateRows={true}
+                onGridReady={onGridReady}
+                loadingOverlayComponent="loadingOverlay"
+                //overlayNoRowsTemplate='<span class="ag-overlay-no-rows-center">No data available</span>'
               />
             </div>
           </div>

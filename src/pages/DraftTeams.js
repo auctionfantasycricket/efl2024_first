@@ -125,8 +125,8 @@ export default function DraftTeams() {
   ];
 
   return (
-    <div className="teampage">
-      <div className="teampagecontainer">
+    <div className="draftteampage">
+      <div className="draftteampagecontainer">
         <div className="ag-theme-alpine-dark" style={{ height: "72vh", width: "82vw" }}>
           <AgGridReact
             rowData={teamMapping}

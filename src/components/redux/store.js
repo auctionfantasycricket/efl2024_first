@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import loginReducer from './reducer/authReducer';
+import leagueReducer from './reducer/leagueReducer';
 
 const store = configureStore({
   reducer: {
-    login: loginReducer, // Add your login reducer here
+    login: loginReducer,
+    league: leagueReducer,
   },
 });
 

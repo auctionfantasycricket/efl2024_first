@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isLoggedIn: false,
   userProfile: null,
-  isAdmin: false,
+  isAdmin: false
 };
 
 export const loginSlice = createSlice({
@@ -19,7 +19,7 @@ export const loginSlice = createSlice({
       state.isLoggedIn = false;
       state.userProfile = null;
       state.isAdmin = false;
-    },
+    }
   },
 });
 

@@ -4,9 +4,12 @@ import './Auction.css'
 import PlayerCard from './PlayerCard';
 import settings from '../settings.json'
 import OwnerStats from '../components/OwnerStats'
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
-const auctionleagueid = process.env.REACT_APP_AUCTION_LEAGUE_ID;
+//const auctionleagueid = process.env.REACT_APP_AUCTION_LEAGUE_ID;
 
 export const Auction = () => {
 
@@ -14,6 +17,10 @@ export const Auction = () => {
     const [bidder, setBidder] = useState('');
     const [amount, setAmount] = useState(20);
     const [disableMap, setDisableMap] = useState({})
+    const dispatch = useDispatch();
+
+    const auctionleagueid = useSelector((state) => state.league.selectedLeagueId);
+
 
     const buttonTexts = settings.setup.teamNames;
 
@@ -46,6 +53,22 @@ export const Auction = () => {
     const [editing, setEditing] = useState(false);
     const [timer, setTimer] = useState(10)
     const timerId = useRef()
+
+
+    //const navigate = useNavigate()
+    
+    useEffect(() => {
+      const token = localStorage.getItem('token');
+      const leagueId = localStorage.getItem('leagueId');
+      if (token) {
+        const user = JSON.parse(atob(token.split('.')[1]));
+        dispatch(setLoginSuccess(user));
+      }
+  
+      if (leagueId){
+        dispatch(setselectedLeagueId(leagueId));
+      }
+    }, [dispatch]);
 
     /*****Getting the Player code *******/
     const [requestedPlayer, setRequestedPlayerChange] = useState("");

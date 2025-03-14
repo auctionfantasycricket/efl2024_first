@@ -3,6 +3,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
 import { useNavigate } from 'react-router-dom';
 import './SignIn.css';
 
@@ -28,10 +29,8 @@ const SignIn = () => {
           });
 
           localStorage.setItem('token', backendtoken.data.token);
-          // console.log(backendtoken)
-          // console.log(backendtoken.data)
           dispatch(setLoginSuccess(res.data));
-          navigate('/players')
+          navigate('/league')
       } catch (err) {
           console.log(err)
 
@@ -42,10 +41,15 @@ const SignIn = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
+    
+    if (leagueId){
+      dispatch(setselectedLeagueId(leagueId));
+    }
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
       dispatch(setLoginSuccess(user));
-      navigate('/players');
+      navigate('/league');
     } else {
       login();
     }

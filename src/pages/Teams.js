@@ -4,7 +4,10 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { Modal} from 'antd';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoginSuccess } from '../components/redux/reducer/authReducer';
+import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
+import TeamCellRenderer from '../components/TeamCellRenderer';
 
 
 export default function Teams() {
@@ -23,12 +26,27 @@ export default function Teams() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  
+   const dispatch = useDispatch();
+
+  const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
+    if (token) {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      dispatch(setLoginSuccess(user));
+    }
+
+    if (leagueId){
+      dispatch(setselectedLeagueId(leagueId));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     async function getallsoldteamplayers(){
       try {
-        const response = await fetch(baseURL+'/get_data?collectionName=efl_playersCentral_test');
+        const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+selectedLeagueId);
         if(response.ok){
           const playerdata = await response.json();
           //console.log(playerdata)
@@ -48,7 +66,7 @@ export default function Teams() {
   useEffect(() => {
     async function getallteamspurse(){
       try {
-        const response = await fetch(baseURL+'/get_data?collectionName=efl_ownerTeams_test');
+        const response = await fetch(baseURL+'/get_data?collectionName=teams&leagueId='+selectedLeagueId);
         if(response.ok){
           const stats = await response.json();
           console.log(stats)
@@ -67,7 +85,7 @@ export default function Teams() {
     if (!acc[player.ownerTeam]) {
       acc[player.ownerTeam] = [];
     }
-    acc[player.ownerTeam].push({ name: player.player_name, iplTeam: player.ipl_team_name, role: player.player_role, country: player.country, boughtfor: player.boughtFor, tier: player.tier });
+    acc[player.ownerTeam].push({ name: player.player_name, iplTeam: player.ipl_team_name, role: player.player_role, isOverseas: player.isOverseas, boughtfor: player.boughtFor, tier: player.tier });
     return acc;
   }, {});
 
@@ -121,38 +139,43 @@ export default function Teams() {
 
   const playerColumns = [
     { headerName: 'Name', field: 'name' },
-    { headerName: 'IPLTeam', field: 'iplTeam' ,width:100},
-    { headerName: 'Country', field: 'country',width:100},
+    { headerName: 'IPLTeam', field: 'iplTeam' ,width:100, cellRenderer: 'teamCellRenderer'},
+    { headerName: 'isOverseas', field: 'isOverseas',width:100},
     { headerName: 'Tier', field: 'tier',width:100,sort: "asc"},
     { headerName: 'BoughtFor', field: 'boughtfor',width:100},
     { headerName: 'Role', field: 'role',width:100},
   ];
 
+  const components = {
+    teamCellRenderer: TeamCellRenderer,
+  };
+
   return(
     <div className="teampage">
-    <div className="teampagecontainer">
-      <div className="ag-theme-alpine-dark" style={ {height:"72vh",width:"82vw"} }>
-    <AgGridReact
-    rowData={data}
-    columnDefs={columnDefs}
-    defaultColDef={defaultColDef}
-    gridOptions={gridOptions}
-    />
-     </div>
-     <div>
-      <Modal title={teamname + " players"} style={{ top: 30, width: 700, zIndex:9999 }} open={isModalOpen} onOk={handleOk} onCancel={handleOk} cancelButtonProps={{ style: { display: 'none' } }}>
-      {
-          <div className="ag-theme-alpine" style={ {height:"72vh"} }>
+      <div className="teampagecontainer">
+        <div className="ag-theme-alpine-dark teams-main-container" >
           <AgGridReact
-          rowData={showplayers}
-          columnDefs={playerColumns}
-          defaultColDef={defaultColDef}/>
-          </div>
-        }
-      </Modal>
-     </div>
+          rowData={data}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          gridOptions={gridOptions}
+          />
+        </div>
+        <div>
+          <Modal title={teamname + " players"} style={{ top: 30, width: 700, zIndex:9999 }} open={isModalOpen} onOk={handleOk} onCancel={handleOk} cancelButtonProps={{ style: { display: 'none' } }}>
+          {
+              <div className="ag-theme-alpine teams-main-container" style={ {height:"72vh"} }>
+                <AgGridReact
+                rowData={showplayers}
+                columnDefs={playerColumns}
+                defaultColDef={defaultColDef}
+                components={components}/>
+              </div>
+            }
+          </Modal>
+        </div>
       </div>
-      </div>
+    </div>
   )
   
 }
