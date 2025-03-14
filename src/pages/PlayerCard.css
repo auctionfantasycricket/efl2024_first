@@ -12,6 +12,12 @@
     color: #1a1a1a;
     text-shadow: 2px 2px #c9c9c9;
   }
+
+  .player-name img {
+    width: 25px; /* Adjust image size as needed */
+    height: 25px; /* Adjust image size as needed */
+    vertical-align: middle; /* Align image vertically */
+  }
   
   .player-country {
     color: #b71c1c; /* Bright red color */
