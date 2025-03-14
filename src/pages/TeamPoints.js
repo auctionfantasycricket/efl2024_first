@@ -162,7 +162,7 @@ export default function TeamPoints() {
     return tcc;
   }, {});
 
-  const data = [];
+  const team_data = [];
   const teamtotalpoints = teampoints;
 
   for (const [teamName, players] of Object.entries(teamData)) {
@@ -173,7 +173,7 @@ export default function TeamPoints() {
       transferdetails: teamtotalpoints[teamName].transferdata,
       players: players,
     };
-    data.push(team);
+    team_data.push(team);
   }
   //console.log("ABC",data)
   
@@ -264,9 +264,9 @@ export default function TeamPoints() {
       <Breadcrumb className="breadcrumb" items={[{title:'Points Updated On '+timsestamps[0].pointsUpdatedAt}]}/>
       }
         {Teamsstats &&
-        <div className="ag-theme-alpine-dark" style={{ height: "70vh", width: "87vw" }}>
+        <div className="ag-theme-alpine-dark teampoints-main-container">
           <AgGridReact
-            rowData={data}
+            rowData={team_data}
             gridOptions={gridOptions}
             columnDefs={[
               { cellRenderer: (params) => params.rowIndex + 1, headerName: "#", width: 60 },
