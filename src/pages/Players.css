@@ -3,8 +3,7 @@
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  padding-top: 80px; /* Adjust based on your navbar height */
-  /*background-color: #0b0c22;*/ /* Matches your dark theme */
+  padding-top: 80px;
   background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
 }
 
@@ -42,6 +41,10 @@
 
 .download-button:hover {
   background-color: #0056b3;
+}
+
+.download-button:disabled {
+  background-color: gray;
 }
 
 /* AG Grid container */

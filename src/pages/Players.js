@@ -27,6 +27,14 @@ const fetchPlayerslist = async (id) => {
     return response.json();
   };
 
+const fetchPlayerslistwithnoid = async () => {
+  const response = await fetch(baseURL+'/get_data?collectionName=players');
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+};
+
 
 export const AllPlayers = () => {
   const [Allplayers, setAllPlayerslist] = useState([]);
@@ -59,8 +67,8 @@ export const AllPlayers = () => {
     }
   }, [dispatch]);
 
-  const { isLoading, error, data } = useQuery({
-    queryKey:['players'], 
+  const { isLoading, error, data:playerlist } = useQuery({
+    queryKey:['playerslist'], 
     queryFn:async()=>{
       let response;
       try{
@@ -74,13 +82,34 @@ export const AllPlayers = () => {
   }
 );
 
-useEffect(() => {
-    if (data) {
-      setAllPlayerslist(data);
+const { isdataLoading, listerror, data:listplayers } = useQuery({
+  queryKey:['playerslist'], 
+  queryFn:async()=>{
+    let response;
+    try{
+      response = await fetchPlayerslistwithnoid();
+    }catch(error){
+      console.log(error)
     }
-  }, [data]); 
+    return response
+  },
+  enabled: selectedLeagueId === null,
+}
+);
 
-  const onBtnExport = useCallback(() => {
+useEffect(() => {
+    if (playerlist) {
+      setAllPlayerslist(playerlist);
+    }
+  }, [playerlist]); 
+
+useEffect(() => {
+    if (listplayers) {
+      setAllPlayerslist(playerlist);
+    }
+  }, [listplayers]);
+
+const onBtnExport = useCallback(() => {
     gridRef.current.api.exportDataAsCsv();
   }, [gridRef]);
 
@@ -146,14 +175,14 @@ useEffect(() => {
         <div className="player-page">
           <div className="player-container">
             <div className="header-container">
-              <button className="download-button" onClick={onBtnExport}>
+              <button className="download-button" onClick={onBtnExport} disabled={Allplayers.length === 0}>
                 Download <DownloadIcon />
               </button>
             </div>
             <div className="ag-theme-alpine player-main-container">
               <AgGridReact
                 ref={gridRef}
-                loading={isLoading}
+                loading={isLoading || isdataLoading}
                 rowData={Allplayers}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}
