@@ -7,8 +7,17 @@ import PlayerCard from './PlayerCard';
 import OwnerStats from '../components/OwnerStats';
 import settings from '../settings.json';
 import './Auction.css';
+import { useQuery } from '@tanstack/react-query';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
+
+const fetchteamlist = async (Id) => {
+  const response = await fetch(baseURL+'/get_data?collectionName=teams&leagueId='+Id);
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+};
 
 export const Auction = () => {
   const [selectedButton, setSelectedButton] = useState(null);
@@ -28,9 +37,12 @@ export const Auction = () => {
   const [isflag, setFlag] = useState(false);
   const timerId = useRef();
   const dispatch = useDispatch();
+  const [buttonTexts, setButtonTexts] = useState([])
 
   const auctionleagueid = useSelector((state) => state.league.selectedLeagueId);
-  const buttonTexts = settings.setup.teamNames;
+  console.log(auctionleagueid)
+  console.log(buttonTexts)
+  //const buttonTexts = settings.setup.teamNames;
 
   const sample = {
     "_id": { "$oid": "63b90a44f4902c26b5359388" },
@@ -113,6 +125,7 @@ export const Auction = () => {
       if (response.ok) {
         const json = await response.json();
         setOwnersData(json);
+
         const data = json.reduce((acc, curr) => {
           acc[curr.teamName] = { maxBid: curr.maxBid, currentPurse: curr.currentPurse };
           return acc;
@@ -134,6 +147,29 @@ export const Auction = () => {
       console.error(error);
     }
   }
+
+  const { isLoading, error, data } = useQuery({
+    queryKey:['teams'], 
+    queryFn:async()=>{
+      let response;
+      try{
+        response = await fetchteamlist(auctionleagueid);
+      }catch(error){
+        console.log(error)
+      }
+      return response
+    },
+    enabled: (auctionleagueid !== null && buttonTexts.length===0),
+    }
+  );
+
+  useEffect(() => {
+    if (data) {
+      console.log(data)
+      const teamNames = data.map(team => team.teamName);
+      setButtonTexts(teamNames);
+    }
+  }, [data]); 
 
   function actionsAfterGetPlayer(json) {
     setPlayerData(json);
@@ -227,142 +263,132 @@ export const Auction = () => {
 
   return (
     <div className="auction-page">
-      <Container fluid className="main-container">
-        <Row className="header-area">
-          <Col md={8} className="player-display">
-            <div className="player-card-wrapper">
-              <PlayerCard 
-                playerName={getPlayer.player_name}
-                country={getPlayer.isOverseas ? "Foreign" : "Indian"}
-                type={getPlayer.player_role}
-                franchise={getPlayer.ipl_team_name}
-              />
-              
-              {isSold && <div className="sold-tag">SOLD</div>}
-              {isunSold && <div className="unsold-tag">UNSOLD</div>}
-            </div>
-            
-            <div className="bidding-area">
-              <div className="bid-info">
-                <div className="bid-detail">
-                  <span className="label">Current Bidder:</span>
-                  <span className="value">{bidder || "—"}</span>
-                </div>
-                
-                <div className="bid-detail">
-                  <span className="label">Bid Amount:</span>
-                  {editing ? (
-                    <input
-                      type="text"
-                      value={amount}
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      className="bid-input"
-                    />
-                  ) : (
-                    <span className="value" onDoubleClick={handleDoubleClick}>
-                      {amount} lacs
-                    </span>
-                  )}
-                </div>
-                
-                {bidder && (
-                  <>
-                    <div className="bid-detail">
-                      <span className="label">Current Purse:</span>
-                      <span className="value">{ownerToMaxBid[bidder]?.currentPurse || 0} lacs</span>
-                    </div>
-                    
-                    <div className="bid-detail">
-                      <span className="label">Max Bid:</span>
-                      <span className="value">{ownerToMaxBid[bidder]?.maxBid || 0} lacs</span>
-                    </div>
-                  </>
+      <div className="main-container">
+        {/* Top Left (Player Display) */}
+        <div className="player-display">
+          <div className="player-card-wrapper">
+            <PlayerCard 
+              playerName={getPlayer?.player_name}
+              country={getPlayer?.isOverseas ? "FOREIGN" : "INDIAN"}
+              type={getPlayer?.player_role}
+              franchise={getPlayer?.ipl_team_name}
+            />
+            {isSold && <div className="sold-tag">SOLD</div>}
+            {isunSold && <div className="unsold-tag">UNSOLD</div>}
+          </div>
+          <div className="bidding-area">
+            <div className="bid-info">
+              <div className="bid-detail">
+                <span className="label">Current Bidder:</span>
+                <span className="value">{bidder || "—"}</span>
+              </div>
+              <div className="bid-detail">
+                <span className="label">Bid Amount:</span>
+                {editing ? (
+                  <input
+                    type="text"
+                    value={amount}
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    className="bid-input"
+                  />
+                ) : (
+                  <span className="value" onDoubleClick={handleDoubleClick}>
+                    {amount} lacs
+                  </span>
                 )}
               </div>
-              
-              <div className="timer-and-actions">
-                {isflag && (
-                  <div className={`timer ${timer <= 5 ? 'timer-warning' : ''}`}>
-                    {timer}
+              {bidder && (
+                <>
+                  <div className="bid-detail">
+                    <span className="label">Current Purse:</span>
+                    <span className="value">{ownerToMaxBid[bidder]?.currentPurse || 0} lacs</span>
                   </div>
-                )}
-                
-                <div className="action-buttons">
-                  <button 
-                    className={`btn ${isSold ? 'btn-success' : 'btn-primary'}`} 
-                    onClick={() => handleSoldClick('sold', bidder, amount)} 
-                    disabled={buttonSold || !bidder}
-                  >
-                    Mark Sold
-                  </button>
-                  
-                  <button 
-                    className={`btn ${isunSold ? 'btn-secondary' : 'btn-outline-secondary'}`} 
-                    onClick={() => handleSoldClick('unsold-processed', '', 0)} 
-                    disabled={buttonunSold}
-                  >
-                    Mark Unsold
-                  </button>
+                  <div className="bid-detail">
+                    <span className="label">Max Bid:</span>
+                    <span className="value">{ownerToMaxBid[bidder]?.maxBid || 0} lacs</span>
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="timer-and-actions">
+              {isflag && (
+                <div className={`timer ${timer <= 5 ? 'timer-warning' : ''}`}>
+                  {timer}
                 </div>
+              )}
+              <div className="action-buttons">
+                <button 
+                  className={`btn ${isSold ? 'btn-success' : 'btn-primary'}`} 
+                  onClick={() => handleSoldClick('sold', bidder, amount)} 
+                  disabled={buttonSold || !bidder}
+                >
+                  Mark Sold
+                </button>
+                <button 
+                  className={`btn ${isunSold ? 'btn-secondary' : 'btn-outline-secondary'}`} 
+                  onClick={() => handleSoldClick('unsold-processed', '', 0)} 
+                  disabled={buttonunSold}
+                >
+                  Mark Unsold
+                </button>
               </div>
             </div>
-          </Col>
-          
-          <Col md={4} className="owner-stats-container">
-            {ownersData && <OwnerStats data={ownersData} />}
-          </Col>
-        </Row>
-        
-        <Row className="bidder-controls">
-          <Col md={8} className="team-buttons">
-            <div className="team-buttons-grid">
-              {buttonTexts.map((text, index) => (
-                <div 
-                  key={index} 
-                  className={`team-btn-container ${selectedButton === index ? 'selected' : ''} ${disableMap[text] ? 'disabled' : ''}`}
+          </div>
+        </div>
+
+        {/* Top Right (Owner Stats) */}
+        <div className="owner-stats-container">
+          {ownersData && <OwnerStats data={ownersData} />}
+        </div>
+
+        {/* Bottom Left (Team Buttons) */}
+        <div className="team-buttons">
+          <div className="team-buttons-grid">
+            {buttonTexts?.map((text, index) => (
+              <div 
+                key={index} 
+                className={`team-btn-container ${selectedButton === index ? 'selected' : ''} ${disableMap[text] ? 'disabled' : ''}`}
+              >
+                {selectedButton === index && (
+                  <img 
+                    src={require('../assets/images/auction_hand.png')} 
+                    alt="bidding" 
+                    className="bid-paddle"
+                  />
+                )}
+                <button 
+                  disabled={disableMap[text]} 
+                  onClick={() => {
+                    setSelectedButton(index);
+                    setBidder(text);
+                    increaseAmount(getPlayer.isOverseas);
+                    setTimer(10);
+                  }}
                 >
-                  {selectedButton === index && (
-                    <img 
-                      src={require('../assets/images/auction_hand.png')} 
-                      alt="bidding" 
-                      className="bid-paddle"
-                    />
-                  )}
-                  
-                  <button 
-                    disabled={disableMap[text]} 
-                    onClick={() => {
-                      setSelectedButton(index);
-                      setBidder(text);
-                      increaseAmount(getPlayer.isOverseas);
-                      setTimer(10);
-                    }}
-                  >
-                    {text}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </Col>
-          
-          <Col md={4} className="next-player-controls">
-            <div className="search-player">
-              <input 
-                type="text" 
-                placeholder="Search player by name..." 
-                value={requestedPlayer} 
-                onChange={handleRequestedPlayerChange}
-                className="player-search-input"
-              />
-              
-              <button className="btn btn-primary" onClick={handleClick}>
-                {requestedPlayer ? "Search Player" : "Next Player"}
-              </button>
-            </div>
-          </Col>
-        </Row>
-      </Container>
+                  {text}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom Right (Next Player Controls) */}
+        <div className="next-player-controls">
+          <div className="search-player">
+            <input 
+              type="text" 
+              placeholder="Search player by name..." 
+              value={requestedPlayer} 
+              onChange={handleRequestedPlayerChange}
+              className="player-search-input"
+            />
+            <button className="btn btn-primary" onClick={handleClick}>
+              {requestedPlayer ? "Search Player" : "Next Player"}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
