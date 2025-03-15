@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.e24204d8.css",
-    "main.js": "/static/js/main.609eb9c6.js",
+    "main.css": "/static/css/main.aa1be0dd.css",
+    "main.js": "/static/js/main.7513cd32.js",
     "static/media/waiver_results.gif": "/static/media/waiver_results.7de2e4d0985f8f00318a.gif",
     "static/media/logo-no-background.svg": "/static/media/logo-no-background.6d79aeecbcd1e125ffa9864ff90b1ddc.svg",
     "static/media/red.png": "/static/media/red.24ed3d370cfbbc8ecc10.png",
@@ -18,21 +18,30 @@
     "static/media/CentraNo2-Medium.ttf": "/static/media/CentraNo2-Medium.f94be5b326d78bb32b95.ttf",
     "static/media/CentraNo2-Book.ttf": "/static/media/CentraNo2-Book.2b143fa4b734a3584043.ttf",
     "static/media/RCB.jpg": "/static/media/RCB.4193fc59b8d71e57108a.jpg",
+    "static/media/KKR_nobck.png": "/static/media/KKR_nobck.e99ea73baadc4641c5ef.png",
     "static/media/KXIP.png": "/static/media/KXIP.68c1dd27368214a753a0.png",
+    "static/media/contact-img.svg": "/static/media/contact-img.87eac2b29352fa01abb2f9510ef6ac7e.svg",
     "static/media/auction_hand.png": "/static/media/auction_hand.5f736284011b0c5b66bf.png",
-    "static/media/contact-img.svg": "/static/media/contact-img.62aa99e0f3b968b5d1ce9eb047f34fc7.svg",
+    "static/media/RCB_bck.png": "/static/media/RCB_bck.db46d92b7d6ac1719deb.png",
+    "static/media/KXIP_nobck.png": "/static/media/KXIP_nobck.47acaebab49a817e1ffa.png",
     "static/media/LSG.jpg": "/static/media/LSG.1e12890fa3b75996f82a.jpg",
+    "static/media/srh-nobck.png": "/static/media/srh-nobck.21c3f79f92560510afca.png",
+    "static/media/csk_nobck.png": "/static/media/csk_nobck.291f5851e7701f03244d.png",
     "static/media/csk.png": "/static/media/csk.f925d88983605249d156.png",
+    "static/media/LSG_nobck.png": "/static/media/LSG_nobck.f20f486babecb85f06fd.png",
     "static/media/MI.png": "/static/media/MI.b048579f68cedc8d0625.png",
-    "static/media/nav-icon3.svg": "/static/media/nav-icon3.72cef43bc93b04f52e29f022ef720f8b.svg",
-    "static/media/nav-icon1.svg": "/static/media/nav-icon1.dff40ae802524d8fc0cbce3f312abe4f.svg",
+    "static/media/DC_nobck.png": "/static/media/DC_nobck.d88974f6323767b7f549.png",
+    "static/media/MI_nobck.png": "/static/media/MI_nobck.c07203d0e4bd763f37c5.png",
+    "static/media/rr_nobck.png": "/static/media/rr_nobck.29f580e8b2896355dc0a.png",
+    "static/media/nav-icon3.svg": "/static/media/nav-icon3.08b285abb8e118b52637efa5d65c5367.svg",
     "index.html": "/index.html",
-    "static/media/nav-icon2.svg": "/static/media/nav-icon2.a39f0e5e47e442dafcc5c9c320f19f6f.svg",
-    "main.e24204d8.css.map": "/static/css/main.e24204d8.css.map",
-    "main.609eb9c6.js.map": "/static/js/main.609eb9c6.js.map"
+    "static/media/nav-icon1.svg": "/static/media/nav-icon1.721d5414c26365f117e71d46b6641cb2.svg",
+    "static/media/nav-icon2.svg": "/static/media/nav-icon2.178f497aa17b70c42df2a1a8c926ed01.svg",
+    "main.aa1be0dd.css.map": "/static/css/main.aa1be0dd.css.map",
+    "main.7513cd32.js.map": "/static/js/main.7513cd32.js.map"
   },
   "entrypoints": [
-    "static/css/main.e24204d8.css",
-    "static/js/main.609eb9c6.js"
+    "static/css/main.aa1be0dd.css",
+    "static/js/main.7513cd32.js"
   ]
 }
