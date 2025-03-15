@@ -84,7 +84,7 @@ export default function TeamPoints() {
 
 
 
-  if (isLoadingTeams || isLoadingPlayers) return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',marginTop:'250px' }}>Loading...</div>;
+  if (isLoadingTeams || isLoadingPlayers) return <div className="teampointspage" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',marginTop:'250px' }}>Loading...</div>;
   if (errorPlayers||errorTeams) return <div>Error: {errorPlayers.message}</div>;
 
 
