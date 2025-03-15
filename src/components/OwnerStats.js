@@ -48,7 +48,7 @@ export default function OwnerStats({ data }) {
                 <TableCell sx={getCellStyle(row.ballCount, 4)}>{row.ballCount}</TableCell>
                 <TableCell sx={getCellStyle(row.arCount, 2)}>{row.arCount}</TableCell>
                 <TableCell sx={getCellStyle(row.fCount, 4)}>{row.fCount}</TableCell>
-                <TableCell sx={getCellStyle(row.totalCount, 4)}>{row.totalCount}</TableCell>
+                <TableCell sx={getCellStyle(row.totalCount, 15)}>{row.totalCount}</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>₹{row.currentPurse}</TableCell>
               </TableRow>
             ))}

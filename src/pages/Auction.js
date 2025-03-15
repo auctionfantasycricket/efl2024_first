@@ -26,7 +26,7 @@ export const Auction = () => {
   const [disableMap, setDisableMap] = useState({});
   const [requestedPlayer, setRequestedPlayerChange] = useState("");
   const [editing, setEditing] = useState(false);
-  const [timer, setTimer] = useState(10);
+  const [timer, setTimer] = useState(15);
   const [firstClick, setFirstClick] = useState(true);
   const [isSold, setIsSold] = useState(false);
   const [isunSold, setIsunSold] = useState(false);
@@ -179,7 +179,7 @@ export const Auction = () => {
     setFirstClick(true);
     setRequestedPlayerChange("");
     getOwnersData(json.country);
-    setTimer(10);
+    setTimer(15);
     setFlag(true);
     setIsSold(false);
     setIsunSold(false);
@@ -363,7 +363,7 @@ export const Auction = () => {
                     setSelectedButton(index);
                     setBidder(text);
                     increaseAmount(getPlayer.isOverseas);
-                    setTimer(10);
+                    setTimer(15);
                   }}
                 >
                   {text}
