@@ -7,7 +7,7 @@ export const Rules = () => {
   return (
     <section className='rulespage' id='rules'>
     <h1>Rules</h1>
-    <Accordion defaultActiveKey="0">
+    <Accordion>
       <Accordion.Item eventKey="0">
         <Accordion.Header>Rule #1</Accordion.Header>
         <Accordion.Body>

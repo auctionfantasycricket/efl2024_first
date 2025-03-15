@@ -13,6 +13,7 @@ const HomePage = () => {
         {/* <Carousels />
         <Rules />
         <Contactus /> */}
+        <Rules />
         <Footer />
      
     </div>
