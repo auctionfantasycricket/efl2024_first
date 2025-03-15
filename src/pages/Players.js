@@ -179,7 +179,7 @@ const onBtnExport = useCallback(() => {
                 Download <DownloadIcon />
               </button>
             </div>
-            <div className="ag-theme-alpine player-main-container">
+            <div className="ag-theme-alpine-dark player-main-container">
               <AgGridReact
                 ref={gridRef}
                 loading={isLoading || isdataLoading}
@@ -191,6 +191,7 @@ const onBtnExport = useCallback(() => {
                 components={components}
                 suppressExcelExport={true}
                 animateRows={true}
+                gridOptions={gridOptions}
                 onGridReady={onGridReady}
                 loadingOverlayComponent="loadingOverlay"
                 //overlayNoRowsTemplate='<span class="ag-overlay-no-rows-center">No data available</span>'

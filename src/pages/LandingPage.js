@@ -131,6 +131,7 @@ const LandingPage = () => {
     dispatch(setselectedLeagueId(league._id));
     localStorage.setItem('leagueId', league._id)
     dispatch(setCurrentLeague(league))
+    localStorage.setItem('currentLeague',JSON.stringify(league))
     //Navigate to league page
     navigate('/manageleague')
   };
@@ -147,12 +148,12 @@ const LandingPage = () => {
       <Container> 
         <Row>
           <Col>
-            <Card sx={{ minWidth: 275, margin: '10px' }}>
+            <Card sx={{ minWidth: 275, margin: '10px', backgroundColor: "rgba(255, 255, 255, 0.1)",borderRadius:'12px' }}>
               <CardContent>
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" color="white" component="div">
                   Join a League
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                <Typography sx={{ mb: 1.5 }} color="rgba(255, 255, 255, 0.7)">
                   Enter the league code to join an existing league.
                 </Typography>
                   <TextField 
@@ -160,11 +161,32 @@ const LandingPage = () => {
                     variant="outlined" 
                     value={leagueCode} 
                     onChange={(e) => setLeagueCode(e.target.value)} 
-                    fullWidth 
+                    fullWidth
+                    sx={{
+                      '& label': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                      },
+                      '& label.Mui-focused': {
+                        color: 'black',
+                      },
+                      input: {
+                        color: 'white', 
+                      }
+                    }}
                   />
               </CardContent>
               <CardActions>
-                <Button variant="contained" onClick={handleJoinLeague} disabled={!leagueCode || isLoadingJoin}>
+                <Button 
+                  variant="contained" 
+                  onClick={handleJoinLeague} 
+                  disabled={!leagueCode || isLoadingJoin} 
+                  sx={{
+                    borderRadius:'9px',
+                    '&.Mui-disabled': {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}>
                   {isLoadingJoin ? <CircularProgress size={24} /> : "Join League"}
                 </Button>
               </CardActions>
@@ -172,12 +194,12 @@ const LandingPage = () => {
           </Col>
 
           <Col>
-            <Card sx={{ minWidth: 275, margin: '10px' }}>
+            <Card sx={{ minWidth: 275, margin: '10px', backgroundColor: "rgba(255, 255, 255, 0.1)",borderRadius:'12px' }}>
               <CardContent>
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" color="white" component="div">
                   Create My League
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                <Typography sx={{ mb: 1.5 }} color="rgba(255, 255, 255, 0.7)">
                   Start a new league and invite your friends!
                 </Typography>
                   <>
@@ -187,7 +209,17 @@ const LandingPage = () => {
                       value={leagueName} 
                       onChange={(e) => setLeagueName(e.target.value)} 
                       fullWidth 
-                      sx={{ marginBottom: '10px' }}
+                      sx={{ marginBottom: '10px',
+                          '& label': {
+                            color: 'rgba(255, 255, 255, 0.7)',
+                          },
+                          '& label.Mui-focused': {
+                            color: 'black', // Set focused label color to lightblue
+                          },
+                          input: {
+                            color: 'white', // Set text color to white
+                          }
+                       }}
                     />
                     <TextField
                       label="Type of League"
@@ -196,6 +228,17 @@ const LandingPage = () => {
                       value={leagueType}
                       onChange={(e) => setLeagueType(e.target.value)}
                       fullWidth
+                      sx={{
+                        '& label': {
+                          color: 'rgba(255, 255, 255, 0.7)',
+                        },
+                        '& label.Mui-focused': {
+                          color: 'black', // Set focused label color to lightblue
+                        },
+                        '& .MuiSelect-select': {
+                          color: 'white',
+                        },
+                      }}
                     >
                       <MenuItem value="auction">Auction</MenuItem>
                       <MenuItem value="draft">Draft</MenuItem>
@@ -203,7 +246,16 @@ const LandingPage = () => {
                   </>
               </CardContent>
               <CardActions>
-                <Button variant="contained" onClick={handleCreateLeague} disabled={!leagueName || !leagueType || isLoadingCreate}>
+                <Button 
+                  variant="contained" 
+                  onClick={handleCreateLeague} 
+                  disabled={!leagueName || !leagueType || isLoadingCreate} 
+                  sx={{borderRadius:'9px',
+                    '&.Mui-disabled': {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}>
                 {isLoadingCreate ? <CircularProgress size={24} /> : "Create League"}
                 </Button>
               </CardActions>
@@ -211,12 +263,12 @@ const LandingPage = () => {
           </Col>
 
           <Col>
-            <Card sx={{ minWidth: 275, margin: '10px' }}>
+            <Card sx={{ minWidth: 275, margin: '10px', backgroundColor: "rgba(255, 255, 255, 0.1)",borderRadius:'12px'}}>
               <CardContent>
-                <Typography variant="h5" component="div">
+                <Typography variant="h5" color="white" component="div">
                   My Leagues
                 </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                <Typography sx={{ mb: 1.5 }} color='rgba(255, 255, 255, 0.7)'>
                   View and manage your existing leagues.
                 </Typography>
                 <CardActions>
@@ -229,7 +281,8 @@ const LandingPage = () => {
                       onClick={() => handleLeagueClick(league)}
                       sx={{ 
                         display: 'block', // Make the buttons stack vertically
-                        marginBottom: '5px' // Add some space between buttons
+                        marginBottom: '5px', // Add some space between buttons
+                        borderRadius: '9px'
                       }}
                     >
                       {league.league_name}
@@ -240,7 +293,8 @@ const LandingPage = () => {
                      onClick={() => handleManageLeagueClick(league)}
                      sx={{ 
                        display: 'block',
-                       marginBottom: '5px'
+                       marginBottom: '5px',
+                       borderRadius: '9px'
                      }}
                    >
                      Manage
@@ -253,8 +307,12 @@ const LandingPage = () => {
                     <Button 
                       variant="contained" disabled 
                       sx={{ 
-                        display: 'block', // Make the buttons stack vertically
-                        marginBottom: '5px' // Add some space between buttons
+                        display: 'block',
+                        marginBottom: '5px',
+                        '&.Mui-disabled': {
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
                       }}
                     >
                       No Leagues Found

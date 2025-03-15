@@ -3,13 +3,14 @@
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  padding-top: 90px;
+  padding-top: 110px;
   background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
 }
 
 .teampointscontainer{
   width: 60%;
-  background-color: rgba(157, 188, 201, 0.96);
+  /* background-color: rgba(157, 188, 201, 0.96); */
+  background-color:rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
@@ -27,7 +28,7 @@
     justify-content: left;
     align-items: flex-end;
     font-weight: bold;
-    color: rgb(137, 67, 202);
+    color: rgb(51, 216, 70);
     margin-bottom: -10px;
   }
 

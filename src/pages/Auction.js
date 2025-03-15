@@ -148,8 +148,8 @@ export const Auction = () => {
     }
   }
 
-  const { isLoading, error, data } = useQuery({
-    queryKey:['teams'], 
+  const { isLoading, error, data:teamnameinfo } = useQuery({
+    queryKey:['teamsnameinfo'], 
     queryFn:async()=>{
       let response;
       try{
@@ -164,12 +164,11 @@ export const Auction = () => {
   );
 
   useEffect(() => {
-    if (data) {
-      console.log(data)
-      const teamNames = data.map(team => team.teamName);
+    if (teamnameinfo) {
+      const teamNames = teamnameinfo.map(team => team.teamName);
       setButtonTexts(teamNames);
     }
-  }, [data]); 
+  }, [teamnameinfo]); 
 
   function actionsAfterGetPlayer(json) {
     setPlayerData(json);

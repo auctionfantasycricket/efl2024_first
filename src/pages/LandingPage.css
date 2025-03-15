@@ -16,12 +16,16 @@
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    background: rgb(197, 197, 177);
+    background: rgba(255, 255, 255, 0.1);
   }
   
   .landingcontainer h1 {
     text-align: center;
     margin-bottom: 20px;
+  }
+
+  .MuiSelect-icon {
+    color: rgba(255, 255, 255, 0.7) !important;
   }
   
   /* .landingcontainer .button-group {

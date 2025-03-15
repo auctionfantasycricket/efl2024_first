@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useMemo} from "react";
+import React, { useState, useEffect,useMemo, useRef,useCallback} from "react";
 import './Teams.css'
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -8,13 +8,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoginSuccess } from '../components/redux/reducer/authReducer';
 import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
 import TeamCellRenderer from '../components/TeamCellRenderer';
+import CustomLoadingOverlay from "../components/CustomLoadingOverlay";
 
 
 export default function Teams() {
   const [Playerslist, setPlayerslist] = useState([]);
   const [Teamsstats, setTeamsstats] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [iserror, setIserror] = useState(false)
 
-  const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
+  //const containerStyle = useMemo(() => ({ width: '100%', height: '100%' }), []);
 
   const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -29,6 +32,14 @@ export default function Teams() {
    const dispatch = useDispatch();
 
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+
+  const gridRef = useRef();
+
+  const [gridApi, setGridApi] = useState(null);
+
+  const onGridReady = useCallback((params) => {
+    setGridApi(params.api);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -45,18 +56,24 @@ export default function Teams() {
 
   useEffect(() => {
     async function getallsoldteamplayers(){
+      setIsLoading(true)
       try {
         const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+selectedLeagueId);
         if(response.ok){
           const playerdata = await response.json();
           //console.log(playerdata)
           setPlayerslist(playerdata.filter((item) => item.status === 'sold'));
-          console.log(Playerslist)
+          setIsLoading(false)
+          //console.log(Playerslist)
         } else {
           console.log('Error: ' + response.status + response.body);
+          setIserror(true)
+          setIsLoading(false)
         }
       } catch (error) {
         console.error(error);
+        setIserror(true)
+        setIsLoading(false)
       }
     }
     getallsoldteamplayers();
@@ -69,7 +86,7 @@ export default function Teams() {
         const response = await fetch(baseURL+'/get_data?collectionName=teams&leagueId='+selectedLeagueId);
         if(response.ok){
           const stats = await response.json();
-          console.log(stats)
+          //console.log(stats)
           setTeamsstats(stats);
         } else {
           console.log('Error: ' + response.status + response.body);
@@ -138,15 +155,31 @@ export default function Teams() {
   };
 
   const playerColumns = [
-    { headerName: 'Name', field: 'name' },
-    { headerName: 'IPLTeam', field: 'iplTeam' ,width:100, cellRenderer: 'teamCellRenderer'},
-    { headerName: 'isOverseas', field: 'isOverseas',width:100},
-    { headerName: 'Tier', field: 'tier',width:100,sort: "asc"},
+    { headerName: 'Name', field: 'name', width:150 },
+    { headerName: 'IPLTeam', field: 'iplTeam' ,width:130, cellRenderer: 'teamCellRenderer'},
     { headerName: 'BoughtFor', field: 'boughtfor',width:100},
     { headerName: 'Role', field: 'role',width:100},
+    { headerName: 'isOverseas', field: 'isOverseas',width:100},
+    { headerName: 'Tier', field: 'tier',width:100,sort: "asc"},
   ];
 
+  
+  useEffect(() => {
+    if (gridApi) {
+      if (isLoading) {
+        gridApi.showLoadingOverlay();
+      } else if (iserror) {
+        gridApi.showNoRowsOverlay();
+      } else if (Playerslist && Playerslist.length === 0) {
+        gridApi.showNoRowsOverlay();
+      } else {
+        gridApi.hideOverlay();
+      }
+    }
+  }, [gridApi, isLoading, iserror, Playerslist]);
+
   const components = {
+    loadingOverlay: CustomLoadingOverlay,
     teamCellRenderer: TeamCellRenderer,
   };
 
@@ -155,16 +188,28 @@ export default function Teams() {
       <div className="teampagecontainer">
         <div className="ag-theme-alpine-dark teams-main-container" >
           <AgGridReact
+          ref={gridRef}
+          loading={isLoading}
           rowData={data}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           gridOptions={gridOptions}
+          onGridReady={onGridReady}
+          loadingOverlayComponent="loadingOverlay"
           />
         </div>
         <div>
-          <Modal title={teamname + " players"} style={{ top: 30, width: 700, zIndex:9999 }} open={isModalOpen} onOk={handleOk} onCancel={handleOk} cancelButtonProps={{ style: { display: 'none' } }}>
+          <Modal 
+            title={teamname + " players"} 
+            style={{ top: 30, width: 700, zIndex:9999 }} 
+            open={isModalOpen} 
+            onOk={handleOk} 
+            onCancel={handleOk} 
+            cancelButtonProps={{ style: { display: 'none' } }}
+            className="custom-modal"
+          >
           {
-              <div className="ag-theme-alpine teams-main-container" style={ {height:"72vh"} }>
+              <div className="ag-theme-alpine-dark teams-main-container" style={ {height:"72vh"} }>
                 <AgGridReact
                 rowData={showplayers}
                 columnDefs={playerColumns}

@@ -15,12 +15,14 @@
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    background: rgb(240, 213, 123);
+    /* background: rgb(240, 213, 123); */
+    background-color:rgba(255, 255, 255, 0.1);
   }
   
   .datagrid-container {
     width: 100%;
     overflow-x: auto;
+    background: 'rgba(255, 255, 255, 0.1)',
   }
   
   /* Custom styling for MUI components */
@@ -29,9 +31,46 @@
     font-weight: 500;
   }
   
-  .MuiDataGrid-root {
+  .MuiDataGrid-root{
     font-family: inherit;
   }
+
+
+.MuiTablePagination-actions .MuiIconButton-root {
+  color: white !important;
+}
+
+
+.MuiTablePagination-selectLabel,
+.MuiTablePagination-select {
+  color: white !important;
+}
+
+.MuiTablePagination-selectIcon {
+  color: white !important;
+}
+
+.MuiTablePagination-displayedRows {
+  color: white !important;
+}
+
+.MuiDataGrid-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.MuiDataGrid-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 1px;
+}
+
+.MuiDataGrid-scrollbar::-webkit-scrollbar-thumb {
+  background-color: grey;
+  border-radius: 4px; 
+}
+
+.MuiDataGrid-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: dimgray;
+}
   
   /* Responsive adjustments */
   @media (max-width: 768px) {
