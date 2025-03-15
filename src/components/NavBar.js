@@ -494,7 +494,7 @@ export const NavBar = () => {
                   <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                   <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
                   {isAdmin && <NavDropdown.Item>Admin</NavDropdown.Item>}
-                  <NavDropdown.Item href="#/league" style={{background:'lightblue'}}>Select League</NavDropdown.Item>
+                  <NavDropdown.Item href="#/league" style={{background:'grey'}}>Select League</NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
                 </NavDropdown>
@@ -524,10 +524,10 @@ export const NavBar = () => {
                   <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Leaderboard 2024
                   </Nav.Link>
-                  {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
+                  {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Auction
                   </Nav.Link>}
-                  {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
+                  {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Teams
                   </Nav.Link>}
                 </Nav>
