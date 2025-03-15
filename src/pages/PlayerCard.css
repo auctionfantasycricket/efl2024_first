@@ -2,15 +2,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #fad281; /* Light blue background color */
+    background:linear-gradient(90.21deg, rgba(170, 54, 124,0.5) -5.91%, rgba(74, 47, 189,0.5) 111.58%);
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 2px 2px 5px #c9c9c9;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.5);
   }
   
   .player-name {
-    color: #1a1a1a;
-    text-shadow: 2px 2px #c9c9c9;
+    color: white;
+    text-shadow: 1px 1px black;
+    font-weight: 500;
   }
 
   .player-name img {
@@ -20,12 +22,14 @@
   }
   
   .player-country {
-    color: #b71c1c; /* Bright red color */
+    /* color: #eb0e0ec8; */
+    color: rgba(255, 255, 255, 0.7);
     font-style: italic;
+    font-weight: 600;
   }
   
   .player-type {
-    color: #33691e; /* Vibrant green color */
+    color: #33691e;
     text-transform: uppercase;
     letter-spacing: 2px;
   }
