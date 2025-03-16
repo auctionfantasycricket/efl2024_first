@@ -44,11 +44,6 @@ const LeagueManagement = () => {
     const userProfile = useSelector((state) => state.login.userProfile);
     const leagueinfo = useSelector((state) => state.league.currentLeague);
 
-    console.log(leagueId)
-    console.log(userProfile)
-    console.log(leagueinfo)
-
-
     const adminEmails = leagueinfo?.admins;
     const isAdmin = adminEmails && adminEmails.includes(userProfile?.email);
 

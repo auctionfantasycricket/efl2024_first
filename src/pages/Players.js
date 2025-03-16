@@ -41,6 +41,10 @@ export const AllPlayers = () => {
   const [filteredPlayers, setFilteredPlayers] = useState([]);
   const [soldPlayers, setSoldPlayers] = useState([]);
   const dispatch = useDispatch();
+
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [shouldUseLeagueId, setShouldUseLeagueId] = useState(false);
+
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const userProfile = useSelector((state) => state.login.userProfile);
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
@@ -64,11 +68,17 @@ export const AllPlayers = () => {
 
     if (leagueId){
       dispatch(setselectedLeagueId(leagueId));
+      setShouldUseLeagueId(true);
+    } else {
+      setShouldUseLeagueId(false);
     }
+    
+    setIsInitializing(false);
+
   }, [dispatch]);
 
-  const { isLoading, error, data:playerlist } = useQuery({
-    queryKey:['playerslist'], 
+  const leagueplayerlist = useQuery({
+    queryKey:['leaguePlayerslist', selectedLeagueId], 
     queryFn:async()=>{
       let response;
       try{
@@ -78,12 +88,12 @@ export const AllPlayers = () => {
       }
       return response
     },
-    enabled: selectedLeagueId !== null,
+    enabled: !isInitializing && shouldUseLeagueId && selectedLeagueId !== null && isLoggedIn,
   }
 );
 
-const { isdataLoading, listerror, data:listplayers } = useQuery({
-  queryKey:['playerslist'], 
+const listplayers = useQuery({
+  queryKey:['allplayerslist'], 
   queryFn:async()=>{
     let response;
     try{
@@ -93,21 +103,17 @@ const { isdataLoading, listerror, data:listplayers } = useQuery({
     }
     return response
   },
-  enabled: selectedLeagueId === null,
+  enabled: !isInitializing && !shouldUseLeagueId && isLoggedIn,
 }
 );
 
 useEffect(() => {
-    if (playerlist) {
-      setAllPlayerslist(playerlist);
-    }
-  }, [playerlist]); 
-
-useEffect(() => {
-    if (listplayers) {
-      setAllPlayerslist(playerlist);
-    }
-  }, [listplayers]);
+  if (leagueplayerlist.data) {
+    setAllPlayerslist(leagueplayerlist.data);
+  } else if (listplayers.data) {
+    setAllPlayerslist(listplayers.data);
+  }
+}, [leagueplayerlist.data, listplayers.data]);
 
 const onBtnExport = useCallback(() => {
     gridRef.current.api.exportDataAsCsv();
@@ -149,9 +155,12 @@ const onBtnExport = useCallback(() => {
   
   useEffect(() => {
     if (gridApi) {
+      const isLoading = isInitializing || leagueplayerlist.isLoading || listplayers.isLoading;
+      const hasError = leagueplayerlist.error || listplayers.error;
+
       if (isLoading) {
         gridApi.showLoadingOverlay();
-      } else if (error) {
+      } else if (hasError) {
         gridApi.showNoRowsOverlay();
       } else if (Allplayers && Allplayers.length === 0) {
         gridApi.showNoRowsOverlay();
@@ -159,7 +168,7 @@ const onBtnExport = useCallback(() => {
         gridApi.hideOverlay();
       }
     }
-  }, [gridApi, isLoading, error, Allplayers]);
+  }, [gridApi, isInitializing, Allplayers,leagueplayerlist.isLoading,leagueplayerlist.error,listplayers.isLoading,listplayers.error ]);
 
   const components = {
     roleCellRenderer: RoleCellRenderer,
@@ -182,7 +191,7 @@ const onBtnExport = useCallback(() => {
             <div className="ag-theme-alpine-dark player-main-container">
               <AgGridReact
                 ref={gridRef}
-                loading={isLoading || isdataLoading}
+                loading={isInitializing || leagueplayerlist.isLoading || listplayers.isLoading}
                 rowData={Allplayers}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}

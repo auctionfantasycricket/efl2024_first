@@ -56,6 +56,7 @@ export default function Teams() {
 
   useEffect(() => {
     async function getallsoldteamplayers(){
+      if (!selectedLeagueId) return;
       setIsLoading(true)
       try {
         const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+selectedLeagueId);
@@ -77,11 +78,12 @@ export default function Teams() {
       }
     }
     getallsoldteamplayers();
-  }, [])
+  }, [selectedLeagueId])
 
 
   useEffect(() => {
     async function getallteamspurse(){
+      if (!selectedLeagueId) return;
       try {
         const response = await fetch(baseURL+'/get_data?collectionName=teams&leagueId='+selectedLeagueId);
         if(response.ok){
@@ -96,7 +98,7 @@ export default function Teams() {
       }
     }
     getallteamspurse();
-  }, [])
+  }, [selectedLeagueId])
 
   const teamsData = Playerslist.reduce((acc, player) => {
     if (!acc[player.ownerTeam]) {

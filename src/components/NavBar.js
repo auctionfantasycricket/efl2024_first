@@ -421,6 +421,7 @@ export const NavBar = () => {
 
   const handlelogOut = () => {
     localStorage.removeItem('leagueId');
+    localStorage.removeItem('currentLeague');
     dispatch(setLogoutSuccess());
     dispatch(clearLeagueState());
     googleLogout();
@@ -540,9 +541,9 @@ export const NavBar = () => {
                     <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                     <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
                     {isAdmin && <NavDropdown.Item>Admin</NavDropdown.Item>}
-                    <NavDropdown.Item href="#/league" style={{background:'lightblue'}}>Select League</NavDropdown.Item>
+                    <NavDropdown.Item href="#/league" onClick={() => setIsMenuOpen(!isMenuOpen)} style={{background:'lightblue'}}>Select League</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={handlelogOut}>Logout</NavDropdown.Item>
+                    <NavDropdown.Item onClick={() => {setIsMenuOpen(!isMenuOpen);handlelogOut()}}>Logout</NavDropdown.Item>
                   </NavDropdown>
                 ) : (
                   <Nav.Link as={Link}>
