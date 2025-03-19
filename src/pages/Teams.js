@@ -33,6 +33,9 @@ export default function Teams() {
 
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
 
+  const leagueinfo = useSelector((state) => state.league.currentLeague);
+  const league_type = leagueinfo?.league_type
+
   const gridRef = useRef();
 
   const [gridApi, setGridApi] = useState(null);
@@ -44,6 +47,8 @@ export default function Teams() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const leagueId = localStorage.getItem('leagueId');
+    const leaguedetailsstring = localStorage.getItem('currentLeague')
+
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
       dispatch(setLoginSuccess(user));
@@ -51,6 +56,11 @@ export default function Teams() {
 
     if (leagueId){
       dispatch(setselectedLeagueId(leagueId));
+    }
+
+    if (leaguedetailsstring){
+      const leaguedetails = JSON.parse(leaguedetailsstring)
+      dispatch(setCurrentLeague(leaguedetails))
     }
   }, [dispatch]);
 
@@ -133,11 +143,21 @@ export default function Teams() {
     //filter: true,
   };
 
-  const columnDefs = [
+  const auctioncolumnDefs = () => [
     { field: "teamName", headerName: "Team", width: 200, filter: true,sort: "asc"},
     { field: "sqaudsize", headerName: "Squad Size", width: 120, filter: true },
     { field: "purse", headerName: "Remaining Purse", width: 180,filter: true },
   ];
+
+  const draftcolumnDefs =()=> [
+    { field: "teamName", headerName: "Team", width: 200, filter: true,sort: "asc"},
+    { field: "sqaudsize", headerName: "Squad Size", width: 120, filter: true },
+  ];
+
+  const teamcolumndefs = useMemo(()=>{
+      return league_type === "auction" ?
+      auctioncolumnDefs : draftcolumnDefs
+  },[league_type]);
 
   const gridOptions = {
     rowSelection: 'single', // enable single-row selection mode
@@ -156,7 +176,7 @@ export default function Teams() {
     setIsModalOpen(false);
   };
 
-  const playerColumns = [
+  const playerauctionColumns =()=> [
     { headerName: 'Name', field: 'name', width:150 },
     { headerName: 'IPLTeam', field: 'iplTeam' ,width:130, cellRenderer: 'teamCellRenderer'},
     { headerName: 'BoughtFor', field: 'boughtfor',width:100},
@@ -164,6 +184,18 @@ export default function Teams() {
     { headerName: 'isOverseas', field: 'isOverseas',width:100},
     { headerName: 'Tier', field: 'tier',width:100,sort: "asc"},
   ];
+
+  const playerdraftColumns =()=> [
+    { headerName: 'Name', field: 'name', width:150, sort:"asc"},
+    { headerName: 'IPLTeam', field: 'iplTeam' ,width:130, cellRenderer: 'teamCellRenderer'},
+    { headerName: 'Role', field: 'role',width:100},
+    { headerName: 'isOverseas', field: 'isOverseas',width:100},
+  ];
+
+  const playercolumndefs = useMemo(()=>{
+    return league_type === "auction" ?
+    playerauctionColumns : playerdraftColumns
+  },[league_type]);
 
   
   useEffect(() => {
@@ -193,7 +225,7 @@ export default function Teams() {
           ref={gridRef}
           loading={isLoading}
           rowData={data}
-          columnDefs={columnDefs}
+          columnDefs={teamcolumndefs()}
           defaultColDef={defaultColDef}
           gridOptions={gridOptions}
           onGridReady={onGridReady}
@@ -214,7 +246,7 @@ export default function Teams() {
               <div className="ag-theme-alpine-dark teams-main-container" style={ {height:"72vh"} }>
                 <AgGridReact
                 rowData={showplayers}
-                columnDefs={playerColumns}
+                columnDefs={playercolumndefs()}
                 defaultColDef={defaultColDef}
                 components={components}/>
               </div>

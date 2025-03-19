@@ -46,6 +46,7 @@ const LeagueManagement = () => {
 
     const adminEmails = leagueinfo?.admins;
     const isAdmin = adminEmails && adminEmails.includes(userProfile?.email);
+    const league_type = leagueinfo?.league_type
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -98,13 +99,14 @@ const LeagueManagement = () => {
 
     const handleAddTeam = async () => {
         setLoading(true); // Start mutation loading
+        console.log("lt",league_type)
         try {
             const response = await fetch(`${baseURL}/add_team`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ teamName: newTeamName, leagueId: leagueId }),
+                body: JSON.stringify({ teamName: newTeamName, leagueId: leagueId, leagueType: league_type }),
             });
             if (!response.ok) {
                 throw new Error('Failed to add team');
@@ -198,8 +200,6 @@ const LeagueManagement = () => {
 
     const handleCopy = (text) => {
         navigator.clipboard.writeText(text);
-        // Optional: Provide visual feedback (e.g., a snackbar or alert)
-        // console.log('Copied to clipboard:', text);
         setCopySnackbarOpen(true)
       };
 

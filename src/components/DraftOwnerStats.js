@@ -1,92 +1,77 @@
 import React from 'react'
-import DataTable from 'react-data-table-component';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material';
+import bat from '../assets/images/bat.jpg'
+import ball from '../assets/images/ball.jpg'
+import AR from '../assets/images/allrounder.jpg'
+import FlightIcon from '@mui/icons-material/Flight';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
-const teams = ['Lions Of Mirzapur', 'Lazy Lions', 'The BAAPs', 'Gajjab Gujjus', 'No Mercy Any More', 'Nani'];
+export default function DraftOwnerStats({ data }) {
+  const headers = ['Owner', 
+    <img src={bat} alt="Bat" style={{ width: '20px', height: '20px' }} />,
+    <img src={ball} alt="Ball" style={{ width: '20px', height: '20px' }} />,
+    <img src={AR} alt="AR" style={{ width: '20px', height: '20px' }} />,
+    <FlightIcon style={{ width: '20px', height: '20px' }}/>,
+    <ShoppingCartIcon style={{ width: '20px', height: '20px' }}/>];
 
-export default function DraftOwnerStats(props) {
-  const customStyles = {
-    rows: {
-      style: {
-        maxHeight: '10px',
-        fontSize: '6px',
-        border: '1px solid black',
-        maxWidth :'620px'
-      },
-    },
-    headCells: {
-      style: {
-        border: '1px solid black',
-        color: 'blue',
-        fontSize:'8px'
-      },
-    },
-    cells: {
-      style: {
-        border: '1px solid black',
-        fontSize: '10px'
-      },
-    },
+  const makeAbv = (string) => string.split(' ').map(word => word[0].toUpperCase()).join('');
+
+  const getCellStyle = (value, threshold) => ({
+    backgroundColor: value >= threshold ? 'lightgreen' : 'transparent',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  });
+
+  const foreigngetCellStyle = (value, minimum, threshold) => {
+    if (value < minimum) {
+      return {
+        backgroundColor: 'transparent',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    } else if (value >= minimum && value < threshold) {
+      return {
+        backgroundColor: 'lightgreen',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    } else {
+      return {
+        backgroundColor: '#FF435A',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    }
   };
 
-  function makeAbv(string) {
-    const words = string.split(' ');
-    return words.map(word => word[0].toUpperCase());
-  }
-
-  const columns = [
-    {
-      name: 'Owner',
-      selector: row => row.teamName,
-      width:'60px',
-      cell: row => <div style={{fontWeight: 'bold'}}>{makeAbv(row.teamName)}</div>,
-    },
-    {
-      name: 'Bat(4)',
-      selector: row=> row.batCount,
-      width:'60px',
-      cell: row => <div style={{ backgroundColor: row.batCount >= 4 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
-      height: '50%' }}>{row.batCount}</div>,
-    },
-    {
-      name: 'Bowl(4)',
-      selector: row=> row.ballCount,
-      width:'60px',
-      cell: row => <div style={{ backgroundColor: row.ballCount >= 4 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
-      height: '50%' }}>{row.ballCount}</div>,
-    },
-    {
-      name: 'WK(1)',
-      selector: row=> row.wkCount,
-      width:'60px',
-      cell: row => <div style={{ backgroundColor: row.wkCount >= 1 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
-      height: '50%' }}>{row.wkCount}</div>,
-    },
-    {
-      name: 'AR(1)',
-      selector: row=> row.arCount,
-      width:'60px',
-      cell: row => <div style={{ backgroundColor: row.arCount >= 1 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
-      height: '50%' }}>{row.arCount}</div>,
-    },
-    {
-      name: 'AS(2)',
-      selector: row=> row.fCount,
-      width:'60px',
-      cell: row => <div style={{ backgroundColor: row.fCount >= 2 ? 'lightgreen' : 'white',textAlign:'center', padding: '4px',width: '50%',
-      height: '50%' }}>{row.fCount}</div>,
-    }
-  ];
-
   return (
-    <div>
-      <DataTable
-        title="Owners Stats"
-        columns={columns}
-        data={props.data}
-        customStyles={customStyles}
-        noHeader={true}
-        dense={true}
-      />
-    </div>
+    <Box sx={{ maxWidth: 900, margin: 'auto' }}>
+      <TableContainer component={Paper} elevation={3}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              {headers.map((header, index) => (
+                <TableCell key={index} sx={{ fontWeight: 'bold', textAlign: 'center', backgroundColor: '#f4f4f4' }}>
+                  {header}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {data.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell sx={{ fontWeight: 'bold' }}>{makeAbv(row.teamName)}</TableCell>
+                <TableCell sx={getCellStyle(row.batCount, 2)}>{row.batCount}</TableCell>
+                <TableCell sx={getCellStyle(row.ballCount, 2)}>{row.ballCount}</TableCell>
+                <TableCell sx={getCellStyle(row.arCount, 2)}>{row.arCount}</TableCell>
+                <TableCell sx={foreigngetCellStyle(row.fCount, 1, 3)}>{row.fCount}</TableCell>
+                <TableCell sx={getCellStyle(row.totalCount, 8)}>{row.totalCount}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }
+

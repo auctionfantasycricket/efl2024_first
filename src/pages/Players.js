@@ -48,6 +48,8 @@ export const AllPlayers = () => {
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const userProfile = useSelector((state) => state.login.userProfile);
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+  const leagueinfo = useSelector((state) => state.league.currentLeague);
+  const league_type = leagueinfo?.league_type
   
 
   const gridRef = useRef();
@@ -61,6 +63,7 @@ export const AllPlayers = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const leagueId = localStorage.getItem('leagueId');
+    const leaguedetailsstring = localStorage.getItem('currentLeague')
     if (token) {
       const user = JSON.parse(atob(token.split('.')[1]));
       dispatch(setLoginSuccess(user));
@@ -71,6 +74,11 @@ export const AllPlayers = () => {
       setShouldUseLeagueId(true);
     } else {
       setShouldUseLeagueId(false);
+    }
+
+    if (leaguedetailsstring){
+      const leaguedetails = JSON.parse(leaguedetailsstring)
+      dispatch(setCurrentLeague(leaguedetails))
     }
     
     setIsInitializing(false);
@@ -131,21 +139,40 @@ const onBtnExport = useCallback(() => {
     resizable: true,
     filter: true
   };
-
-  const columnDefs = [
+  const auctioncolumnDefs = () => [
     { field: "player_name", headerName: "Name", width: 250},
     { field: "ipl_team_name", headerName: "IPL Team", width: 250, cellRenderer: 'teamCellRenderer' },
     { field: "status", headerName: "Status", width: 150,filter: true },
     { field: "player_role", headerName: "Role", width: 200,  cellRenderer: 'roleCellRenderer' },
-   //{ field: "country", headerName: "Country", width: 220,filter: true,sort:'asc'},
-   { field: "tier", headerName: "Tier", width: 80},
-   { field: "isOverseas", headerName: "Overseas", width: 100 },
+  //{ field: "country", headerName: "Country", width: 220,filter: true,sort:'asc'},
+  { field: "tier", headerName: "Tier", width: 80},
+  { field: "isOverseas", headerName: "Overseas", width: 100 },
     //{ field: "ownerTeam", headerName: "Owner", width: 95 },
     //{ field: "boughtFor", headerName: "BoughtFor", width: 95 },
     { field: "ipl_salary", headerName: "Salary", width: 100 },
     { field: "afc_base_salary", headerName: "EFL Base Salary", width: 180 },
-   { field: "rank", headerName: "Rank",sort:'asc', width: 140 },
+  { field: "rank", headerName: "Rank",sort:'asc', width: 140 },
   ];
+
+  const draftcolumnDefs =()=> [
+    { field: "player_name", headerName: "Name", width: 250},
+    { field: "ipl_team_name", headerName: "IPL Team", width: 250, cellRenderer: 'teamCellRenderer' },
+    { field: "status", headerName: "Status", width: 150,filter: true },
+    { field: "player_role", headerName: "Role", width: 200,  cellRenderer: 'roleCellRenderer' },
+  //{ field: "country", headerName: "Country", width: 220,filter: true,sort:'asc'},
+  //{ field: "tier", headerName: "Tier", width: 80},
+  { field: "isOverseas", headerName: "Overseas", width: 100 },
+    //{ field: "ownerTeam", headerName: "Owner", width: 95 },
+    //{ field: "boughtFor", headerName: "BoughtFor", width: 95 },
+    { field: "ipl_salary", headerName: "Salary", width: 100 },
+  // { field: "afc_base_salary", headerName: "EFL Base Salary", width: 180 },
+  { field: "rank", headerName: "Rank",sort:'asc', width: 140 },
+  ];
+
+  const datacolumndefs = useMemo(()=>{
+    return league_type === "auction" ?
+    auctioncolumnDefs : draftcolumnDefs
+  },[league_type]);
 
   const gridOptions = {
     //overlayLoadingTemplate: CustomLoadingOverlay,
@@ -193,7 +220,7 @@ const onBtnExport = useCallback(() => {
                 ref={gridRef}
                 loading={isInitializing || leagueplayerlist.isLoading || listplayers.isLoading}
                 rowData={Allplayers}
-                columnDefs={columnDefs}
+                columnDefs={datacolumndefs()}
                 defaultColDef={defaultColDef}
                 //pagination={true}
                 //paginationPageSize={50}

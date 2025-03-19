@@ -36,6 +36,17 @@
   color: white;
 }
 
+.custom-modal .anticon svg {
+  color: white;
+}
+
+/* Add hover effect */
+.custom-modal .anticon svg:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  color: white;
+}
+
 @media (max-width: 1024px) {
   .teampagecontainer {
     width: 80%; 
