@@ -481,6 +481,9 @@ export const NavBar = () => {
               {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link'>
                 Auction
               </Nav.Link>}
+              {isLoggedIn && <Nav.Link as={Link} to="/draft" className='navbar-link'>
+                Draft
+              </Nav.Link>}
               {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
                 Teams
               </Nav.Link>}
@@ -527,6 +530,9 @@ export const NavBar = () => {
                   </Nav.Link>
                   {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Auction
+                  </Nav.Link>}
+                  {isLoggedIn && <Nav.Link as={Link} to="/draft" className='navbar-link'>
+                    Draft
                   </Nav.Link>}
                   {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Teams

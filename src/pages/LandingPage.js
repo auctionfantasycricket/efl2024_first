@@ -7,6 +7,7 @@ import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } 
 import { Card, CardContent, CardActions, Button, Typography, TextField, CircularProgress, MenuItem, Modal, Box } from '@mui/material';
 import './LandingPage.css';
 import { useNavigate } from "react-router-dom";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -18,6 +19,7 @@ const LandingPage = () => {
   const [leagueType, setLeagueType] = useState('');
   const [isLoadingJoin, setIsLoadingJoin] = useState(false);
   const [isLoadingCreate, setIsLoadingCreate] = useState(false);
+  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
   const dispatch = useDispatch();
   const userProfile = useSelector((state) => state.login.userProfile);
   const league = useSelector((state) => state.league.selectedLeagueId);
@@ -123,6 +125,7 @@ const LandingPage = () => {
     dispatch(setselectedLeagueId(league._id));
     localStorage.setItem('leagueId', league._id)
     dispatch(setCurrentLeague(league))
+    localStorage.setItem('currentLeague',JSON.stringify(league))
     //Navigate to league page
     navigate('/teams')
   };
@@ -134,6 +137,28 @@ const LandingPage = () => {
     localStorage.setItem('currentLeague',JSON.stringify(league))
     //Navigate to league page
     navigate('/manageleague')
+  };
+
+  const handleDeleteLeagueClick = async(league) => {
+    setIsLoadingDelete(true);
+
+    try{
+      const response = await fetch(baseURL+'delete_league?leagueId='+league._id, {
+        method: 'DELETE',
+      });
+      if(response.ok){
+        const data = await response.json()
+        console.log(data)
+        setSuccessMessage(data.message);
+        setSuccessPopupOpen(true);
+        setRefreshLeagues((prev) => prev + 1);
+      }
+      }catch(error) {
+        console.error(error);
+        setIsLoadingDelete(false);
+    } finally {
+      setIsLoadingDelete(false);
+    };
   };
 
   const handleCloseSuccessPopup = () => {
@@ -263,7 +288,7 @@ const LandingPage = () => {
           </Col>
 
           <Col>
-            <Card sx={{ minWidth: 275, margin: '10px', backgroundColor: "rgba(255, 255, 255, 0.1)",borderRadius:'12px'}}>
+            <Card sx={{ minWidth: 400, margin: '10px', backgroundColor: "rgba(255, 255, 255, 0.1)",borderRadius:'12px'}}>
               <CardContent>
                 <Typography variant="h5" color="white" component="div">
                   My Leagues
@@ -280,16 +305,17 @@ const LandingPage = () => {
                       variant="contained" 
                       onClick={() => handleLeagueClick(league)}
                       sx={{ 
-                        display: 'block', // Make the buttons stack vertically
-                        marginBottom: '5px', // Add some space between buttons
+                        display: 'block', 
+                        marginBottom: '5px',
                         borderRadius: '9px'
                       }}
                     >
                       {league.league_name}
                     </Button>
                     {league.admins.includes(userProfile?.email) && (
+                      <>
                      <Button
-                     variant = "contained" color="error"
+                     variant = "contained" color="success"
                      onClick={() => handleManageLeagueClick(league)}
                      sx={{ 
                        display: 'block',
@@ -299,6 +325,19 @@ const LandingPage = () => {
                    >
                      Manage
                    </Button>
+                   <Button
+                    variant="contained" color="error"
+                    //startIcon={<DeleteIcon />}
+                    onClick={() => handleDeleteLeagueClick(league)}
+                     sx={{
+                        display: 'block',
+                        marginBottom: '5px',
+                        borderRadius: '9px'
+                    }}
+                  >
+                  {isLoadingDelete ? <CircularProgress size={24} /> : <DeleteIcon/>}
+                  </Button>
+                </>
                     )}
                    </div>
                   ))}

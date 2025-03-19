@@ -1,52 +1,58 @@
 .footer {
-    padding: 20px 0;
-    background-color: #121212;
-    /*
-    position: absolute;
-    bottom: 0;
-    width: 100%;*/
-    color: white;
-  }
-  
-  .footer img {
-    width: 19%;
-  }
-  .footer p {
-    font-weight: 400;
-    font-size: 14px;
-    color: #B8B8B8;
-    letter-spacing: 0.5px;
-    margin-top: 20px;
-  }
+  padding: 20px 0;
+  background-color: #121212;
+  color: white;
+}
+
+.footer-logo {
+  width: 100px; /* Adjust as needed */
+}
+
+.footer-copyright,
+.footer-contact {
+  font-weight: 400;
+  font-size: 14px;
+  color: #B8B8B8;
+  letter-spacing: 0.5px;
+  margin: 0; /* Remove default margin */
+}
+
+.h-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribute items evenly */
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0; /* Add some vertical margin */
+}
+
+.social-icon {
+  display: flex;
+  gap: 10px;
+}
+
+.social-icon img {
+  width: 30px; /* Adjust icon size as needed */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .h-footer {
-    /*line-height: 2;*/
-    display: flex;
-    align-items: center; /* Vertically center the content */
-    justify-content: space-between; /* Align items with equal space between them */
+    justify-content: center; /* Center items on smaller screens */
   }
-  /*
-  @media only screen and (max-width: 768px) {
-    .logo-xs {
-      text-align: center!important;
-      width: 26% !important;
-    }
-    .react-multiple-carousel__arrow{
-      top: 20%;
-    }
-    img.logo-nav {
-      width: 200% !important;
-    }
-   .top {
-      display: none;
-    }*/
-    /*
-    .navbar-nav {
-      background: linear-gradient(90.21deg, #a7357280 -5.91%, #492fbc80 111.58%);
-    }*/
- /* }
-  
-  @media (max-width: 480px) {
-  
-  
-  }*/
-  
+
+  .footer-item {
+    width: 100%; /* Make items full width on smaller screens */
+    justify-content: center; /* Center items horizontally */
+    flex-direction: column; /* Stack items vertically */
+    text-align: center;
+  }
+
+  .social-icon{
+      justify-content: center;
+  }
+}
