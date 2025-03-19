@@ -22,6 +22,28 @@ export default function DraftOwnerStats({ data }) {
     textAlign: 'center',
   });
 
+  const foreigngetCellStyle = (value, minimum, threshold) => {
+    if (value < minimum) {
+      return {
+        backgroundColor: 'transparent',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    } else if (value >= minimum && value < threshold) {
+      return {
+        backgroundColor: 'lightgreen',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    } else {
+      return {
+        backgroundColor: '#FF435A',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    }
+  };
+
   return (
     <Box sx={{ maxWidth: 900, margin: 'auto' }}>
       <TableContainer component={Paper} elevation={3}>
@@ -42,7 +64,7 @@ export default function DraftOwnerStats({ data }) {
                 <TableCell sx={getCellStyle(row.batCount, 2)}>{row.batCount}</TableCell>
                 <TableCell sx={getCellStyle(row.ballCount, 2)}>{row.ballCount}</TableCell>
                 <TableCell sx={getCellStyle(row.arCount, 2)}>{row.arCount}</TableCell>
-                <TableCell sx={getCellStyle(row.fCount, 3)}>{row.fCount}</TableCell>
+                <TableCell sx={foreigngetCellStyle(row.fCount, 1, 3)}>{row.fCount}</TableCell>
                 <TableCell sx={getCellStyle(row.totalCount, 8)}>{row.totalCount}</TableCell>
               </TableRow>
             ))}

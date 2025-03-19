@@ -96,7 +96,7 @@ const Snakedraft = () => {
       }
       
       const data = await response.json();
-      console.log('Draft board data:', data);
+      //console.log('Draft board data:', data);
       setOwnersData(data);
       
       // Extract team names first, then format draft board
@@ -153,14 +153,14 @@ const Snakedraft = () => {
   const handleTimerEnd = () => {
     stopTimer();
     if (selectedPlayer === null) {
-        searchRandomPlayer();
+      // searchRandomPlayer();
     }
   };
 
   const searchPlayer = async () => {
     if (!searchTerm.trim()) {
         if (selectedPlayer === null) {
-            searchRandomPlayer();
+          // searchRandomPlayer();
         }
       return;
     }
@@ -169,7 +169,20 @@ const Snakedraft = () => {
       setIsLoading(true);
       const response = await fetch(`${baseURL}/getspecificplayer?leagueId=${draftleagueid}&player_name=${searchTerm.toLowerCase()}`);
       
+      // if (!response.ok) {
+      //   throw new Error(`Player search failed with status: ${response.status}`);
+      //   //setError(response.statusText)
+      // }
+
       if (!response.ok) {
+        if (response.status === 404) {
+          const errorData = await response.json();
+          if (errorData && errorData.error === "Player not found") {
+            setError("Player not found or Player already drafted");
+            return;
+          }
+        }
+        
         throw new Error(`Player search failed with status: ${response.status}`);
       }
       
