@@ -36,7 +36,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/players" element={<AllPlayers />} />
-              // <Route path="/auction" element = {<Auction />}/>
+              {/* <Route path="/auction" element = {<Auction />}/> */}
               <Route path="/auction" element = {<NewAuction />}/>
               <Route path="/draft" element = {<SnakeDraft />}/>
               <Route path="/manageteam" element = {<ManageTeam />}/>
