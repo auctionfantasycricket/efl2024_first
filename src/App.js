@@ -8,7 +8,7 @@ import store, { persistor } from './components/redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { AllPlayers } from './pages/Players';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Auction } from './pages/Auction';
+import { NewAuction } from './pages/Auction_New';
 import { ManageTeam } from './pages/ManageTeam';
 import Teams from './pages/Teams';
 import TeamPoints from './pages/TeamPoints';
@@ -36,7 +36,8 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/players" element={<AllPlayers />} />
-              <Route path="/auction" element = {<Auction />}/>
+              // <Route path="/auction" element = {<Auction />}/>
+              <Route path="/auction" element = {<NewAuction />}/>
               <Route path="/draft" element = {<SnakeDraft />}/>
               <Route path="/manageteam" element = {<ManageTeam />}/>
               <Route path="/teams" element = {<Teams />}/>
