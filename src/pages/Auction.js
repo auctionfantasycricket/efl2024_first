@@ -60,18 +60,18 @@ export const Auction = () => {
   }
   const [getPlayer, setPlayerData] = useState(sample);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const leagueId = localStorage.getItem('leagueId');
-    if (token) {
-      const user = JSON.parse(atob(token.split('.')[1]));
-      dispatch(setLoginSuccess(user));
-    }
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   const leagueId = localStorage.getItem('leagueId');
+  //   if (token) {
+  //     const user = JSON.parse(atob(token.split('.')[1]));
+  //     dispatch(setLoginSuccess(user));
+  //   }
 
-    if (leagueId) {
-      dispatch(setselectedLeagueId(leagueId));
-    }
-  }, [dispatch]);
+  //   if (leagueId) {
+  //     dispatch(setselectedLeagueId(leagueId));
+  //   }
+  // }, [dispatch]);
 
   useEffect(() => {
     timerId.current = setInterval(() => {

@@ -31,29 +31,29 @@ export const NavBar = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const leagueId = localStorage.getItem('leagueId');
-    const leaguedetailsstring = localStorage.getItem('currentLeague');
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   const leagueId = localStorage.getItem('leagueId');
+  //   const leaguedetailsstring = localStorage.getItem('currentLeague');
 
-    if (token) {
-      const user = JSON.parse(atob(token.split('.')[1]));
-      dispatch(setLoginSuccess(user));
-    } else {
-      if(isLoggedIn){
-        handlelogOut();
-      }
-    }
+  //   if (token) {
+  //     const user = JSON.parse(atob(token.split('.')[1]));
+  //     dispatch(setLoginSuccess(user));
+  //   } else {
+  //     if(isLoggedIn){
+  //       handlelogOut();
+  //     }
+  //   }
 
-    if (leagueId){
-      dispatch(setselectedLeagueId(leagueId));
-    }
+  //   if (leagueId){
+  //     dispatch(setselectedLeagueId(leagueId));
+  //   }
 
-    if (leaguedetailsstring){
-      const leaguedetails = JSON.parse(leaguedetailsstring)
-      dispatch(setCurrentLeague(leaguedetails))
-    }
-  }, [dispatch]);
+  //   if (leaguedetailsstring){
+  //     const leaguedetails = JSON.parse(leaguedetailsstring)
+  //     dispatch(setCurrentLeague(leaguedetails))
+  //   }
+  // }, [dispatch]);
 
   useEffect(() => {
     const onScroll = () => {

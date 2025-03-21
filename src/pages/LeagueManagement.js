@@ -48,25 +48,25 @@ const LeagueManagement = () => {
     const isAdmin = adminEmails && adminEmails.includes(userProfile?.email);
     const league_type = leagueinfo?.league_type
 
-    useEffect(() => {
-        const token = localStorage.getItem('token');
-        const leaguecode = localStorage.getItem('leagueId');
-        const leaguedetailsstring = localStorage.getItem('currentLeague')
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token');
+    //     const leaguecode = localStorage.getItem('leagueId');
+    //     const leaguedetailsstring = localStorage.getItem('currentLeague')
 
 
-        if (token) {
-            const user = JSON.parse(atob(token.split('.')[1]));
-            dispatch(setLoginSuccess(user));
-        }
+    //     if (token) {
+    //         const user = JSON.parse(atob(token.split('.')[1]));
+    //         dispatch(setLoginSuccess(user));
+    //     }
     
-        if (leaguecode){
-            dispatch(setselectedLeagueId(leaguecode));
-        }
-        if (leaguedetailsstring){
-            const leaguedetails = JSON.parse(leaguedetailsstring)
-            dispatch(setCurrentLeague(leaguedetails))
-        }
-    }, [dispatch]);
+    //     if (leaguecode){
+    //         dispatch(setselectedLeagueId(leaguecode));
+    //     }
+    //     if (leaguedetailsstring){
+    //         const leaguedetails = JSON.parse(leaguedetailsstring)
+    //         dispatch(setCurrentLeague(leaguedetails))
+    //     }
+    // }, [dispatch]);
 
     useEffect(() => {
         if (leagueId) {

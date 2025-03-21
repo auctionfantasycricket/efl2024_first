@@ -44,25 +44,25 @@ export default function Teams() {
     setGridApi(params.api);
   }, []);
 
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    const leagueId = localStorage.getItem('leagueId');
-    const leaguedetailsstring = localStorage.getItem('currentLeague')
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   const leagueId = localStorage.getItem('leagueId');
+  //   const leaguedetailsstring = localStorage.getItem('currentLeague')
 
-    if (token) {
-      const user = JSON.parse(atob(token.split('.')[1]));
-      dispatch(setLoginSuccess(user));
-    }
+  //   if (token) {
+  //     const user = JSON.parse(atob(token.split('.')[1]));
+  //     dispatch(setLoginSuccess(user));
+  //   }
 
-    if (leagueId){
-      dispatch(setselectedLeagueId(leagueId));
-    }
+  //   if (leagueId){
+  //     dispatch(setselectedLeagueId(leagueId));
+  //   }
 
-    if (leaguedetailsstring){
-      const leaguedetails = JSON.parse(leaguedetailsstring)
-      dispatch(setCurrentLeague(leaguedetails))
-    }
-  }, [dispatch]);
+  //   if (leaguedetailsstring){
+  //     const leaguedetails = JSON.parse(leaguedetailsstring)
+  //     dispatch(setCurrentLeague(leaguedetails))
+  //   }
+  // }, [dispatch]);
 
   useEffect(() => {
     async function getallsoldteamplayers(){
