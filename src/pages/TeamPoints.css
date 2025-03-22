@@ -1,16 +1,15 @@
-.teampointspage{
+.teampointspage {
   display: flex;
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  padding-top: 110px;
+  padding-top: 90px;
   background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
 }
 
-.teampointscontainer{
+.teampointscontainer {
   width: 60%;
-  /* background-color: rgba(157, 188, 201, 0.96); */
-  background-color:rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
@@ -23,29 +22,84 @@
   border-radius: 8px;
 }
 
-  .teampointspage .teampointscontainer .ant-breadcrumb-link{
-    display: flex;
-    justify-content: left;
-    align-items: flex-end;
-    font-weight: bold;
-    color: rgb(51, 216, 70);
-    margin-bottom: -10px;
+.teampointspage .teampointscontainer .ant-breadcrumb-link {
+  display: flex;
+  justify-content: left;
+  align-items: flex-end;
+  font-weight: bold;
+  color: rgb(51, 216, 70);
+  margin-bottom: -10px;
+}
+
+.teampointspage .teampointscontainer .breadcrumb .breadcrumbitem {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  font-weight: bold;
+  color: red;
+}
+
+/* Custom modal styles */
+.custom-modal .ant-modal-content {
+  background-color: #333;
+  color: white;
+}
+
+.custom-modal .ant-modal-header {
+  background-color: #333;
+  border-bottom: 1px solid #555;
+}
+
+.custom-modal .ant-modal-title {
+  color: white;
+}
+
+.custom-modal .anticon svg {
+  color: white;
+}
+
+/* Add hover effect */
+.custom-modal .anticon svg:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  color: white;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 1024px) {
+  .teampointscontainer {
+    width: 80%; 
+    padding: 15px;
   }
 
-  .teampointspage .teampointscontainer .breadcrumb .breadcrumbitem{
-    display: flex;
-    justify-content:center;
-    justify-items:center;
-    font-weight: bold;
-    color: red;
+  .teampoints-main-container {
+    height: 700px; 
+  }
+}
+
+/* For mobile phones */
+@media (max-width: 768px) {
+  .teampointscontainer {
+    width: 95%; 
+    padding: 10px;
+    margin: 5px;
   }
 
-  .teampointspage .teampointscontainer .ant-modal {
-    width: 690px;
+  .teampoints-main-container {
+    height: 600px; 
+  }
 
-    /* Center the modal horizontally */
-    margin: 0 auto;
+  .teampointspage {
+    padding-top: 110px;
+  }
+}
 
-    /* Adjust the modal position */
-    top: 100px; /* Adjust the top position as needed */
+/* For very small screens */
+@media (max-width: 480px) {
+  .teampoints-main-container {
+    height: 500px;
+  }
+  .teampointspage {
+    padding-top: 110px;
+  }
 }
