@@ -6,6 +6,7 @@ import { setLoginSuccess } from '../components/redux/reducer/authReducer';
 import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof } from '../components/redux/reducer/leagueReducer';
 import { useNavigate } from 'react-router-dom';
 import './SignIn.css';
+import {jwtDecode } from 'jwt-decode';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -29,7 +30,8 @@ const SignIn = () => {
           });
 
           localStorage.setItem('token', backendtoken.data.token);
-          dispatch(setLoginSuccess(res.data));
+          //dispatch(setLoginSuccess(res.data));
+          dispatch(setLoginSuccess(jwtDecode(backendtoken.data.token)));
           navigate('/league')
       } catch (err) {
           console.log(err)

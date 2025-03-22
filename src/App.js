@@ -19,6 +19,7 @@ import DraftTeams from './pages/DraftTeams';
 import SignIn from './pages/SignIn';
 import LandingPage from './pages/LandingPage';
 import LeagueManagement from './pages/LeagueManagement'
+import TeamHub from './pages/TeamHub'
 
 const queryClient = new QueryClient();
 
@@ -36,7 +37,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/players" element={<AllPlayers />} />
-              // <Route path="/auction" element = {<Auction />}/>
+              {/* <Route path="/auction" element = {<Auction />}/> */}
               <Route path="/auction" element = {<NewAuction />}/>
               <Route path="/draft" element = {<SnakeDraft />}/>
               <Route path="/manageteam" element = {<ManageTeam />}/>
@@ -47,6 +48,7 @@ function App() {
               <Route path="/SignIn" element = {<SignIn />} />
               <Route path='/league' element={<LandingPage />} />
               <Route path="/manageleague" element = {<LeagueManagement />}/>
+              <Route path="/teamhub" element = {<TeamHub />}/>
             </Routes>
             </HashRouter>
           </PersistGate>

@@ -1,62 +1,116 @@
-.rulespage{
-    text-align: center;
-    /*height: 550px;
-    max-width: 800px;*/
-    margin: 0 auto;
-    padding: 60px 0 100px 0;
-    background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
+.rulespage {
+  text-align: center;
+  margin: 0 auto;
+  padding: 60px 0 100px 0;
+  background: linear-gradient(
+    90.21deg,
+    rgba(21, 18, 97, 0.5) -5.91%,
+    rgba(0, 34, 81, 0.5) 111.58%
+  );
 }
 
-.rulespage h1{
-    text-align: center; 
-    padding:30px;
+.rulespage h1 {
+  text-align: center;
+  padding: 30px;
 }
-  
-  .rulespage .accordion-item {
-    border: none;
-    border-radius: 10px;
-    background-color: lightgrey;
-    margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    margin: 50px;
-    /*max-width: 500px;*/
 
-  }
-  
-  .rulespage .accordion-header {
-    background-color: grey;
-    color: grey;
-    font-weight: bold;
-    padding: 15px;
-    border-radius: 10px;
-  }
-  
-  .rulespage .accordion-body {
-    padding: 20px;
-    color: #333;
+.rulespage .accordion-item {
+  border: none;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 50px;
+}
 
-  }
-  
-  .rulespage .accordion-body p {
-    margin-bottom: 0;
-  }
-  
-  .rulespage .accordion-button {
-    background-color: transparent;
-    color: white;
-    font-weight: bold;
-    border: none;
-  }
-  
-  .rulespage .accordion-button:not(.collapsed) {
-    color: #000300;
-  }
-  /*
-  .rulespage .accordion-button:not(.collapsed)::after {
-    content: '-';
-  }
-  
-  .rulespage .accordion-button.collapsed::after {
-    content: '+';
-  }*/
-  
+.rulespage .accordion-header {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.rulespage .accordion-body {
+  padding: 20px;
+  color: white;
+}
+
+.rulespage .accordion-body p {
+  margin-bottom: 0;
+}
+
+.rulespage .accordion-button {
+  background-color: transparent;
+  color: white;
+  font-weight: bold;
+  border: none;
+  padding: 15px;
+  position: relative;
+  padding-right: 30px;
+}
+
+.rulespage .accordion-button:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+/* Remove the default arrow */
+.rulespage .accordion-button::after {
+  display: none !important;
+}
+
+/* Add custom + icon when collapsed */
+.rulespage .accordion-button.collapsed::before {
+  content: '+';
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 1.5rem;
+  display: block;
+}
+
+/* Add custom - icon when expanded */
+.rulespage .accordion-button:not(.collapsed)::before {
+  content: '-';
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: white;
+  font-size: 1.5rem;
+  display: block;
+}
+
+/* Prevent bootstrap from adding blue background when expanded */
+.rulespage .accordion-button:not(.collapsed) {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Fix for button padding and appearance */
+.rulespage .accordion-header button {
+  background-color: transparent;
+  color: white;
+  font-weight: bold;
+  border: none;
+  position: relative;
+  width: 100%;
+  text-align: left;
+  box-shadow: none;
+  outline: none;
+}
+
+.rulespage .accordion-header button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Make sure the custom indicators appear in all states */
+.rulespage .accordion-button:hover::before,
+.rulespage .accordion-button:focus::before,
+.rulespage .accordion-button:active::before {
+  display: block;
+}

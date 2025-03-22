@@ -1,0 +1,325 @@
+.team-hub-container {
+  min-height: 100vh;
+  background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
+  padding: 20px 0;
+  color: #fff;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-hub-main-container {
+  background-color: rgba(25, 28, 36, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  margin-top: 60px;
+  width: 95%;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.team-hub-card {
+  background-color: rgba(45, 55, 72, 0.6) !important;
+  border-radius: 12px !important;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.team-hub-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.team-hub-subtitle {
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 5px;
+  font-size: 14px;
+}
+
+/* Card overrides for Material UI cards */
+.MuiCard-root.team-hub-card,
+.MuiCard-root.team-info-card,
+.MuiCard-root.team-members-card,
+.MuiCard-root.team-actions-card {
+  background-color: rgba(45, 55, 72, 0.6) !important;
+  color: white !important;
+}
+
+.MuiCardHeader-root .MuiCardHeader-title {
+  color: white;
+}
+
+.MuiCardContent-root {
+  padding: 6px !important; /* Reduced from 8px */
+}
+
+/* Reduced padding for team actions card header */
+.team-actions-card .MuiCardHeader-root {
+  padding: 6px 16px !important; /* Reduced from p: 1, pl: 2 */
+}
+
+/* Reduced padding for team actions card content */
+.team-actions-card .MuiCardContent-root {
+  padding: 0 6px 6px 6px !important; /* Reduced top and bottom padding */
+}
+
+/* Team view styling */
+.team-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.team-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.team-avatar-icon {
+  color: #3e63dd;
+}
+
+.team-name {
+  margin: 0;
+  color: white;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.reduced-team-name {
+  font-size: 16px !important;
+}
+
+.team-id {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+}
+
+.copy-icon-button {
+  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.7) !important;
+  padding: 2px !important;
+}
+
+.copy-icon-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white !important;
+}
+
+/* Team members in header styling */
+.header-members-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.header-member-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.header-member-icon {
+  color: #3e63dd;
+  margin-right: 2px;
+}
+
+.header-member-name {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+}
+
+.member-separator {
+  color: rgba(255, 255, 255, 0.5);
+  margin-right: 4px;
+}
+
+/* New member mini cards styling */
+.team-members-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.member-mini-card {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(35, 45, 65, 0.7);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 6px;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.member-mini-card:hover {
+  background-color: rgba(35, 45, 65, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.member-mini-card .member-avatar-icon {
+  color: #3e63dd;
+  flex-shrink: 0;
+}
+
+.member-mini-card .member-name {
+  color: white;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Team actions styling */
+.team-actions-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0; /* Reduced from 2px */
+}
+
+/* Button styles */
+.search-button {
+  background-color: #3e63dd !important;
+  color: white !important;
+  padding: 5px 10px !important;
+  border-radius: 6px !important;
+  transition: background-color 0.3s ease !important;
+  text-transform: none !important;
+  font-size: 13px !important;
+}
+
+.search-button:hover {
+  background-color: #2e53cd !important;
+}
+
+.search-button:disabled {
+  background-color: rgba(62, 99, 221, 0.4) !important;
+  color: rgba(255, 255, 255, 0.5) !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+.search-button.leave-team {
+  background-color: rgba(220, 38, 38, 0.8) !important;
+}
+
+.search-button.leave-team:hover {
+  background-color: rgba(220, 38, 38, 1) !important;
+}
+
+/* No team view styling */
+.no-team-card {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.no-team-content {
+  text-align: center;
+  padding: 20px 15px;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+}
+
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #3e63dd;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom styling for the MUI Alert inside Snackbar */
+.MuiAlert-root {
+  border-radius: 8px !important;
+}
+
+.MuiAlert-standardSuccess {
+  background-color: rgba(46, 125, 50, 0.9) !important;
+  color: white !important;
+}
+
+.MuiAlert-standardSuccess .MuiAlert-icon {
+  color: white !important;
+}
+
+.MuiAlert-standardWarning {
+  background-color: rgba(237, 108, 2, 0.9) !important;
+  color: white !important;
+}
+
+.MuiAlert-standardWarning .MuiAlert-icon {
+  color: white !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .team-hub-main-container {
+    width: 98%;
+    margin-top: 60px;
+    padding: 12px;
+  }
+  
+  .team-hub-title {
+    font-size: 18px;
+  }
+  
+  .team-actions-buttons {
+    flex-direction: column;
+  }
+  
+  .search-button {
+    width: 100%;
+  }
+  
+  .header-members-container {
+    margin-top: 4px;
+    margin-left: 0 !important;
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .team-hub-card {
+    padding: 12px;
+  }
+  
+  .team-logo {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .team-name {
+    font-size: 16px;
+  }
+  
+  .team-info {
+    width: calc(100% - 46px);
+  }
+}
