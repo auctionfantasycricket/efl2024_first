@@ -23,7 +23,7 @@ export const Footer = () => {
               <a href="/" target="_blank" rel="noreferrer"><img src={navIcon2} alt="Facebook" /></a>
               <a href="/" target="_blank" rel="noreferrer"><img src={navIcon3} alt="Instagram" /></a>
             </div>
-            <p className="footer-contact"><EmailIcon/>support@auctionfantasycricket.com</p>
+            <p className="footer-contact"><EmailIcon/>contact@auctionfantasycricket.com</p>
           </Col>
         </Row>
       </Container>
