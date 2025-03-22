@@ -146,3 +146,95 @@
 .rulespage .accordion-button:active::before {
   display: block;
 }
+
+/* Responsive styles - Large devices (desktops) */
+@media (max-width: 1200px) {
+  .rulespage .accordion-item {
+    margin: 20px 40px;
+  }
+}
+
+/* Medium devices (tablets) */
+@media (max-width: 992px) {
+  .rulespage {
+    padding: 40px 0 80px 0;
+  }
+  
+  .rulespage .accordion-item {
+    margin: 15px 30px;
+  }
+  
+  .rulespage h1 {
+    padding: 20px;
+    font-size: 1.8rem;
+  }
+}
+
+/* Small devices (landscape phones) */
+@media (max-width: 768px) {
+  .rulespage {
+    padding: 30px 0 60px 0;
+  }
+  
+  .rulespage .accordion-item {
+    margin: 15px 20px;
+  }
+  
+  .rulespage h1 {
+    padding: 15px;
+    font-size: 1.6rem;
+  }
+  
+  .rulespage .accordion-body {
+    padding: 15px;
+  }
+  
+  .rule-content {
+    padding: 5px 10px;
+  }
+}
+
+/* Extra small devices (phones) */
+@media (max-width: 576px) {
+  .rulespage {
+    padding: 20px 0 40px 0;
+  }
+  
+  .rulespage .accordion-item {
+    margin: 10px 15px;
+  }
+  
+  .rulespage h1 {
+    padding: 10px;
+    font-size: 1.4rem;
+  }
+  
+  .rulespage .accordion-header {
+    padding: 10px;
+  }
+  
+  .rulespage .accordion-button {
+    padding: 10px;
+    padding-right: 25px;
+    font-size: 0.9rem;
+  }
+  
+  .rulespage .accordion-button.collapsed::before,
+  .rulespage .accordion-button:not(.collapsed)::before {
+    font-size: 1.2rem;
+    right: 10px;
+  }
+  
+  .rulespage .accordion-body {
+    padding: 10px;
+  }
+  
+  .rule-content h4 {
+    font-size: 1.1rem;
+  }
+  
+  .rule-content p,
+  .rule-content li {
+    font-size: 0.9rem;
+  }
+}
