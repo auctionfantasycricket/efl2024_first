@@ -30,7 +30,9 @@ export const NavBar = () => {
   const isAdmin = useSelector((state) => state.login.isAdmin);
   const leagueinfo = useSelector((state) => state.league.currentLeague);
   const league_type = leagueinfo?.league_type
-  const leagueId = useSelector((state) => state.league.selectedLeagueId);
+  const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+  // Use a let variable to store the final leagueId
+  let leagueId = selectedLeagueId;
   if (leagueId === null){
     leagueId = localStorage.getItem('leagueId');
   }
@@ -137,10 +139,10 @@ export const NavBar = () => {
     setIsLoggingIn(true);
     
     const token = localStorage.getItem('token');
-    const leagueId = localStorage.getItem('leagueId');
+    const storedLeagueId = localStorage.getItem('leagueId');
     
-    if (leagueId) {
-      dispatch(setselectedLeagueId(leagueId));
+    if (storedLeagueId) {
+      dispatch(setselectedLeagueId(storedLeagueId));
     }
     
     if (token) {
