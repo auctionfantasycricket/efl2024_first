@@ -12,6 +12,7 @@
 .rulespage h1 {
   text-align: center;
   padding: 30px;
+  color: white;
 }
 
 .rulespage .accordion-item {
@@ -20,7 +21,7 @@
   background-color: rgba(255, 255, 255, 0.1);
   margin-bottom: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin: 50px;
+  margin: 20px 50px;
 }
 
 .rulespage .accordion-header {
@@ -34,12 +35,43 @@
 .rulespage .accordion-body {
   padding: 20px;
   color: white;
+  text-align: left;
 }
 
-.rulespage .accordion-body p {
-  margin-bottom: 0;
+/* New styles for formatted rule content */
+.rule-content {
+  padding: 10px 15px;
 }
 
+.rule-content h4 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: underline;
+}
+
+.rule-content p {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.rule-content ul {
+  margin-left: 20px;
+  margin-bottom: 20px;
+  list-style-type: disc;
+}
+
+.rule-content li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.rule-content strong {
+  font-weight: bold;
+}
+
+/* Rest of your existing styles */
 .rulespage .accordion-button {
   background-color: transparent;
   color: white;
