@@ -222,6 +222,9 @@ export const NavBar = () => {
               {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
                 Teams
               </Nav.Link>}
+              {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => null}>
+                Points Table
+              </Nav.Link>}
               {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => null}>
                 Team Hub
               </Nav.Link>}
@@ -271,6 +274,9 @@ export const NavBar = () => {
                   </Nav.Link>}
                   {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Teams
+                  </Nav.Link>}
+                  {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => null}>
+                    Points Table
                   </Nav.Link>}
                   {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => null}>
                     Team Hub

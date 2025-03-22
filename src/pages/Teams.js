@@ -29,7 +29,7 @@ export default function Teams() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
 

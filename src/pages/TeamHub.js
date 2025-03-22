@@ -4,6 +4,7 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Card, CardContent, CardActions, CardHeader, Button, Typography, Box, Snackbar, IconButton, Alert, TextField, CircularProgress } from '@mui/material';
 import { Users, User, Calendar, List, RotateCcw, ArrowRight } from 'lucide-react';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
+import { useNavigate } from "react-router-dom";
 import './TeamHub.css';
 
 // Constants
@@ -27,6 +28,8 @@ const TeamHub = () => {
   const userProfile = useSelector((state) => state.login.userProfile);
   const leagueinfo = useSelector((state) => state.league.currentLeague);
   const league_type = leagueinfo?.league_type
+
+  const navigate = useNavigate()
 
 
   // Fetch user's team when component mounts
@@ -127,6 +130,10 @@ const TeamHub = () => {
     }
     setErrorSnackbarOpen(false);
   };
+
+  const handleclickpointstable =() =>{
+    navigate('/teampoints')
+  }
 
   const NoTeamView = () => (
     <Box className="no-team-container">
@@ -280,7 +287,8 @@ const TeamHub = () => {
               className="search-button view-standings"
               endIcon={<List size={16} />}
               size="small"
-              disabled = {true}
+              onClick={handleclickpointstable}
+              // disabled = {true}
             >
               View Standings
             </Button>
