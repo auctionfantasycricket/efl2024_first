@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoginSuccess, setLogoutSuccess } from './redux/reducer/authReducer';
 import { setselectedLeagueId, setisLeagueadmin, setCurrentLeague, setmemberof, clearLeagueState } from '../components/redux/reducer/leagueReducer';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { jwtDecode } from 'jwt-decode';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -20,7 +21,8 @@ export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
-  const [isLoggingIn, setIsLoggingIn] = useState(false); // New state for login progress
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showTeamHub, setshowTeamHub] = useState(false)
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
@@ -28,6 +30,10 @@ export const NavBar = () => {
   const isAdmin = useSelector((state) => state.login.isAdmin);
   const leagueinfo = useSelector((state) => state.league.currentLeague);
   const league_type = leagueinfo?.league_type
+  const leagueId = useSelector((state) => state.league.selectedLeagueId);
+  if (leagueId === null){
+    leagueId = localStorage.getItem('leagueId');
+  }
 
   const navigate = useNavigate();
 
@@ -54,6 +60,14 @@ export const NavBar = () => {
   //     dispatch(setCurrentLeague(leaguedetails))
   //   }
   // }, [dispatch]);
+
+  useEffect(()=>{
+    if (leagueId === '67d4dd408786c3e1b4ee172a' || leagueId === '67da30b26a17f44a19c2241a'){
+      setshowTeamHub(true)
+    }else{
+      setshowTeamHub(false)
+    }
+  },[leagueId])
 
   useEffect(() => {
     const onScroll = () => {
@@ -101,7 +115,9 @@ export const NavBar = () => {
         });
 
         localStorage.setItem('token', backendtoken.data.token);
-        dispatch(setLoginSuccess(res.data));
+
+        //dispatch(setLoginSuccess(res.data));
+        dispatch(setLoginSuccess(jwtDecode(backendtoken.data.token)))
         navigate('/league');
       } catch (err) {
         console.log(err);
@@ -204,6 +220,9 @@ export const NavBar = () => {
               {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
                 Teams
               </Nav.Link>}
+              {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => null}>
+                Team Hub
+              </Nav.Link>}
             </Nav>
             <span className="navbar-text">
               <div className="social-icon">
@@ -251,6 +270,9 @@ export const NavBar = () => {
                   {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Teams
                   </Nav.Link>}
+                  {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => null}>
+                    Team Hub
+                  </Nav.Link>}
                 </Nav>
                 <div className="social-icon">
                   <a href="#"><img src={navIcon2} alt="" /></a>
@@ -261,7 +283,7 @@ export const NavBar = () => {
                     <NavDropdown.Item>{userProfile?.name || 'Name'}</NavDropdown.Item>
                     <NavDropdown.Item>{userProfile?.email || 'Email'}</NavDropdown.Item>
                     {isAdmin && <NavDropdown.Item>Admin</NavDropdown.Item>}
-                    <NavDropdown.Item href="#/league" onClick={() => setIsMenuOpen(!isMenuOpen)} style={{background:'lightblue'}}>Select League</NavDropdown.Item>
+                    <NavDropdown.Item href="#/league" onClick={() => setIsMenuOpen(!isMenuOpen)} style={{background:'grey'}}>Select League</NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => {setIsMenuOpen(!isMenuOpen);handlelogOut()}}>Logout</NavDropdown.Item>
                   </NavDropdown>
