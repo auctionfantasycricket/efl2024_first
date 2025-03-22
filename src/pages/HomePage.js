@@ -5,7 +5,7 @@ import {Carousels} from '../components/Carousels';
 import {Contactus} from '../components/Contactus';
 import { Rules } from '../components/Rules';
 import { Footer } from '../components/Footer';
-import { Video } from '../components/Video';
+
 
 
 const HomePage = () => {
@@ -14,8 +14,7 @@ const HomePage = () => {
         <Banner/>
         {/* <Carousels />
         <Rules />
-        <Contactus /> 
-        <Video />*/}
+        <Contactus /> */}
         <Rules />
         <Footer />
      
