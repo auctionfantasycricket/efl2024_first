@@ -40,8 +40,8 @@
   /* Responsive adjustments for smaller screens */
   @media (max-width: 768px) {
     .video-container {
-      width: 60%;
-      height: 60vh;
+      width: 80%;
+      height: 30vh;
     }
     
     h1 {
