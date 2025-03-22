@@ -288,6 +288,45 @@ export default function TeamPoints() {
               //   },
               // },
             ]}
+            getRowStyle={(params) => {
+              if (params.rowIndex === 0) {
+                // Style for 1st place
+                return {
+                  background: 'linear-gradient(45deg, #FFD700, #FF8C00)', // Gold to orange gradient
+                  color: 'black',
+                  fontWeight: 'bold', // Bold text for emphasis
+                 // boxShadow: '0 0 20px 5px rgba(255, 215, 0, 0.8)', // Strong glowing effect for 1st place
+                  //border: '5px solid #FF8C00', // Thicker border for 1st place
+                 // borderRadius: '12px', // Rounded corners for a premium look
+                 // textAlign: 'center', // Center-aligns text
+                };
+              } else if (params.rowIndex === 1) {
+                // Style for 2nd place
+                return {
+                  background: 'linear-gradient(45deg, #D1D1D1, #A8A8A8)', // A more dynamic silver gradient for 2nd place
+
+                  color: 'black',
+                  fontWeight: 'bold', // Bold text for emphasis
+                 // boxShadow: '0 0 15px 5px rgba(192, 192, 192, 0.7)', // Subtle glowing effect for 2nd place
+                  //border: '5px solid #B0B0B0', // Silver border for 2nd place
+                  //borderRadius: '10px', // Slightly rounded corners
+                  //textAlign: 'center', // Center-aligns text
+                };
+              } else if (params.rowIndex === 2) {
+                // Style for 3rd place
+                return {
+                  background: 'linear-gradient(45deg, #CD7F32, #E08E45)', // Bronze gradient for 3rd place
+                  color: 'black',
+                  fontWeight: 'bold', // Bold text for emphasis
+                 // boxShadow: '0 0 10px 5px rgba(205, 127, 50, 0.7)', // Light glowing effect for 3rd place
+                  //border: '5px solid #E08E45', // Bronze border for 3rd place
+                  //borderRadius: '8px', // Slightly rounded corners for 3rd place
+                 // textAlign: 'center', // Center-aligns text
+                };
+              }
+              return null; // Default style for other rows
+            }}
+            
           />
         </div>
         <div>
