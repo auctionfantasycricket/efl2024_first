@@ -5,6 +5,8 @@ import {Carousels} from '../components/Carousels';
 import {Contactus} from '../components/Contactus';
 import { Rules } from '../components/Rules';
 import { Footer } from '../components/Footer';
+import { Video } from '../components/Video';
+
 
 const HomePage = () => {
   return (
@@ -13,6 +15,7 @@ const HomePage = () => {
         {/* <Carousels />
         <Rules />
         <Contactus /> */}
+        <Video />
         <Rules />
         <Footer />
      
