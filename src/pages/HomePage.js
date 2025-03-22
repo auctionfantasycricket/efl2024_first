@@ -14,8 +14,8 @@ const HomePage = () => {
         <Banner/>
         {/* <Carousels />
         <Rules />
-        <Contactus /> */}
-        <Video />
+        <Contactus /> 
+        <Video />*/}
         <Rules />
         <Footer />
      
