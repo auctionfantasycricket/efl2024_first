@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Card, CardContent, CardActions, CardHeader, Button, Typography, Box, Snackbar, IconButton, Alert, TextField, CircularProgress } from '@mui/material';
+import { Card, CardContent, CardActions, CardHeader, Button, Typography, Box, Snackbar, IconButton, Alert, TextField, CircularProgress, MenuItem } from '@mui/material';
 import { Users, User, Calendar, List, RotateCcw, ArrowRight } from 'lucide-react';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { useNavigate } from "react-router-dom";
 import './TeamHub.css';
+import WaiverView from './WaiverView'
+
 
 // Constants
 const baseURL = process.env.REACT_APP_BASE_URL;
@@ -38,6 +40,7 @@ const TeamHub = () => {
       fetchUserTeam();
     }
   }, [userProfile?.userId, leagueId, refreshLeagues]);
+
   
   const fetchUserTeam = async () => {
     try {
@@ -134,6 +137,7 @@ const TeamHub = () => {
   const handleclickpointstable =() =>{
     navigate('/teampoints')
   }
+
 
   const NoTeamView = () => (
     <Box className="no-team-container">
@@ -250,13 +254,24 @@ const TeamHub = () => {
                   )}
                 </Box>
               </Box>
+              <Box className="team-actions-buttons" sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, marginTop: '5px' }}>
+                <Button 
+                variant="contained" 
+                className="search-button view-standings"
+                endIcon={<List size={16} />}
+                size="small"
+                onClick={handleclickpointstable}
+                >
+                  View Standings
+              </Button>
+              </Box>
             </Box>
           </Box>
         </CardContent>
       </Card>
       
       {/* Team Actions */}
-      <Card className="team-hub-card team-actions-card">
+      {/* <Card className="team-hub-card team-actions-card">
         <CardHeader 
           title={
             <Typography variant="subtitle1">Team Actions</Typography>
@@ -294,7 +309,7 @@ const TeamHub = () => {
             </Button>
           </Box>
         </CardContent>
-      </Card>
+      </Card> */}
       
       {/* Snackbar for copy notification */}
       <Snackbar
@@ -331,7 +346,10 @@ const TeamHub = () => {
               </Typography>
             </Box>
           ) : userTeam ? (
+            <>
             <TeamView />
+            <WaiverView leaguetype={league_type} nameofteam={userTeam?.teamName} />
+            </>
           ) : (
             <NoTeamView />
           )}

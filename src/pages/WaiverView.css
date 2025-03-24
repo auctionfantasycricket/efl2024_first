@@ -1,0 +1,261 @@
+/* Waiver View Styling */
+.waiver-view-container {
+    width: 100%;
+  }
+  
+  /* Card styling */
+  .waiver-card {
+    height: 100%;
+    background-color: rgba(38, 38, 38, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .waiver-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .team-hub-card.waiver-view-card {
+    background-color: #2c2c2c;
+    color: white;
+    border-radius: 8px;
+    margin-top: 10px;
+    border: none;
+  }
+  
+  .waiver-view-card .ant-card-head {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    min-height: 48px;
+  }
+  
+  .waiver-view-card .ant-card-head-title {
+    padding: 12px 0;
+    font-size: 1rem;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .waiver-card .ant-card-head {
+    padding: 8px 16px;
+    background-color: rgba(30, 30, 30, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+  
+  .waiver-card .ant-card-body {
+    padding: 16px;
+  }
+  
+  /* Select container and label */
+  .select-container {
+    margin-bottom: 12px;
+  }
+  
+  .select-label {
+    display: block;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
+  
+  /* Select component styling to match Material UI */
+  .custom-select {
+    width: 100%;
+  }
+  
+  .ant-select-selector {
+    background-color: transparent !important;
+    border-color: rgba(255, 255, 255, 0.23) !important;
+    border-radius: 4px !important;
+    color: white !important;
+    min-height: 40px !important;
+  }
+  
+  .ant-select:hover .ant-select-selector {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+  }
+  
+  .ant-select-focused .ant-select-selector {
+    border-color: white !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2) !important;
+  }
+  
+  .ant-select-selection-placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+  
+  .ant-select-selection-search-input {
+    color: white !important;
+  }
+  
+  .ant-select-clear {
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  .ant-select-arrow {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Dropdown styling */
+  .ant-select-dropdown {
+    background-color: #333 !important;
+    color: white !important;
+    border-radius: 4px;
+  }
+  
+  .ant-select-arrow {
+    color: white !important;
+  }
+  
+  .ant-select-item {
+    color: white !important;
+    padding: 8px 12px;
+  }
+  
+  .ant-select-item-option-active {
+    background-color: rgba(25, 118, 210, 0.15) !important;
+  }
+  
+  .ant-select-item-option-selected {
+    background-color: #1976d2 !important;
+    color: white !important;
+  }
+  
+  .custom-dropdown .ant-select-item {
+    color: white !important;
+  }
+  
+  /* Typography styling */
+  .waiver-card .ant-typography {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .waiver-card .ant-typography.ant-typography-secondary {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Calendar icon in results card */
+  .calendar-icon {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  /* Submit button styling */
+  .waiver-submit-button {
+    background-color: #1976d2 !important;
+    border-color: #1976d2 !important;
+    color: white !important;
+    text-transform: none !important;
+    font-weight: 500 !important;
+    border-radius: 4px !important;
+    padding: 6px 16px !important;
+    min-width: 120px !important;
+    transition: background-color 0.3s ease !important;
+    margin: 16px auto 8px;
+    display: block;
+    height: 32px;
+  }
+  
+  .waiver-submit-button:hover {
+    background-color: #1565c0 !important;
+    border-color: #1565c0 !important;
+  }
+  
+  .waiver-submit-button:disabled, 
+  .waiver-submit-button[disabled] {
+    background-color: rgba(25, 118, 210, 0.5) !important;
+    border-color: rgba(25, 118, 210, 0.5) !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+  }
+  
+  /* Release button styling */
+  .release-submit-button {
+    background-color: #7c4dff !important;
+    border-color: #7c4dff !important;
+  }
+  
+  .release-submit-button:hover {
+    background-color: #651fff !important;
+    border-color: #651fff !important;
+  }
+  
+  .release-submit-button:disabled,
+  .release-submit-button[disabled] {
+    background-color: rgba(124, 77, 255, 0.5) !important;
+    border-color: rgba(124, 77, 255, 0.5) !important;
+  }
+  
+  /* Spinner styling */
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+  }
+  
+  .ant-spin-dot-item {
+    background-color: #1976d2;
+  }
+  
+  .waiver-view-card .ant-spin-dot-item {
+    background-color: #1976d2;
+  }
+  
+  /* Result placeholder styling */
+  .result-placeholder {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    min-height: 150px;
+  }
+  
+  /* Result section styling */
+  .result-section {
+    margin-bottom: 16px;
+  }
+  
+  /* Player item styling */
+  .player-item {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+  }
+  
+  .player-item .anticon {
+    font-size: 14px;
+    margin-right: 4px;
+  }
+  
+  /* Make cards equal height */
+  .waiver-view-container .ant-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .waiver-view-container .ant-col {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  
+  .waiver-view-container .ant-col .waiver-card {
+    flex: 1;
+  }
+  
+  /* Transfer info card styling */
+  .transfer-info-card {
+    background-color: rgba(38, 38, 38, 0.6) !important;
+  }
+  
+  /* Responsive adjustments for waiver view */
+  @media (max-width: 768px) {
+    .waiver-view-container .ant-col-md-8 {
+      width: 100%;
+      margin-bottom: 16px;
+    }
+    
+    .waiver-card {
+      margin-bottom: 0;
+    }
+  }

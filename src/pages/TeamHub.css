@@ -1,4 +1,4 @@
-.team-hub-container {
+/* .team-hub-container {
   min-height: 100vh;
   background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
   padding: 20px 0;
@@ -19,6 +19,33 @@
   width: 95%;
   max-height: calc(100vh - 100px);
   overflow-y: auto;
+} */
+
+.team-hub-container {
+  /* Remove min-height: 100vh; - this was forcing the container to be at least viewport height */
+  background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
+  padding: 20px 0;
+  color: #fff;
+  font-family: 'Inter', 'Roboto', sans-serif;
+  display: flex;
+  align-items: flex-start; /* Changed from center to allow content to flow naturally */
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* Modify the main container to allow full content height */
+.team-hub-main-container {
+  background-color: rgba(25, 28, 36, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  margin-top: 75px;
+  margin-bottom: 40px;
+  width: 95%;
+  /* Remove max-height and overflow-y to let page handle scrolling */
+  /* max-height: calc(100vh - 100px); */
+  /* overflow-y: auto; */
 }
 
 .team-hub-card {
@@ -283,6 +310,7 @@
   .team-hub-main-container {
     width: 98%;
     margin-top: 60px;
+    margin-bottom: 30px;
     padding: 12px;
   }
   
