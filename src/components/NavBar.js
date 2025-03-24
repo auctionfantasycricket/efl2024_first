@@ -31,6 +31,11 @@ export const NavBar = () => {
   const leagueinfo = useSelector((state) => state.league.currentLeague);
   const league_type = leagueinfo?.league_type
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+
+  const leagueadminEmails = leagueinfo?.admins;
+  const isleagueAdmin = leagueadminEmails && leagueadminEmails.includes(userProfile?.email);
+
+
   // Use a let variable to store the final leagueId
   let leagueId = selectedLeagueId;
   if (leagueId === null){
@@ -213,7 +218,7 @@ export const NavBar = () => {
               <Nav.Link as={Link} to="/players" className='navbar-link'>
                 Players List
               </Nav.Link>
-              {(isAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className='navbar-link'>
+              {(isleagueAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className='navbar-link'>
                 Auction
               </Nav.Link>}
               {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className='navbar-link'>
@@ -266,7 +271,7 @@ export const NavBar = () => {
                   <Nav.Link as={Link} to="/players" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Players List
                   </Nav.Link>
-                  {isAdmin && <Nav.Link as={Link} to="/auction" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {(isleagueAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Auction
                   </Nav.Link>}
                   {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className='navbar-link'>
@@ -275,10 +280,10 @@ export const NavBar = () => {
                   {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Teams
                   </Nav.Link>}
-                  {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => null}>
+                  {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Points Table
                   </Nav.Link>}
-                  {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => null}>
+                  {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Team Hub
                   </Nav.Link>}
                 </Nav>
