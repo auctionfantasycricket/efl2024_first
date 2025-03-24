@@ -351,7 +351,7 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
             {/* Players to Drop Card */}
             <Col md={8}>
               <Card 
-                title="Players to Drop"
+                title="Players to Drop (Preference Order)"
                 className="waiver-card players-drop-card"
               >
                 {isLoading ? (
@@ -390,7 +390,8 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <ReloadOutlined />}
                       onClick={handleSubmitWaiver}
-                      disabled={isSubmitting || isLoading}
+                      // disabled={isSubmitting || isLoading}
+                      disabled = {true}
                       loading={isSubmitting}
                       className="waiver-submit-button"
                     >
@@ -467,7 +468,8 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <SwapOutlined />}
                       onClick={handleSubmitTransfer}
-                      disabled={isSubmitting || isLoading}
+                      // disabled={isSubmitting || isLoading}
+                      disabled = {true}
                       loading={isSubmitting}
                       className="waiver-submit-button release-submit-button"
                     >
