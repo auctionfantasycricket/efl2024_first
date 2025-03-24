@@ -5,9 +5,9 @@ import { Card, CardContent, CardActions, CardHeader, Button, Typography, Box, Sn
 import { Users, User, Calendar, List, RotateCcw, ArrowRight } from 'lucide-react';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import { useNavigate } from "react-router-dom";
-import { useQuery } from '@tanstack/react-query';
 import './TeamHub.css';
-import WaiverView from './WaiverView';
+import WaiverView from './WaiverView'
+
 
 // Constants
 const baseURL = process.env.REACT_APP_BASE_URL;
