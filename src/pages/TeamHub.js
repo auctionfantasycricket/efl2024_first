@@ -348,7 +348,7 @@ const TeamHub = () => {
           ) : userTeam ? (
             <>
             <TeamView />
-            <WaiverView leaguetype={league_type} nameofteam={userTeam?.teamName} />
+            <WaiverView leaguetype={league_type} teamInfo={userTeam} />
             </>
           ) : (
             <NoTeamView />

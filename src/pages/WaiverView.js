@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Select, Button, Row, Col, Typography, Spin } from 'antd';
+import { Card, Select, Button, Row, Col, Typography, Spin, message } from 'antd';
 import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined } from '@ant-design/icons';
-import { RotateCcw } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import './WaiverView.css';
+import { encryptData,decryptData } from '../components/Encryption';
+import { Alert } from 'antd';
+import Marquee from 'react-fast-marquee';
+
 
 const { Option } = Select;
 const { Title, Text } = Typography;
@@ -18,7 +21,7 @@ const getIdValue = (id) => {
   return id;
 };
 
-const fetchPlayerslist = async (id) => {
+const fetchWaiverPlayerslist = async (id) => {
   const response = await fetch(`${baseURL}/get_data?collectionName=leagueplayers&leagueId=${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch data');
@@ -26,14 +29,31 @@ const fetchPlayerslist = async (id) => {
   return response.json();
 };
 
-const WaiverView = ({ leaguetype, nameofteam }) => {
+const fetchTeamInfo = async (teamid) => {
+  const response = await fetch(`${baseURL}/getTeamById/${teamid}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch team info');
+  }
+  return response.json();
+};
+
+const WaiverView = ({ leaguetype, teamInfo }) => {
   const leagueId = useSelector((state) => state.league.selectedLeagueId);
-  const teamname = nameofteam;
-  console.log(teamname);
+  const teamname = teamInfo?.teamName;
+  const teamId = teamInfo?.teamId;
+  const userProfile = useSelector((state) => state.login.userProfile);
+  const userId = userProfile?.userId
   
   // State for player preferences and drops
   const [playerPreferences, setPlayerPreferences] = useState(['', '', '', '']);
+  const [encryptplayerPreferences, setEncryptPlayerPreferences] = useState(['', '', '', '']);
+
   const [playersToDrop, setPlayersToDrop] = useState(['', '']);
+  const [encryptplayersToDrop, setEncryptplayersToDrop] = useState(['', '']);
+
+  // User Info
+  const [lastupdatedby, setLastupdatedby] = useState('')
+  const [lastupdatedat, setLastupdatedat] = useState('')
   
   // Player data state
   const [unsoldPlayers, setUnsoldPlayers] = useState([]);
@@ -43,6 +63,7 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [waiverResults, setWaiverResults] = useState(null);
   const [transferResults, setTransferResults] = useState(null);
+
   
   // Get player list using React Query
   const { 
@@ -51,9 +72,23 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
     data: playerData 
   } = useQuery({
     queryKey: ['teamhuballplayers', leagueId],
-    queryFn: () => fetchPlayerslist(leagueId),
-    staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
-    cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+    queryFn: () => fetchWaiverPlayerslist(leagueId),
+    // staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    // cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+  });
+
+  const { 
+    isteamLoading, 
+    teamerror,
+    refetch, 
+    data: teamdetails 
+  } = useQuery({
+    queryKey: ['teamInfo', teamId],
+    queryFn: () => fetchTeamInfo(teamId),
+    enabled: teamId !== null,
+    // staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    // cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+
   });
   
   // Transform and process player data once when it's fetched
@@ -63,8 +98,10 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
       const unsold = playerData
         .filter(player => player.status !== 'sold')
         .map(player => ({
-          value: getIdValue(player._id) || player.player_name,
-          label: player.name || player.player_name
+          // value: getIdValue(player._id) || player.player_name,
+          value: player.player_name,
+          // label: player.name || player.player_name
+          label: player.player_name
         }));
       
       setUnsoldPlayers(unsold);
@@ -73,40 +110,82 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
       const myTeam = playerData
         .filter(player => player.status === 'sold' && player.ownerTeam === teamname)
         .map(player => ({
-          value: getIdValue(player._id) || player.player_name,
-          label: player.name || player.player_name
+          // value: getIdValue(player._id) || player.player_name,
+          value: player.player_name,
+          // label: player.name || player.player_name
+          label: player.player_name
         }));
       
       setTeamPlayers(myTeam);
     }
   }, [playerData, teamname]);
+
+  // Get Team Info
+  useEffect(() => {
+    if (teamdetails) {
+      handledecrypt(teamdetails.currentWaiver.in, "pref");
+      handledecrypt(teamdetails.currentWaiver.out, "drop");
+      setLastupdatedby(teamdetails.currentWaiver.lastUpdatedBy);
+      setLastupdatedat(teamdetails.currentWaiver.lastUpdatedTime);
+    };
+  }, [teamdetails, teamId]);
+
+  const handledecrypt = (val, opt) => {
+    if (opt === "pref") {
+      const newPreferences = val.map(item => decryptData(item));
+      setEncryptPlayerPreferences(val)
+      setPlayerPreferences(newPreferences);
+    } else if (opt === "drop") {
+      const newDrops = val.map(item => decryptData(item));
+      setPlayersToDrop(newDrops);
+      setEncryptplayersToDrop(val);
+    }
+  };
   
   // Handle preference selection change
   const handlePreferenceChange = (index, value) => {
     const newPreferences = [...playerPreferences];
+    const newEncryptPreferences = [...encryptplayerPreferences];
+    const encryptedprefvalue = encryptData(value);
     newPreferences[index] = value;
+    newEncryptPreferences[index] = encryptedprefvalue;
     setPlayerPreferences(newPreferences);
+    setEncryptPlayerPreferences(newEncryptPreferences);
   };
   
   // Handle clearing a preference
   const handleClearPreference = (index) => {
     const newPreferences = [...playerPreferences];
+    const newEncryptPreferences = [...encryptplayerPreferences];
     newPreferences[index] = '';
+    newEncryptPreferences[index] = '';
     setPlayerPreferences(newPreferences);
+    setEncryptPlayerPreferences(newEncryptPreferences);
   };
   
   // Handle drop selection change
   const handleDropChange = (index, value) => {
+    if (playersToDrop.includes(value)) {
+      message.error('This player is already selected for drop. Please choose a different player.');
+      return;
+    }
     const newDrops = [...playersToDrop];
+    const newEncryptedDrops = [...encryptplayersToDrop];
+    const encrypteddropvalue = encryptData(value);
     newDrops[index] = value;
+    newEncryptedDrops[index] = encrypteddropvalue;
     setPlayersToDrop(newDrops);
+    setEncryptplayersToDrop(newEncryptedDrops);
   };
   
   // Handle clearing a drop
   const handleClearDrop = (index) => {
     const newDrops = [...playersToDrop];
+    const newEncryptedDrops = [...encryptplayersToDrop];
     newDrops[index] = '';
+    newEncryptedDrops[index] = '';
     setPlayersToDrop(newDrops);
+    setEncryptplayersToDrop(newEncryptedDrops);
   };
   
   // Get filtered options for preference dropdowns
@@ -128,34 +207,37 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
   // Handle waiver submission
   const handleSubmitWaiver = async () => {
     setIsSubmitting(true);
+
+    const uniquedrops = new Set(playersToDrop)
+    if (uniquedrops.size !== playersToDrop.length){
+      message.error('You cant drop sameplayer for both picks');
+      return;
+    }
+    const payload = {  "currentWaiver": {
+      "in": encryptplayerPreferences,
+      "out": encryptplayersToDrop
+    } };
     
     try {
-      // Prepare data for submission
-      const waiverData = {
-        leagueId,
-        teamName: teamname,
-        preferences: playerPreferences.filter(p => p !== ''),
-        playersToDrop: playersToDrop.filter(p => p !== '')
-      };
-      
-      // Mock API call for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Set mock waiver results
-      setWaiverResults({
-        processedDate: new Date().toLocaleDateString(),
-        playersAdded: waiverData.preferences.map(prefId => {
-          const player = unsoldPlayers.find(p => p.value === prefId);
-          return player ? player.label : prefId;
-        }),
-        playersDropped: waiverData.playersToDrop.map(dropId => {
-          const player = teamPlayers.find(p => p.value === dropId);
-          return player ? player.label : dropId;
+    
+        fetch(`${baseURL}/updateCurrentWaiver/${userId}/${teamId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
         })
-      });
+          .then(response => response.json())
+          .then(data => {
+            message.success("Your waivers saved successfully!!The selection will be locked on Tuesday at 11:59 pm")
+            refetch();
+          })
+          .catch(error => {
+              console.error(error);
+          });
       
     } catch (error) {
-      console.error('Error submitting waiver:', error);
+      message.error('Error submitting waiver:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -164,32 +246,39 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
   // Handle transfer submission (for auction leagues)
   const handleSubmitTransfer = async () => {
     setIsSubmitting(true);
+    const uniquedrops = new Set(playersToDrop)
+    if (uniquedrops.size !== playersToDrop.length){
+      message.error('You cant drop sameplayer for both picks');
+      return;
+    }
+    const payload = {  "currentWaiver": {
+      "in": encryptplayerPreferences,
+      "out": encryptplayersToDrop
+    } };
     
     try {
-      // Prepare data for submission
-      const transferData = {
-        leagueId,
-        teamName: teamname,
-        playersToDrop: playersToDrop.filter(p => p !== '')
-      };
-      
-      // Mock API call for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Set mock transfer results
-      setTransferResults({
-        processedDate: new Date().toLocaleDateString(),
-        playersDropped: transferData.playersToDrop.map(dropId => {
-          const player = teamPlayers.find(p => p.value === dropId);
-          return player ? player.label : dropId;
+    
+        fetch(`${baseURL}/updateCurrentWaiver/${userId}/${teamId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
         })
-      });
+          .then(response => response.json())
+          .then(data => {
+            message.success("Your Players will be dropped,prepare to pick replacement.")
+            refetch();
+          })
+          .catch(error => {
+              console.error(error);
+          });
       
-    } catch (error) {
-      console.error('Error submitting transfer:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+        } catch (error) {
+          message.error('Error submitting waiver:', error);
+        } finally {
+          setIsSubmitting(false);
+        }
   };
 
   // Render waiver results section
@@ -303,6 +392,26 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
         title="Waiver Management" 
         className="team-hub-card waiver-view-card"
       >
+        <div className="waiver-alert-container">
+          <Alert
+            banner
+            type="info"
+            message={
+              <Marquee 
+                pauseOnHover 
+                gradient={false}
+                style={{ 
+                  color: 'white', 
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              >
+                Waiver submissions will be locked on Tuesday at 11:59 PM. Please make your selections carefully.
+              </Marquee>
+            }
+            className="waiver-management-alert"
+          />
+        </div>
         <div className="waiver-view-container">
           <Row gutter={[16, 16]}>
             {/* Player Preferences Card */}
@@ -390,13 +499,48 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <ReloadOutlined />}
                       onClick={handleSubmitWaiver}
-                      // disabled={isSubmitting || isLoading}
-                      disabled = {true}
+                      disabled={isSubmitting || isLoading}
+                      // disabled = {true}
                       loading={isSubmitting}
                       className="waiver-submit-button"
                     >
                       {isSubmitting ? "Submitting..." : "File Waivers"}
                     </Button>
+                    {lastupdatedby && (
+                      <div 
+                        style={{ 
+                          marginTop: 12, 
+                          textAlign: 'center', 
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                          padding: '8px 12px', 
+                          borderRadius: 6,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <Text 
+                          style={{ 
+                            color: 'rgba(255, 255, 255, 0.7)', 
+                            fontSize: '0.75rem',
+                            fontWeight: 500 
+                          }}
+                        >
+                          Last Updated By: {lastupdatedby} 
+                          {lastupdatedat && (
+                            <span 
+                              style={{ 
+                                marginLeft: 8, 
+                                color: 'rgba(255, 255, 255, 0.5)', 
+                                fontSize: '0.675rem' 
+                              }}
+                            >
+                              @ {lastupdatedat}
+                            </span>
+                          )}
+                        </Text>
+                      </div>
+                    )}
                   </div>
                 )}
               </Card>
@@ -424,6 +568,26 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
         title="Transfer Management" 
         className="team-hub-card waiver-view-card"
       >
+        <div className="waiver-alert-container">
+          <Alert
+            banner
+            type="info"
+            message={
+              <Marquee 
+                pauseOnHover 
+                gradient={false}
+                style={{ 
+                  color: 'white', 
+                  fontWeight: 500,
+                  fontSize: '0.875rem'
+                }}
+              >
+                Drop Window closing on Friday 12PM, if you wish to participate please save players to be dropped.
+              </Marquee>
+            }
+            className="waiver-management-alert"
+          />
+        </div>
         <div className="waiver-view-container">
           <Row gutter={[16, 16]}>
             {/* Players to Release Card */}
@@ -468,13 +632,48 @@ const WaiverView = ({ leaguetype, nameofteam }) => {
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <SwapOutlined />}
                       onClick={handleSubmitTransfer}
-                      // disabled={isSubmitting || isLoading}
-                      disabled = {true}
+                      disabled={isSubmitting || isLoading}
+                      //disabled = {true}
                       loading={isSubmitting}
                       className="waiver-submit-button release-submit-button"
                     >
                       {isSubmitting ? "Processing..." : "Release Players"}
                     </Button>
+                    {lastupdatedby && (
+                      <div 
+                        style={{ 
+                          marginTop: 12, 
+                          textAlign: 'center', 
+                          backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+                          padding: '8px 12px', 
+                          borderRadius: 6,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <Text 
+                          style={{ 
+                            color: 'rgba(255, 255, 255, 0.7)', 
+                            fontSize: '0.75rem',
+                            fontWeight: 500 
+                          }}
+                        >
+                          Last Updated By: {lastupdatedby} 
+                          {lastupdatedat && (
+                            <span 
+                              style={{ 
+                                marginLeft: 8, 
+                                color: 'rgba(255, 255, 255, 0.5)', 
+                                fontSize: '0.675rem' 
+                              }}
+                            >
+                              @ {lastupdatedat}
+                            </span>
+                          )}
+                        </Text>
+                      </div>
+                    )}
                   </div>
                 )}
               </Card>
