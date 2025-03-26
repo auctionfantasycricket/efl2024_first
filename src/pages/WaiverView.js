@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Select, Button, Row, Col, Typography, Spin, message } from 'antd';
-import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined } from '@ant-design/icons';
+import { Card, Select, Button, Row, Col, Typography, Spin, message, Modal } from 'antd';
+import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined, EyeOutlined  } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import './WaiverView.css';
 import { encryptData,decryptData } from '../components/Encryption';
 import { Alert } from 'antd';
 import Marquee from 'react-fast-marquee';
+import WaiverResults from './WaiverResults';
 
 
 const { Option } = Select;
@@ -77,11 +78,13 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [waiverResults, setWaiverResults] = useState(null);
+  const [waiverResults, setWaiverResults] = useState(true);
   const [transferResults, setTransferResults] = useState(null);
 
   const [waiverDeadline, setWaiverDeadline] = useState('')
   const [transferDeadline, setTransferDeadline] = useState('')
+
+  const [isWaiverResultsModalVisible, setIsWaiverResultsModalVisible] = useState(false);
 
   
   // Get player list using React Query
@@ -384,11 +387,11 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           Last Processed: {waiverResults.processedDate}
         </Text>
         
-        <div className="result-section">
+       {/* <div className="result-section">
           <Text style={{ fontWeight: 'bold', display: 'block', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.75rem' }}>
             Players Added:
           </Text>
-          {waiverResults.playersAdded && waiverResults.playersAdded.length > 0 ? (
+           {waiverResults.playersAdded && waiverResults.playersAdded.length > 0 ? (
             waiverResults.playersAdded.map((player, idx) => (
               <div key={idx} className="player-item">
                 <UserOutlined />
@@ -399,7 +402,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
             <Text style={{ color: 'rgba(255, 255, 255, 0.7)', fontStyle: 'italic' }}>
               No players added
             </Text>
-          )}
+          )} 
         </div>
         
         <div className="result-section">
@@ -418,7 +421,39 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
               No players dropped
             </Text>
           )}
-        </div>
+        </div>*/}
+
+        {true && (
+          <Button 
+            type="primary" 
+            icon={<EyeOutlined />} 
+            onClick={() => setIsWaiverResultsModalVisible(true)}
+            style={{ 
+              backgroundColor: '#1890ff', 
+              borderColor: '#1890ff',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            View Detailed Results
+          </Button>
+        )}
+
+        <Modal
+          title="Detailed Waiver Results"
+          visible={isWaiverResultsModalVisible}
+          onCancel={() => setIsWaiverResultsModalVisible(false)}
+          footer={null}
+          width="90%"
+          style={{ top: 20 }}
+          bodyStyle={{ 
+            padding: 0, 
+            backgroundColor: '#1a1a2e', 
+            borderRadius: '8px' 
+          }}
+        >
+          <WaiverResults />
+        </Modal>
       </div>
     );
   };
