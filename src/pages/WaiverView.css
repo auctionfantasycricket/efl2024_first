@@ -259,3 +259,38 @@
       margin-bottom: 0;
     }
   }
+
+  .waiver-alert-container {
+    margin-bottom: 16px;
+    width: 100%;
+  }
+  
+  .waiver-management-alert {
+    background-color: rgba(25, 118, 210, 0.1) !important;
+    border: none !important;
+    border-radius: 4px !important;
+  }
+  
+  .waiver-management-alert .ant-alert-message {
+    color: white !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Adjust Marquee text for better visibility */
+  .waiver-management-alert .ant-alert-message marquee {
+    width: 100%;
+    color: white !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .waiver-alert-container {
+      margin-bottom: 12px;
+    }
+    
+    .waiver-management-alert .ant-alert-message {
+      font-size: 0.75rem;
+    }
+  }

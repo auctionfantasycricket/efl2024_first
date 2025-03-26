@@ -63,7 +63,6 @@ const TeamHub = () => {
       
       // Check if members exist
       if (data.members && data.members.length > 0) {
-        console.log(data.members);
         setTeamMembers(data.members);
       } else {
         // Set team members empty and show error message
@@ -348,7 +347,7 @@ const TeamHub = () => {
           ) : userTeam ? (
             <>
             <TeamView />
-            <WaiverView leaguetype={league_type} nameofteam={userTeam?.teamName} />
+            <WaiverView leaguetype={league_type} teamInfo={userTeam} />
             </>
           ) : (
             <NoTeamView />

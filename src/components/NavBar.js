@@ -218,7 +218,7 @@ export const NavBar = () => {
               <Nav.Link as={Link} to="/players" className='navbar-link'>
                 Players List
               </Nav.Link>
-              {(isleagueAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className='navbar-link'>
+              {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className='navbar-link'>
                 Auction
               </Nav.Link>}
               {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className='navbar-link'>
