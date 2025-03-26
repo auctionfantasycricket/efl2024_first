@@ -37,6 +37,22 @@ const fetchTeamInfo = async (teamid) => {
   return response.json();
 };
 
+const fetchLeagueInfo = async (Id) => {
+  const response = await fetch(`${baseURL}/get_data?collectionName=leagues&leagueId=${Id}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch team info');
+  }
+  return response.json();
+};
+
+const fetchDeadlines = async () => {
+  const response = await fetch(baseURL+'/get_data?collectionName=global_data');
+  if (!response.ok) {
+    throw new Error('Failed to fetch data');
+  }
+  return response.json();
+};
+
 const WaiverView = ({ leaguetype, teamInfo }) => {
   const leagueId = useSelector((state) => state.league.selectedLeagueId);
   const teamname = teamInfo?.teamName;
@@ -64,6 +80,9 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   const [waiverResults, setWaiverResults] = useState(null);
   const [transferResults, setTransferResults] = useState(null);
 
+  const [waiverDeadline, setWaiverDeadline] = useState('')
+  const [transferDeadline, setTransferDeadline] = useState('')
+
   
   // Get player list using React Query
   const { 
@@ -72,7 +91,15 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     data: playerData 
   } = useQuery({
     queryKey: ['teamhuballplayers', leagueId],
-    queryFn: () => fetchWaiverPlayerslist(leagueId),
+    queryFn: async () => {
+      let response;
+      try {
+        response = await fetchWaiverPlayerslist(leagueId);
+      } catch (error) {
+        console.log(error);
+      }
+      return response;
+    }
     // staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
     // cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
@@ -84,17 +111,64 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     data: teamdetails 
   } = useQuery({
     queryKey: ['teamInfo', teamId],
-    queryFn: () => fetchTeamInfo(teamId),
+    queryFn: async () => {
+      let response;
+      try {
+        response = await fetchTeamInfo(teamId);
+      } catch (error) {
+        console.log(error);
+      }
+      return response;
+    },
     enabled: teamId !== null,
     // staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
     // cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
 
   });
+
+  const { 
+    isLeagueLoading, 
+    lLeagueerror, 
+    data: LeagueData 
+  } = useQuery({
+    queryKey: ['leaguedata', leagueId],
+    queryFn: async () => {
+      let response;
+      try {
+        response = await fetchLeagueInfo(leagueId);
+      } catch (error) {
+        console.log(error);
+      }
+      return response;
+    }
+    // staleTime: 5 * 60 * 1000, // Cache data for 5 minutes
+    // cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
+  });
+
+  const { isLoading: isLoadingTS, error: errorTS, data: deadlines } = useQuery({ 
+      queryKey: ['deadline'], 
+      queryFn: async () => {
+        let response;
+        try {
+          response = await fetchDeadlines();
+        } catch (error) {
+          console.log(error);
+        }
+        return response;
+      }
+    });
+  
+    useEffect(() => {
+      if (deadlines && deadlines.length > 0) {
+        setWaiverDeadline(deadlines[0]?.nextDraftDeadline);
+        setTransferDeadline(deadlines[0]?.nextAuctionDeadline)
+      }
+    }, [deadlines]);
   
   // Transform and process player data once when it's fetched
   useEffect(() => {
     if (playerData) {
-      // Transform unsold players for dropdown
+      
       const unsold = playerData
         .filter(player => player.status !== 'sold')
         .map(player => ({
@@ -123,12 +197,19 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   // Get Team Info
   useEffect(() => {
     if (teamdetails) {
-      handledecrypt(teamdetails.currentWaiver.in, "pref");
-      handledecrypt(teamdetails.currentWaiver.out, "drop");
-      setLastupdatedby(teamdetails.currentWaiver.lastUpdatedBy);
-      setLastupdatedat(teamdetails.currentWaiver.lastUpdatedTime);
+      if (teamdetails?.currentWaiver){
+        handledecrypt(teamdetails?.currentWaiver.in, "pref");
+        handledecrypt(teamdetails?.currentWaiver.out, "drop");
+        setLastupdatedby(teamdetails?.currentWaiver.lastUpdatedBy);
+        setLastupdatedat(teamdetails?.currentWaiver.lastUpdatedTime);
+      }
     };
   }, [teamdetails, teamId]);
+
+  useEffect(()=>{
+    // console.log(LeagueData)
+
+  },[LeagueData])
 
   const handledecrypt = (val, opt) => {
     if (opt === "pref") {
@@ -406,7 +487,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                   fontSize: '0.875rem'
                 }}
               >
-                Waiver submissions will be locked on Tuesday at 11:59 PM. Please make your selections carefully.
+               {`Waiver submissions will be locked on ${waiverDeadline}. Please make your selections carefully.`}
               </Marquee>
             }
             className="waiver-management-alert"
@@ -582,7 +663,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                   fontSize: '0.875rem'
                 }}
               >
-                Drop Window closing on Friday 12PM, if you wish to participate please save players to be dropped.
+                {`Drop Window closing on ${transferDeadline}, if you wish to participate please save players to be dropped.`}
               </Marquee>
             }
             className="waiver-management-alert"

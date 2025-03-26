@@ -63,7 +63,6 @@ const TeamHub = () => {
       
       // Check if members exist
       if (data.members && data.members.length > 0) {
-        console.log(data.members);
         setTeamMembers(data.members);
       } else {
         // Set team members empty and show error message
