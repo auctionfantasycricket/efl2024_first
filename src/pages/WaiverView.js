@@ -683,7 +683,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                   </div>
                 ) : (
                   <div>
-                    {[0, 1].map((index) => (
+                    {[0].map((index) => (
                       <div key={`release-${index}`} className="select-container">
                         <Text className="select-label">{`Release Player ${index + 1}`}</Text>
                         <Select
