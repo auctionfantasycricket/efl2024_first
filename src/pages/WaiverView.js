@@ -178,7 +178,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           // value: getIdValue(player._id) || player.player_name,
           value: player.player_name,
           // label: player.name || player.player_name
-          label: player.player_name
+          label: player.player_name+(" [Points: "+(player.points)+"]")+(" [Role: " +(player.player_role)+"]"),
+          points: player.points, // Include points for sorting
         }));
       
       setUnsoldPlayers(unsold);
@@ -190,7 +191,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           // value: getIdValue(player._id) || player.player_name,
           value: player.player_name,
           // label: player.name || player.player_name
-          label: player.player_name
+          label: player.player_name+(" [Points: "+(player.points)+"]")+(" [Role: " +(player.player_role)+"]"),
         }));
       
       setTeamPlayers(myTeam);
@@ -275,9 +276,12 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   // Get filtered options for preference dropdowns
   const getFilteredPreferenceOptions = (index) => {
     // Filter out already selected players (except the current one)
-    return unsoldPlayers.filter(player => {
+    const filteredPlayers = unsoldPlayers.filter(player => {
       return !playerPreferences.includes(player.value) || playerPreferences[index] === player.value;
     });
+
+     // Sort the filtered players by points in descending order
+    return filteredPlayers.sort((a, b) => b.points - a.points);
   };
   
   // Get filtered options for drop dropdowns
@@ -558,9 +562,9 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                           filterOption={(input, option) => 
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                           }
-                          filterSort={(optionA, optionB) =>
-                            (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-                          }
+                          // filterSort={(optionA, optionB) =>
+                          //   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+                          // }
                           options={getFilteredPreferenceOptions(index)}
                           disabled={isSubmitting}
                           value={playerPreferences[index] || undefined}
