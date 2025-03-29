@@ -1,12 +1,13 @@
 .modal-waiver-results-container {
     width: 100%;
-    max-width: 1400px; /* Increased max-width */
+    max-width: 1500px; /* Increased max-width */
     margin: 0 auto;
   }
   
   .modal-all-rounds-container {
     display: flex;
     flex-direction: column;
+    background-color: rgba(38, 38, 38, 0.6) !important;
   }
   
   .modal-round-section {
@@ -28,7 +29,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f9fafb;
+    /* background-color: #f9fafb; */
+    background-color: rgba(38, 38, 38, 0.6) !important;
     padding: 0.5rem;
     margin-bottom: 0.5rem;
     border-radius: 0.25rem;
@@ -39,8 +41,10 @@
   .modal-waiver-order-item {
     font-size: 0.8rem;
     padding: 0.1rem 0.3rem;
-    background-color: #e9ecef;
+    /* background-color: #e9ecef; */
+    background-color: rgba(38, 38, 38, 0.6) !important;
     border-radius: 0.2rem;
+    color: #e9ecef;
   }
   
   .modal-picks-grid-all-rounds {
@@ -102,16 +106,16 @@
   .pick-message {
     margin-top: 0.5rem;
     font-size: 0.875rem;
-    color: #6b7280;
+    color: rgba(255,255,255,0.7);
   }
   
   .success-bg { 
-    background-color: #dcfce7; 
+    background-color: #9feebb; 
     border: 1px solid #86efac;
   }
   .success-text { color: #166534; }
   .failure-bg { 
-    background-color: #fee2e2; 
+    background-color: #f4c4c4; 
     border: 1px solid #fca5a5;
   }
   .failure-text { color: #991b1b; }
@@ -121,8 +125,9 @@
     justify-content: center;
     flex-wrap: wrap;
     padding: 0.75rem;
-    background-color: #f3f4f6;
+    background-color:  rgba(38, 38, 38, 0.6) !important;
     gap: 0.5rem;
+    border-radius: 8px;
   }
   
   @media (max-width: 1200px) {
@@ -142,3 +147,8 @@
       grid-template-columns: 1fr;
     }
   }
+
+.MuiCard-root.modal-waiver-results-container-card{
+  background-color: rgba(38, 38, 38, 0.6) !important;
+  color: white !important;
+}

@@ -382,8 +382,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     }
     
     return (
-      <div>
-        <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white' }}>
+      <div className="result-placeholder">
+        <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white', textAlign: 'center' }}>
           Last Processed: {waiverResults.processedDate}
         </Text>
         
@@ -438,7 +438,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
             View Detailed Results
           </Button>
         )}
-
+  
         <Modal
           title="Detailed Waiver Results"
           visible={isWaiverResultsModalVisible}
@@ -446,11 +446,12 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           footer={null}
           width="90%"
           style={{ top: 20 }}
-          bodyStyle={{ 
-            padding: 0, 
-            backgroundColor: '#1a1a2e', 
-            borderRadius: '8px' 
-          }}
+          className="wiaverview-custom-modal"
+          // bodyStyle={{ 
+          //   padding: 0, 
+          //   backgroundColor: 'rgba(38, 38, 38, 0.6)', 
+          //   borderRadius: '8px' 
+          // }}
         >
           <WaiverResults />
         </Modal>

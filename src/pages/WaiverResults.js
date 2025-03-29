@@ -333,7 +333,7 @@ const WaiverResults = () => {
 
   return (
     <div className="modal-waiver-results-container">
-      <Card sx={{ width: '100%' }}>
+      <Card className="modal-waiver-results-container-card" sx={{ width: '100%' }}>
         {/* <CardHeader 
           title={
             <Typography variant="h6" component="div">
