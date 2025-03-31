@@ -78,7 +78,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [waiverResults, setWaiverResults] = useState(true);
+  const [showwaiverResults, setShowWaiverResults] = useState(false);
+  const [waivers, setWaivers] = useState(null);
   const [transferResults, setTransferResults] = useState(null);
 
   const [waiverDeadline, setWaiverDeadline] = useState('')
@@ -211,7 +212,17 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   }, [teamdetails, teamId]);
 
   useEffect(()=>{
-    // console.log(LeagueData)
+    if(LeagueData){
+      if (leaguetype === 'draft') {
+        if (LeagueData[0]?.waiverResults && LeagueData[0]?.waiverResults.length > 0) {
+          setShowWaiverResults(true);
+          setWaivers(LeagueData[0].waiverResults);
+        } else {
+          setShowWaiverResults(false);
+          setWaivers(null);
+        }
+      } // For auction leagues, we check for transfer results
+    }
 
   },[LeagueData])
 
@@ -371,7 +382,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
 
   // Render waiver results section
   const renderWaiverResults = () => {
-    if (!waiverResults) {
+    if (!showwaiverResults) {
       return (
         <div className="result-placeholder">
           <CalendarOutlined className="calendar-icon" style={{ fontSize: 24, marginBottom: 8 }} />
@@ -388,7 +399,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     return (
       <div className="result-placeholder">
         <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white', textAlign: 'center' }}>
-          Last Processed: {waiverResults.processedDate}
+          {/* Last Processed: {waivers.processedDate} */}
+          Last Processed:
         </Text>
         
        {/* <div className="result-section">
@@ -427,7 +439,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           )}
         </div>*/}
 
-        {true && (
+        { showwaiverResults && (
           <Button 
             type="primary" 
             icon={<EyeOutlined />} 
@@ -445,7 +457,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   
         <Modal
           title="Detailed Waiver Results"
-          visible={isWaiverResultsModalVisible}
+          open={isWaiverResultsModalVisible}
           onCancel={() => setIsWaiverResultsModalVisible(false)}
           footer={null}
           width="90%"
@@ -457,7 +469,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           //   borderRadius: '8px' 
           // }}
         >
-          <WaiverResults />
+          <WaiverResults waiverResults={waivers} />
         </Modal>
       </div>
     );

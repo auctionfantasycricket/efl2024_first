@@ -60,7 +60,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    height: 120px; /* Increased height */
+    height: 180px; 
     overflow: hidden;
     text-align: center;
     justify-content: space-between;
@@ -90,8 +90,8 @@
   
   .modal-status-icon {
     margin-right: 0.25rem;
-    width: 16px;
-    height: 16px;
+    width: 13px;
+    height: 13px;
   }
   
   .pick-details-small {
@@ -119,6 +119,12 @@
     border: 1px solid #fca5a5;
   }
   .failure-text { color: #991b1b; }
+
+  .default-bg { 
+    background-color: #c4e7f4; 
+    border: 1px solid #a5dcfc;
+  }
+  .default-text { color: #1b7999; }
   
   .modal-rounds-selector {
     display: flex;
