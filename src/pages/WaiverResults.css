@@ -77,6 +77,7 @@
     font-size: 0.9rem;
     font-weight: bold;
     margin-bottom: 0.25rem;
+    color: #000300;
   }
   
   .modal-status-indicator-small {
@@ -97,6 +98,7 @@
   .pick-details-small {
     font-size: 0.7rem;
     line-height: 1.2;
+    color: black;
   }
   
   .pick-details-small div {
@@ -110,8 +112,8 @@
   }
   
   .success-bg { 
-    background-color: #9feebb; 
-    border: 1px solid #86efac;
+    background-color: #7eeca4; 
+    border: 1px solid #6cd793;
   }
   .success-text { color: #166534; }
   .failure-bg { 
