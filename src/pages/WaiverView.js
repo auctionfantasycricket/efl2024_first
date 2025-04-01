@@ -682,7 +682,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
             {/* Waiver Results Card */}
             <Col md={8}>
               <Card 
-                title="Waiver Results"
+                title="Waiver Order & Results"
                 className="waiver-card waiver-results-card"
               >
                 {renderWaiverResults()}
