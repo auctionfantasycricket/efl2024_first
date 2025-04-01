@@ -294,3 +294,33 @@
       font-size: 0.75rem;
     }
   }
+
+  .wiaverview-custom-modal .ant-modal-content {
+    background-color: #333;
+    color: white;
+  }
+  
+  .wiaverview-custom-modal .ant-modal-body {
+    background-color: #333;
+    color: white;
+  }
+
+  .wiaverview-custom-modal .ant-modal-header {
+    background-color: #333;
+    border-bottom: 1px solid #555;
+  }
+  
+  .wiaverview-custom-modal .ant-modal-title {
+    color: white;
+  }
+  
+  .wiaverview-custom-modal .anticon svg {
+    color: white;
+  }
+  
+  /* Add hover effect */
+  .wiaverview-custom-modal .anticon svg:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    color: white;
+  }

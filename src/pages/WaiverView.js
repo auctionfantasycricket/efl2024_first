@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Select, Button, Row, Col, Typography, Spin, message } from 'antd';
-import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined } from '@ant-design/icons';
+import { Card, Select, Button, Row, Col, Typography, Spin, message, Modal } from 'antd';
+import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined, EyeOutlined  } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import './WaiverView.css';
 import { encryptData,decryptData } from '../components/Encryption';
 import { Alert } from 'antd';
 import Marquee from 'react-fast-marquee';
+import WaiverResults from './WaiverResults';
 
 
 const { Option } = Select;
@@ -77,11 +78,14 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   
   // UI states
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [waiverResults, setWaiverResults] = useState(null);
+  const [showwaiverResults, setShowWaiverResults] = useState(false);
+  const [waivers, setWaivers] = useState(null);
   const [transferResults, setTransferResults] = useState(null);
 
   const [waiverDeadline, setWaiverDeadline] = useState('')
   const [transferDeadline, setTransferDeadline] = useState('')
+
+  const [isWaiverResultsModalVisible, setIsWaiverResultsModalVisible] = useState(false);
 
   
   // Get player list using React Query
@@ -208,7 +212,17 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   }, [teamdetails, teamId]);
 
   useEffect(()=>{
-    // console.log(LeagueData)
+    if(LeagueData){
+      if (leaguetype === 'draft') {
+        if (LeagueData[0]?.waiverResults && LeagueData[0]?.waiverResults.length > 0) {
+          setShowWaiverResults(true);
+          setWaivers(LeagueData[0].waiverResults);
+        } else {
+          setShowWaiverResults(false);
+          setWaivers(null);
+        }
+      } // For auction leagues, we check for transfer results
+    }
 
   },[LeagueData])
 
@@ -368,7 +382,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
 
   // Render waiver results section
   const renderWaiverResults = () => {
-    if (!waiverResults) {
+    if (!showwaiverResults) {
       return (
         <div className="result-placeholder">
           <CalendarOutlined className="calendar-icon" style={{ fontSize: 24, marginBottom: 8 }} />
@@ -383,16 +397,17 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     }
     
     return (
-      <div>
-        <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white' }}>
-          Last Processed: {waiverResults.processedDate}
+      <div className="result-placeholder">
+        <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white', textAlign: 'center' }}>
+          {/* Last Processed: {waivers.processedDate} */}
+          Last Processed:
         </Text>
         
-        <div className="result-section">
+       {/* <div className="result-section">
           <Text style={{ fontWeight: 'bold', display: 'block', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.75rem' }}>
             Players Added:
           </Text>
-          {waiverResults.playersAdded && waiverResults.playersAdded.length > 0 ? (
+           {waiverResults.playersAdded && waiverResults.playersAdded.length > 0 ? (
             waiverResults.playersAdded.map((player, idx) => (
               <div key={idx} className="player-item">
                 <UserOutlined />
@@ -403,7 +418,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
             <Text style={{ color: 'rgba(255, 255, 255, 0.7)', fontStyle: 'italic' }}>
               No players added
             </Text>
-          )}
+          )} 
         </div>
         
         <div className="result-section">
@@ -422,7 +437,40 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
               No players dropped
             </Text>
           )}
-        </div>
+        </div>*/}
+
+        { showwaiverResults && (
+          <Button 
+            type="primary" 
+            icon={<EyeOutlined />} 
+            onClick={() => setIsWaiverResultsModalVisible(true)}
+            style={{ 
+              backgroundColor: '#1890ff', 
+              borderColor: '#1890ff',
+              display: 'flex',
+              alignItems: 'center'
+            }}
+          >
+            View Detailed Results
+          </Button>
+        )}
+  
+        <Modal
+          title="Detailed Waiver Results"
+          open={isWaiverResultsModalVisible}
+          onCancel={() => setIsWaiverResultsModalVisible(false)}
+          footer={null}
+          width="90%"
+          style={{ top: 20 }}
+          className="wiaverview-custom-modal"
+          // bodyStyle={{ 
+          //   padding: 0, 
+          //   backgroundColor: 'rgba(38, 38, 38, 0.6)', 
+          //   borderRadius: '8px' 
+          // }}
+        >
+          <WaiverResults waiverResults={waivers} />
+        </Modal>
       </div>
     );
   };
@@ -634,7 +682,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
             {/* Waiver Results Card */}
             <Col md={8}>
               <Card 
-                title="Waiver Results"
+                title="Waiver Order & Results"
                 className="waiver-card waiver-results-card"
               >
                 {renderWaiverResults()}
