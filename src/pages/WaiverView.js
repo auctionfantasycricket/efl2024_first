@@ -84,6 +84,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
 
   const [waiverDeadline, setWaiverDeadline] = useState('')
   const [transferDeadline, setTransferDeadline] = useState('')
+  const [waiverProcessedAt, setWaiverProcessedAt] = useState('')
 
   const [isWaiverResultsModalVisible, setIsWaiverResultsModalVisible] = useState(false);
 
@@ -217,9 +218,11 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
         if (LeagueData[0]?.waiverResults && LeagueData[0]?.waiverResults.length > 0) {
           setShowWaiverResults(true);
           setWaivers(LeagueData[0].waiverResults);
+          setWaiverProcessedAt(LeagueData[0].waiverProcessedAt);
         } else {
           setShowWaiverResults(false);
           setWaivers(null);
+          setWaiverProcessedAt(null);
         }
       } // For auction leagues, we check for transfer results
     }
@@ -399,8 +402,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     return (
       <div className="result-placeholder">
         <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white', textAlign: 'center' }}>
-          {/* Last Processed: {waivers.processedDate} */}
-          Last Processed:
+          Last Processed: {waiverProcessedAt}
         </Text>
         
        {/* <div className="result-section">
@@ -632,8 +634,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <ReloadOutlined />}
                       onClick={handleSubmitWaiver}
-                      disabled={isSubmitting || isLoading}
-                      // disabled = {true}
+                      // disabled={isSubmitting || isLoading}
+                      disabled = {true}
                       loading={isSubmitting}
                       className="waiver-submit-button"
                     >
