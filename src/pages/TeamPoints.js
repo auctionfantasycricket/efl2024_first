@@ -153,9 +153,10 @@ export default function TeamPoints() {
         tcc[teams.teamName] = {
           totalPoints: teams.totalPoints,
           todayPoints: teams.todayPoints,
-          // transferdata: teams.transferHistory,
+          transferdata: teams.transferHistory,
         };
       }
+      console.log(tcc);
       return tcc;
     }, {});
 
@@ -166,9 +167,10 @@ export default function TeamPoints() {
           teamName: teamName,
           totalpoint: teampoints[teamName].totalPoints,
           todaypoints: teampoints[teamName].todayPoints,
-          // transferdetails: teampoints[teamName].transferdata,
+          transferdetails: teampoints[teamName].transferdata,
           players: players,
         };
+        console.log(team);
         teams.push(team);
       }
     }
@@ -277,16 +279,19 @@ export default function TeamPoints() {
               { field: "teamName", headerName: "Team Name", width: 180 },
               { field: "totalpoint", headerName: "Points", width: 100, sort: "desc" },
               { field: "todaypoints", headerName: "TodayPoints", width: 130 },
-              // {
-              //   field: "transferdetails",
-              //   headerName: "Exodus Points",
-              //   width:100,
-              //   cellRenderer: (params) => {
-              //     const transferHistory = params.data.transferdetails;
-              //     const totalPoints = transferHistory.reduce((acc, item) => acc + item.points, 0);
-              //     return totalPoints;
-              //   },
-              // },
+              {
+                field: "transferdetails",
+                headerName: "Exodus Points",
+                width:100,
+                cellRenderer: (params) => {
+                  const transferHistory = params.data.transferdetails;
+                  if (transferHistory && Array.isArray(transferHistory)) {
+                    const totalPoints = transferHistory.reduce((acc, item) => acc + (item.points || 0), 0);
+                    return totalPoints;
+                  }
+                  return 0; // Return 0 if transferHistory is undefined or not an array
+                },
+              },
             ]}
             getRowStyle={(params) => {
               if (params.rowIndex === 0) {

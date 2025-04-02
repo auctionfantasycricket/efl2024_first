@@ -541,7 +541,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                   fontSize: '0.875rem'
                 }}
               >
-               {`Waiver submissions will be locked on ${waiverDeadline}. Please make your selections carefully.`}
+               {/* {`Waiver submissions will be locked on ${waiverDeadline}. Please make your selections carefully.`} */}
+               {`Waivers are processed, please check the results by clicking on the View Detailed Results button.`}
               </Marquee>
             }
             className="waiver-management-alert"
@@ -634,8 +635,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <ReloadOutlined />}
                       onClick={handleSubmitWaiver}
-                      // disabled={isSubmitting || isLoading}
-                      disabled = {true}
+                      disabled={isSubmitting || isLoading}
+                      // disabled = {true}
                       loading={isSubmitting}
                       className="waiver-submit-button"
                     >
