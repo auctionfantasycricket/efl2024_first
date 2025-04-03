@@ -1,9 +1,369 @@
+// import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
+// import "./TeamPoints.css";
+// import { AgGridReact } from "ag-grid-react";
+// import "ag-grid-community/styles/ag-grid.css";
+// import "ag-grid-community/styles/ag-theme-alpine.css";
+// import { Modal, Popover, Breadcrumb } from "antd";
+// import { useQuery } from '@tanstack/react-query';
+// import CustomLoadingOverlay from "../components/CustomLoadingOverlay";
+// import { useSelector } from 'react-redux';
+
+// const baseURL = process.env.REACT_APP_BASE_URL;
+
+// const getallplayerslist = async (id) => {
+//   const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+id);
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
+//   return response.json();
+// };
+
+// const getallownerslist = async (leagueId) => {
+//   const response = await fetch(baseURL+'/get_data?collectionName=teams&leagueId='+leagueId);
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
+//   return response.json();
+// };
+
+// const gettimestamp = async () => {
+//   const response = await fetch(baseURL+'/get_data?collectionName=global_data');
+//   if (!response.ok) {
+//     throw new Error('Failed to fetch data');
+//   }
+//   return response.json();
+// };
+
+// export default function TeamPoints() {
+//   const [Playersownerslist, setPlayerownersslist] = useState([]);
+//   const [Teamsstats, setTeamsstats] = useState([]);
+//   const [showplayers, setShowPlayers] = useState([]);
+//   const [teamname, setSelectedteamname] = useState("");
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [popovercontent, setPopoverContent] = useState(null);
+//   const [popoverVisible, setPopoverVisible] = useState(false);
+//   const [popoverPosition, setPopoverPosition] = useState({});
+//   const [timsestamps, setTimestamps] = useState([]);
+//   const [gridApi, setGridApi] = useState(null);
+  
+//   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
+
+//   const gridRef = useRef();
+
+//   const onGridReady = useCallback((params) => {
+//     setGridApi(params.api);
+//   }, []);
+
+//   const { isLoading: isLoadingTeams, error: errorTeams, data: stats } = useQuery({ 
+//     queryKey: ['teampointsteams'], 
+//     queryFn: async () => {
+//       let response;
+//       try {
+//         response = await getallownerslist(selectedLeagueId);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//       return response;
+//     }
+//   });
+
+//   useEffect(() => {
+//     if (stats) {
+//       setTeamsstats(stats);
+//     }
+//   }, [stats]); 
+
+//   const { isLoading: isLoadingPlayers, error: errorPlayers, data: playerdata } = useQuery({ 
+//     queryKey: ['teampointsplayers'], 
+//     queryFn: async () => {
+//       let response;
+//       try {
+//         response = await getallplayerslist(selectedLeagueId);
+//       } catch (error) {
+//         console.log(error);
+//       }
+//       return response;
+//     }
+//   });
+
+//   useEffect(() => {
+//     if (playerdata) {
+//       setPlayerownersslist(
+//         playerdata.filter((item) => item.status === "sold")
+//       );
+//     }
+//   }, [playerdata]); 
+
+//   const { isLoading: isLoadingTS, error: errorTS, data: timsestamp } = useQuery({ 
+//     queryKey: ['timestamp'], 
+//     queryFn: async () => {
+//       let response;
+//       try {
+//         response = await gettimestamp();
+//       } catch (error) {
+//         console.log(error);
+//       }
+//       return response;
+//     }
+//   });
+
+//   useEffect(() => {
+//     if (timsestamp) {
+//       setTimestamps(timsestamp);
+//     }
+//   }, [timsestamp]);
+
+//   useEffect(() => {
+//     if (gridApi) {
+//       const isLoading = isLoadingTeams || isLoadingPlayers || isLoadingTS;
+//       const hasError = errorTeams || errorPlayers || errorTS;
+
+//       if (isLoading) {
+//         gridApi.showLoadingOverlay();
+//       } else if (hasError) {
+//         gridApi.showNoRowsOverlay();
+//       } else if (Teamsstats && Teamsstats.length === 0) {
+//         gridApi.showNoRowsOverlay();
+//       } else {
+//         gridApi.hideOverlay();
+//       }
+//     }
+//   }, [gridApi, isLoadingTeams, isLoadingPlayers, isLoadingTS, errorTeams, errorPlayers, errorTS, Teamsstats]);
+
+//   // Generate team data once we have both players and teams
+//   const team_data = useMemo(() => {
+//     if (!Playersownerslist.length || !Teamsstats.length) return [];
+
+//     const teamData = Playersownerslist.reduce((acc, player) => {
+//       if (!acc[player.ownerTeam]) {
+//         acc[player.ownerTeam] = [];
+//         acc[player.ownerTeam].teamplayerpoints = 0;
+//       }
+//       acc[player.ownerTeam].push({
+//         name: player.player_name,
+//         points: player.points,
+//         todayspoints: player.todayPoints,
+//       });
+//       acc[player.ownerTeam].teamplayerpoints += player.points;
+//       return acc;
+//     }, {});
+
+//     const teampoints = Teamsstats.reduce((tcc, teams) => {
+//       if (!tcc[teams.teamName]) {
+//         tcc[teams.teamName] = {
+//           totalPoints: teams.totalPoints,
+//           todayPoints: teams.todayPoints,
+//           transferdata: teams.transferHistory,
+//         };
+//       }
+
+//       return tcc;
+//     }, {});
+
+//     const teams = [];
+//     for (const [teamName, players] of Object.entries(teamData)) {
+//       if (teampoints[teamName]) {
+//         const team = {
+//           teamName: teamName,
+//           totalpoint: teampoints[teamName].totalPoints,
+//           todaypoints: teampoints[teamName].todayPoints,
+//           transferdetails: teampoints[teamName].transferdata,
+//           players: players,
+//         };
+        
+//         teams.push(team);
+//       }
+//     }
+//     return teams;
+//   }, [Playersownerslist, Teamsstats]);
+
+//   const gridOptions = {
+//     rowSelection: "single",
+//     onRowSelected: (event) => {
+//       if (event.node.isSelected()) {
+//         const selectedRow = event.node.data;
+//         setSelectedteamname(selectedRow.teamName);
+//         setShowPlayers(selectedRow.players);
+//         setIsModalOpen(true);
+//       }
+//     },
+//     overlayLoadingTemplate: CustomLoadingOverlay,
+//     overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">No data available</span>'
+//   };
+
+//   const hide = () => {
+//     setPopoverVisible(false);
+//   };
+
+//   const playerColumns = [
+//     { headerName: "Name", field: "name", width: 120 },
+//     { headerName: "Points", field: "points", width: 100, sort: "desc" },
+//     { headerName: "TodaysPoints", field: "todayspoints", width: 130
+//       // cellRenderer: ({ data, rowIndex }) => (
+//       //   <Popover
+//       //     content={<><div>{popovercontent}</div>
+//       //     <div>
+//       //     <a style={{fontWeight:"bold"}} onClick={hide}>Close</a>
+//       //     </div></>}
+//       //     title={data.name+" detail's"}
+//       //     trigger="click"
+//       //     visible={popoverVisible && popoverPosition.rowIndex === rowIndex}
+//       //     onVisibleChange={(visible) => {
+//       //       setPopoverVisible(visible);
+//       //       if (!visible) {
+//       //         setPopoverContent(null);
+//       //       }
+//       //     }}
+//       //     overlayStyle={{
+//       //       position: "absolute",
+//       //       top: popoverPosition.top,
+//       //       right: popoverPosition.right,
+//       //     }}
+//       //   >
+//       //     <button style={{color:"blue"}}
+//       //       onClick={(e) =>
+//       //         handleDetailsClick(e, data, rowIndex)
+//       //       }
+//       //     >
+//       //       {data.todayspoints.total_points}
+//       //     </button>
+//       //   </Popover>
+//       // ),
+//     },
+//   ];
+
+//   const handleDetailsClick = (e, rowData, rowIndex) => {
+//     const todaysPoints = rowData.todayspoints;
+//     const parsedObject = JSON.parse(JSON.stringify(todaysPoints));
+//     const formattedObject = {};
+//     for (const key in parsedObject) {
+//       const newKey = key.replace(/_/g, " ");
+//       formattedObject[newKey] = parsedObject[key];
+//     }
+//     const beautifiedString = JSON.stringify(formattedObject, null, 2);
+//     setPopoverContent(beautifiedString);
+
+//     const cellRect = e.target.getBoundingClientRect();
+//     setPopoverPosition({
+//       rowIndex,
+//       top: cellRect.top + cellRect.height,
+//       left: cellRect.left,
+//     });
+//   };
+
+//   const handleOk = () => {
+//     setIsModalOpen(false);
+//   };
+
+//   const components = {
+//     loadingOverlay: CustomLoadingOverlay
+//   };
+
+//   return (
+//     <div className="teampointspage">
+//       <div className="teampointscontainer">
+//         {timsestamps && timsestamps[0] &&
+//           <Breadcrumb className="breadcrumb" items={[{title:'Points Updated On '+timsestamps[0].pointsUpdatedAt}]}/>
+//         }
+//         <div className="ag-theme-alpine-dark teampoints-main-container">
+//           <AgGridReact
+//             ref={gridRef}
+//             loading={isLoadingTeams || isLoadingPlayers || isLoadingTS}
+//             rowData={team_data}
+//             gridOptions={gridOptions}
+//             components={components}
+//             onGridReady={onGridReady}
+//             loadingOverlayComponent="loadingOverlay"
+//             columnDefs={[
+//               { cellRenderer: (params) => params.rowIndex + 1, headerName: "#", width: 60 },
+//               { field: "teamName", headerName: "Team Name", width: 180 },
+//               { field: "totalpoint", headerName: "Points", width: 100, sort: "desc" },
+//               { field: "todaypoints", headerName: "TodayPoints", width: 130 },
+//               {
+//                 field: "transferdetails",
+//                 headerName: "Exodus Points",
+//                 width:100,
+//                 cellRenderer: (params) => {
+//                   const transferHistory = params.data.transferdetails;
+//                   console.log("th",transferHistory);
+//                   if (transferHistory && Array.isArray(transferHistory)) {
+//                     const totalPoints = transferHistory.reduce((acc, item) => acc + (item.points || 0), 0);
+//                     return totalPoints;
+//                   }
+//                   return 0; // Return 0 if transferHistory is undefined or not an array
+//                 },
+//               },
+//             ]}
+//             getRowStyle={(params) => {
+//               if (params.rowIndex === 0) {
+//                 // Style for 1st place
+//                 return {
+//                   background: 'linear-gradient(45deg, #FFD700, #FF8C00)', // Gold to orange gradient
+//                   color: 'black',
+//                   fontWeight: 'bold', // Bold text for emphasis
+//                  // boxShadow: '0 0 20px 5px rgba(255, 215, 0, 0.8)', // Strong glowing effect for 1st place
+//                   //border: '5px solid #FF8C00', // Thicker border for 1st place
+//                  // borderRadius: '12px', // Rounded corners for a premium look
+//                  // textAlign: 'center', // Center-aligns text
+//                 };
+//               } else if (params.rowIndex === 1) {
+//                 // Style for 2nd place
+//                 return {
+//                   background: 'linear-gradient(45deg, #D1D1D1, #A8A8A8)', // A more dynamic silver gradient for 2nd place
+
+//                   color: 'black',
+//                   fontWeight: 'bold', // Bold text for emphasis
+//                  // boxShadow: '0 0 15px 5px rgba(192, 192, 192, 0.7)', // Subtle glowing effect for 2nd place
+//                   //border: '5px solid #B0B0B0', // Silver border for 2nd place
+//                   //borderRadius: '10px', // Slightly rounded corners
+//                   //textAlign: 'center', // Center-aligns text
+//                 };
+//               } else if (params.rowIndex === 2) {
+//                 // Style for 3rd place
+//                 return {
+//                   background: 'linear-gradient(45deg, #CD7F32, #E08E45)', // Bronze gradient for 3rd place
+//                   color: 'black',
+//                   fontWeight: 'bold', // Bold text for emphasis
+//                  // boxShadow: '0 0 10px 5px rgba(205, 127, 50, 0.7)', // Light glowing effect for 3rd place
+//                   //border: '5px solid #E08E45', // Bronze border for 3rd place
+//                   //borderRadius: '8px', // Slightly rounded corners for 3rd place
+//                  // textAlign: 'center', // Center-aligns text
+//                 };
+//               }
+//               return null; // Default style for other rows
+//             }}
+            
+//           />
+//         </div>
+//         <div>
+//           <Modal
+//             title={teamname + " players"}
+//             style={{ top: 30, width: 650, zIndex: 9999 }}
+//             open={isModalOpen}
+//             onOk={handleOk}
+//             onCancel={handleOk}
+//             cancelButtonProps={{ style: { display: "none" } }}
+//             className="custom-modal"
+//           >
+//             <div className="ag-theme-alpine-dark teampoints-main-container" style={{ height: "70vh" }}>
+//               <AgGridReact 
+//                 rowData={showplayers} 
+//                 columnDefs={playerColumns} 
+//                 rowSelection="single"/>
+//             </div>
+//           </Modal>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
 import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import "./TeamPoints.css";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { Modal, Popover, Breadcrumb } from "antd";
+import { Modal, Card, Breadcrumb, Button } from "antd";
 import { useQuery } from '@tanstack/react-query';
 import CustomLoadingOverlay from "../components/CustomLoadingOverlay";
 import { useSelector } from 'react-redux';
@@ -11,7 +371,7 @@ import { useSelector } from 'react-redux';
 const baseURL = process.env.REACT_APP_BASE_URL;
 
 const getallplayerslist = async (id) => {
-  const response = await fetch(baseURL+'/get_data?collectionName=leagueplayers&leagueId='+id);
+  const response = await fetch(baseURL + '/get_data?collectionName=leagueplayers&leagueId=' + id);
   if (!response.ok) {
     throw new Error('Failed to fetch data');
   }
@@ -19,7 +379,7 @@ const getallplayerslist = async (id) => {
 };
 
 const getallownerslist = async (leagueId) => {
-  const response = await fetch(baseURL+'/get_data?collectionName=teams&leagueId='+leagueId);
+  const response = await fetch(baseURL + '/get_data?collectionName=teams&leagueId=' + leagueId);
   if (!response.ok) {
     throw new Error('Failed to fetch data');
   }
@@ -27,7 +387,7 @@ const getallownerslist = async (leagueId) => {
 };
 
 const gettimestamp = async () => {
-  const response = await fetch(baseURL+'/get_data?collectionName=global_data');
+  const response = await fetch(baseURL + '/get_data?collectionName=global_data');
   if (!response.ok) {
     throw new Error('Failed to fetch data');
   }
@@ -40,12 +400,12 @@ export default function TeamPoints() {
   const [showplayers, setShowPlayers] = useState([]);
   const [teamname, setSelectedteamname] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [popovercontent, setPopoverContent] = useState(null);
-  const [popoverVisible, setPopoverVisible] = useState(false);
-  const [popoverPosition, setPopoverPosition] = useState({});
+  const [transferDetailsModalVisible, setTransferDetailsModalVisible] = useState(false);
+  const [transferDetails, setTransferDetails] = useState([]);
   const [timsestamps, setTimestamps] = useState([]);
   const [gridApi, setGridApi] = useState(null);
-  
+  const [selectedTeamData, setSelectedTeamData] = useState(null);
+
   const selectedLeagueId = useSelector((state) => state.league.selectedLeagueId);
 
   const gridRef = useRef();
@@ -54,8 +414,8 @@ export default function TeamPoints() {
     setGridApi(params.api);
   }, []);
 
-  const { isLoading: isLoadingTeams, error: errorTeams, data: stats } = useQuery({ 
-    queryKey: ['teampointsteams'], 
+  const { isLoading: isLoadingTeams, error: errorTeams, data: stats } = useQuery({
+    queryKey: ['teampointsteams'],
     queryFn: async () => {
       let response;
       try {
@@ -71,10 +431,10 @@ export default function TeamPoints() {
     if (stats) {
       setTeamsstats(stats);
     }
-  }, [stats]); 
+  }, [stats]);
 
-  const { isLoading: isLoadingPlayers, error: errorPlayers, data: playerdata } = useQuery({ 
-    queryKey: ['teampointsplayers'], 
+  const { isLoading: isLoadingPlayers, error: errorPlayers, data: playerdata } = useQuery({
+    queryKey: ['teampointsplayers'],
     queryFn: async () => {
       let response;
       try {
@@ -92,10 +452,10 @@ export default function TeamPoints() {
         playerdata.filter((item) => item.status === "sold")
       );
     }
-  }, [playerdata]); 
+  }, [playerdata]);
 
-  const { isLoading: isLoadingTS, error: errorTS, data: timsestamp } = useQuery({ 
-    queryKey: ['timestamp'], 
+  const { isLoading: isLoadingTS, error: errorTS, data: timsestamp } = useQuery({
+    queryKey: ['timestamp'],
     queryFn: async () => {
       let response;
       try {
@@ -156,7 +516,7 @@ export default function TeamPoints() {
           transferdata: teams.transferHistory,
         };
       }
-      console.log(tcc);
+
       return tcc;
     }, {});
 
@@ -170,110 +530,72 @@ export default function TeamPoints() {
           transferdetails: teampoints[teamName].transferdata,
           players: players,
         };
-        console.log(team);
+
         teams.push(team);
       }
     }
     return teams;
   }, [Playersownerslist, Teamsstats]);
 
-  const gridOptions = {
-    rowSelection: "single",
-    onRowSelected: (event) => {
-      if (event.node.isSelected()) {
-        const selectedRow = event.node.data;
-        setSelectedteamname(selectedRow.teamName);
-        setShowPlayers(selectedRow.players);
-        setIsModalOpen(true);
-      }
-    },
-    overlayLoadingTemplate: CustomLoadingOverlay,
-    overlayNoRowsTemplate: '<span class="ag-overlay-no-rows-center">No data available</span>'
-  };
+  // Handle row click to open players modal
+  const onRowClicked = useCallback((params) => {
+    const selectedRowData = params.data;
+    setSelectedTeamData(selectedRowData);
+    setSelectedteamname(selectedRowData.teamName);
+    setShowPlayers(selectedRowData.players);
+    setIsModalOpen(true);
+  }, []);
 
-  const hide = () => {
-    setPopoverVisible(false);
+  // Function to open the transfer details modal
+  const openTransferDetailsModal = () => {
+    if (selectedTeamData && selectedTeamData.transferdetails) {
+      setTransferDetails(selectedTeamData.transferdetails);
+      setTransferDetailsModalVisible(true);
+    }
   };
 
   const playerColumns = [
     { headerName: "Name", field: "name", width: 120 },
     { headerName: "Points", field: "points", width: 100, sort: "desc" },
-    { headerName: "TodaysPoints", field: "todayspoints", width: 130
-      // cellRenderer: ({ data, rowIndex }) => (
-      //   <Popover
-      //     content={<><div>{popovercontent}</div>
-      //     <div>
-      //     <a style={{fontWeight:"bold"}} onClick={hide}>Close</a>
-      //     </div></>}
-      //     title={data.name+" detail's"}
-      //     trigger="click"
-      //     visible={popoverVisible && popoverPosition.rowIndex === rowIndex}
-      //     onVisibleChange={(visible) => {
-      //       setPopoverVisible(visible);
-      //       if (!visible) {
-      //         setPopoverContent(null);
-      //       }
-      //     }}
-      //     overlayStyle={{
-      //       position: "absolute",
-      //       top: popoverPosition.top,
-      //       right: popoverPosition.right,
-      //     }}
-      //   >
-      //     <button style={{color:"blue"}}
-      //       onClick={(e) =>
-      //         handleDetailsClick(e, data, rowIndex)
-      //       }
-      //     >
-      //       {data.todayspoints.total_points}
-      //     </button>
-      //   </Popover>
-      // ),
-    },
+    { headerName: "TodaysPoints", field: "todayspoints", width: 130 },
   ];
-
-  const handleDetailsClick = (e, rowData, rowIndex) => {
-    const todaysPoints = rowData.todayspoints;
-    const parsedObject = JSON.parse(JSON.stringify(todaysPoints));
-    const formattedObject = {};
-    for (const key in parsedObject) {
-      const newKey = key.replace(/_/g, " ");
-      formattedObject[newKey] = parsedObject[key];
-    }
-    const beautifiedString = JSON.stringify(formattedObject, null, 2);
-    setPopoverContent(beautifiedString);
-
-    const cellRect = e.target.getBoundingClientRect();
-    setPopoverPosition({
-      rowIndex,
-      top: cellRect.top + cellRect.height,
-      left: cellRect.left,
-    });
-  };
 
   const handleOk = () => {
     setIsModalOpen(false);
+  };
+
+  const handleTransferDetailsOk = () => {
+    setTransferDetailsModalVisible(false);
   };
 
   const components = {
     loadingOverlay: CustomLoadingOverlay
   };
 
+  // Calculate exodus points total for display
+  const getExodusPointsTotal = (transferHistory) => {
+    if (transferHistory && Array.isArray(transferHistory)) {
+      return transferHistory.reduce((acc, item) => acc + (item.points || 0), 0);
+    }
+    return 0;
+  };
+
   return (
     <div className="teampointspage">
       <div className="teampointscontainer">
         {timsestamps && timsestamps[0] &&
-          <Breadcrumb className="breadcrumb" items={[{title:'Points Updated On '+timsestamps[0].pointsUpdatedAt}]}/>
-        }
+          <Breadcrumb className="breadcrumb" items={[{ title: 'Points Updated On ' + timsestamps[0].pointsUpdatedAt }]} />}
         <div className="ag-theme-alpine-dark teampoints-main-container">
           <AgGridReact
             ref={gridRef}
             loading={isLoadingTeams || isLoadingPlayers || isLoadingTS}
             rowData={team_data}
-            gridOptions={gridOptions}
-            components={components}
             onGridReady={onGridReady}
+            onRowClicked={onRowClicked}
+            components={components}
             loadingOverlayComponent="loadingOverlay"
+            overlayLoadingTemplate={CustomLoadingOverlay}
+            overlayNoRowsTemplate={'<span class="ag-overlay-no-rows-center">No data available</span>'}
             columnDefs={[
               { cellRenderer: (params) => params.rowIndex + 1, headerName: "#", width: 60 },
               { field: "teamName", headerName: "Team Name", width: 180 },
@@ -282,74 +604,94 @@ export default function TeamPoints() {
               {
                 field: "transferdetails",
                 headerName: "Exodus Points",
-                width:100,
+                width: 130,
                 cellRenderer: (params) => {
-                  const transferHistory = params.data.transferdetails;
-                  if (transferHistory && Array.isArray(transferHistory)) {
-                    const totalPoints = transferHistory.reduce((acc, item) => acc + (item.points || 0), 0);
-                    return totalPoints;
-                  }
-                  return 0; // Return 0 if transferHistory is undefined or not an array
-                },
+                  return getExodusPointsTotal(params.value);
+                }
               },
             ]}
             getRowStyle={(params) => {
               if (params.rowIndex === 0) {
-                // Style for 1st place
                 return {
-                  background: 'linear-gradient(45deg, #FFD700, #FF8C00)', // Gold to orange gradient
+                  background: 'linear-gradient(45deg, #FFD700, #FF8C00)',
                   color: 'black',
-                  fontWeight: 'bold', // Bold text for emphasis
-                 // boxShadow: '0 0 20px 5px rgba(255, 215, 0, 0.8)', // Strong glowing effect for 1st place
-                  //border: '5px solid #FF8C00', // Thicker border for 1st place
-                 // borderRadius: '12px', // Rounded corners for a premium look
-                 // textAlign: 'center', // Center-aligns text
+                  fontWeight: 'bold',
                 };
               } else if (params.rowIndex === 1) {
-                // Style for 2nd place
                 return {
-                  background: 'linear-gradient(45deg, #D1D1D1, #A8A8A8)', // A more dynamic silver gradient for 2nd place
-
+                  background: 'linear-gradient(45deg, #D1D1D1, #A8A8A8)',
                   color: 'black',
-                  fontWeight: 'bold', // Bold text for emphasis
-                 // boxShadow: '0 0 15px 5px rgba(192, 192, 192, 0.7)', // Subtle glowing effect for 2nd place
-                  //border: '5px solid #B0B0B0', // Silver border for 2nd place
-                  //borderRadius: '10px', // Slightly rounded corners
-                  //textAlign: 'center', // Center-aligns text
+                  fontWeight: 'bold',
                 };
               } else if (params.rowIndex === 2) {
-                // Style for 3rd place
                 return {
-                  background: 'linear-gradient(45deg, #CD7F32, #E08E45)', // Bronze gradient for 3rd place
+                  background: 'linear-gradient(45deg, #CD7F32, #E08E45)',
                   color: 'black',
-                  fontWeight: 'bold', // Bold text for emphasis
-                 // boxShadow: '0 0 10px 5px rgba(205, 127, 50, 0.7)', // Light glowing effect for 3rd place
-                  //border: '5px solid #E08E45', // Bronze border for 3rd place
-                  //borderRadius: '8px', // Slightly rounded corners for 3rd place
-                 // textAlign: 'center', // Center-aligns text
+                  fontWeight: 'bold',
                 };
               }
-              return null; // Default style for other rows
+              return null;
             }}
-            
           />
         </div>
         <div>
+          {/* Players Modal */}
           <Modal
             title={teamname + " players"}
             style={{ top: 30, width: 650, zIndex: 9999 }}
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleOk}
-            cancelButtonProps={{ style: { display: "none" } }}
+            footer={[
+              (selectedTeamData && selectedTeamData.transferdetails && selectedTeamData.transferdetails.length > 0) && (
+              <Button 
+                key="exodus" 
+                type="primary" 
+                onClick={openTransferDetailsModal}
+                disabled={!selectedTeamData || !selectedTeamData.transferdetails || selectedTeamData.transferdetails.length === 0}
+              >
+                Roaster Movement Details {selectedTeamData && selectedTeamData.transferdetails && 
+                  `(${getExodusPointsTotal(selectedTeamData.transferdetails)} points)`}
+              </Button>),
+              <Button 
+                key="close"
+                danger
+                type="primary"
+                variant="filled"
+                onClick={handleOk}>
+                Close
+              </Button>
+            ]}
             className="custom-modal"
           >
             <div className="ag-theme-alpine-dark teampoints-main-container" style={{ height: "70vh" }}>
-              <AgGridReact 
-                rowData={showplayers} 
-                columnDefs={playerColumns} 
-                rowSelection="single"/>
+              <AgGridReact
+                rowData={showplayers}
+                columnDefs={playerColumns}
+                rowSelection="single" />
             </div>
+          </Modal>
+          
+          {/* Transfer Details Modal */}
+          <Modal
+            title="Drop Player Details"
+            open={transferDetailsModalVisible}
+            onOk={handleTransferDetailsOk}
+            onCancel={handleTransferDetailsOk}
+            cancelButtonProps={{ style: { display: "none" } }}
+            width={600}
+          >
+            {transferDetails && transferDetails.length > 0 ? (
+              transferDetails.map((detail, index) => (
+                <Card key={index} style={{ marginBottom: 16 }}>
+                  <p><strong>Player Name:</strong> {detail.player_name}</p>
+                  <p><strong>Points:</strong> {detail.points}</p>
+                  <p><strong>Transfer Date:</strong> {detail.transfer_date}</p>
+                </Card>
+              ))
+            ) : (
+              <p>No transfer details available.</p>
+            )}
           </Modal>
         </div>
       </div>
