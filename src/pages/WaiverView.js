@@ -541,8 +541,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                   fontSize: '0.875rem'
                 }}
               >
-               {/* {`Waiver submissions will be locked on ${waiverDeadline}. Please make your selections carefully.`} */}
-               {`Waivers are processed, please check the results by clicking on the View Detailed Results button.`}
+               {`Waiver submissions will be locked on ${waiverDeadline}. Please make your selections carefully.`}
+               {/* {`Waivers are processed, please check the results by clicking on the View Detailed Results button.`} */}
               </Marquee>
             }
             className="waiver-management-alert"

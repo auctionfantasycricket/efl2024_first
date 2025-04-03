@@ -103,3 +103,57 @@
     padding-top: 110px;
   }
 }
+
+/* Transfer Details Modal styling to match custom-modal */
+.ant-modal {
+  z-index: 9999 !important;
+}
+
+/* Make both modals have consistent styling */
+.ant-modal-content {
+  background-color: #333 !important;
+  color: white !important;
+}
+
+.ant-modal-header {
+  background-color: #333 !important;
+  border-bottom: 1px solid #555 !important;
+}
+
+.ant-modal-title {
+  color: white !important;
+}
+
+.anticon svg {
+  color: white !important;
+}
+
+.ant-modal-close:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  color: white;
+}
+
+/* Card styling within the transfer details modal */
+.ant-card {
+  background-color: #444 !important;
+  border: 1px solid #555 !important;
+  color: white !important;
+  margin-bottom: 16px !important;
+}
+
+.ant-card-body {
+  color: white !important;
+}
+
+/* Red filled close button */
+button.ant-btn.ant-btn-dangerous {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: white !important;
+}
+
+button.ant-btn.ant-btn-dangerous:hover {
+  background-color: #c82333 !important;
+  border-color: #bd2130 !important;
+}
