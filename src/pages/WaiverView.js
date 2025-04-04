@@ -469,6 +469,9 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
         </div>
       );
     }
+
+    // Sort the transferResults array by order
+    const sortedResults = [...transferResults].sort((a, b) => a.order - b.order);
     
     return (
       <div className="transfer-results-container">
@@ -476,14 +479,18 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
         <table className="release-table">
           <thead>
             <tr>
+              <th>#</th>
               <th className="team-name-cell">Team</th>
               <th>Released Players</th>
               <th className="purse-cell">Remaining Purse</th>
             </tr>
           </thead>
           <tbody>
-            {transferResults.map((team, index) => (
+            {sortedResults.map((team, index) => (
               <tr key={index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                <td className="order-cell">
+                  <div className="order-tag">{team.order}</div>
+                </td>
                 <td className="team-name-cell">
                   <div className="team-name">{team.teamName}</div>
                 </td>

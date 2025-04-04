@@ -558,6 +558,17 @@
   text-align: center;
 }
 
+.order-cell {
+  text-align: right;
+  width: 2%;
+}
+
+.order-tag {
+  margin: 0;
+  font-weight: 500;
+  font-size: 12px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .release-table {
