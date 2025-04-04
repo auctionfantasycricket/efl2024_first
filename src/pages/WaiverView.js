@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Select, Button, Row, Col, Typography, Spin, message, Modal } from 'antd';
+import { Card, Select, Button, Row, Col, Typography, Spin, message, Modal, Tag } from 'antd';
 import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined, EyeOutlined  } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
@@ -80,6 +80,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showwaiverResults, setShowWaiverResults] = useState(false);
   const [waivers, setWaivers] = useState(null);
+
+  const [showtransferResults, setShowTransferResults] = useState(false);
   const [transferResults, setTransferResults] = useState(null);
 
   const [waiverDeadline, setWaiverDeadline] = useState('')
@@ -214,6 +216,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
 
   useEffect(()=>{
     if(LeagueData){
+      console.log("asdf",LeagueData)
       if (leaguetype === 'draft') {
         if (LeagueData[0]?.waiverResults && LeagueData[0]?.waiverResults.length > 0) {
           setShowWaiverResults(true);
@@ -224,7 +227,17 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           setWaivers(null);
           setWaiverProcessedAt(null);
         }
-      } // For auction leagues, we check for transfer results
+      } 
+      // For auction leagues, we check for transfer results
+      else if (leaguetype === 'auction') {
+        if (LeagueData[0]?.releaseDetails && LeagueData[0]?.releaseDetails.length > 0) {
+          setTransferResults(LeagueData[0].releaseDetails);
+          setShowTransferResults(true);
+        } else {
+          setTransferResults(null);
+          setShowTransferResults(false);
+        }
+      }
     }
 
   },[LeagueData])
@@ -404,42 +417,6 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
         <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white', textAlign: 'center' }}>
           Last Processed: {waiverProcessedAt}
         </Text>
-        
-       {/* <div className="result-section">
-          <Text style={{ fontWeight: 'bold', display: 'block', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.75rem' }}>
-            Players Added:
-          </Text>
-           {waiverResults.playersAdded && waiverResults.playersAdded.length > 0 ? (
-            waiverResults.playersAdded.map((player, idx) => (
-              <div key={idx} className="player-item">
-                <UserOutlined />
-                <Text style={{ color: 'white', marginLeft: 4 }}>{player}</Text>
-              </div>
-            ))
-          ) : (
-            <Text style={{ color: 'rgba(255, 255, 255, 0.7)', fontStyle: 'italic' }}>
-              No players added
-            </Text>
-          )} 
-        </div>
-        
-        <div className="result-section">
-          <Text style={{ fontWeight: 'bold', display: 'block', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.75rem' }}>
-            Players Dropped:
-          </Text>
-          {waiverResults.playersDropped && waiverResults.playersDropped.length > 0 ? (
-            waiverResults.playersDropped.map((player, idx) => (
-              <div key={idx} className="player-item">
-                <UserOutlined />
-                <Text style={{ color: 'white', marginLeft: 4 }}>{player}</Text>
-              </div>
-            ))
-          ) : (
-            <Text style={{ color: 'rgba(255, 255, 255, 0.7)', fontStyle: 'italic' }}>
-              No players dropped
-            </Text>
-          )}
-        </div>*/}
 
         { showwaiverResults && (
           <Button 
@@ -479,7 +456,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
 
   // Render transfer results section
   const renderTransferResults = () => {
-    if (!transferResults) {
+    if (!showtransferResults || !transferResults) {
       return (
         <div className="result-placeholder">
           <SwapOutlined className="calendar-icon" style={{ fontSize: 24, marginBottom: 8 }} />
@@ -492,31 +469,54 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
         </div>
       );
     }
+
+    // Sort the transferResults array by order
+    const sortedResults = [...transferResults].sort((a, b) => a.order - b.order);
     
     return (
-      <div>
-        <Text style={{ fontWeight: 'medium', marginBottom: 12, display: 'block', color: 'white' }}>
-          Last Processed: {transferResults.processedDate}
-        </Text>
-        
-        <div className="result-section">
-          <Text style={{ fontWeight: 'bold', display: 'block', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.75rem' }}>
-            Players Released:
-          </Text>
-          {transferResults.playersDropped && transferResults.playersDropped.length > 0 ? (
-            transferResults.playersDropped.map((player, idx) => (
-              <div key={idx} className="player-item">
-                <UserOutlined />
-                <Text style={{ color: 'white', marginLeft: 4 }}>{player}</Text>
-              </div>
-            ))
-          ) : (
-            <Text style={{ color: 'rgba(255, 255, 255, 0.7)', fontStyle: 'italic' }}>
-              No players released
-            </Text>
-          )}
-        </div>
+      <div className="transfer-results-container">
+      <div className="transfer-results-table">
+        <table className="release-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th className="team-name-cell">Team</th>
+              <th>Released Players</th>
+              <th className="purse-cell">Remaining Purse</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sortedResults.map((team, index) => (
+              <tr key={index} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                <td className="order-cell">
+                  <div className="order-tag">{team.order}</div>
+                </td>
+                <td className="team-name-cell">
+                  <div className="team-name">{team.teamName}</div>
+                </td>
+                <td>
+                  <div className="released-players-container">
+                    {team.releasedPlayers.map((player, playerIdx) => (
+                      <div key={playerIdx} className="player-tag">
+                        {player}
+                      </div>
+                    ))}
+                  </div>
+                </td>
+                <td className="purse-cell">
+                  <div className="purse-tag">₹{team.remainingPurse} lacs</div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+      <div className="transfer-results-footer">
+        <Text style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.5)' }}>
+          These players are now available in the free agent pool
+        </Text>
+      </div>
+    </div>
     );
   };
 
@@ -698,6 +698,156 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   };
 
   // Render Transfer Management (for auction leagues)
+  // const renderTransferManagement = () => {
+  //   return (
+  //     <Card 
+  //       title="Transfer Management" 
+  //       className="team-hub-card waiver-view-card"
+  //     >
+  //       <div className="waiver-alert-container">
+  //         <Alert
+  //           banner
+  //           type="info"
+  //           message={
+  //             <Marquee 
+  //               pauseOnHover 
+  //               gradient={false}
+  //               style={{ 
+  //                 color: 'white', 
+  //                 fontWeight: 500,
+  //                 fontSize: '0.875rem'
+  //               }}
+  //             >
+  //               {`Drop Window closing on ${transferDeadline}, if you wish to participate please save players to be dropped.`}
+  //             </Marquee>
+  //           }
+  //           className="waiver-management-alert"
+  //         />
+  //       </div>
+  //       <div className="waiver-view-container">
+  //         <Row gutter={[16, 16]}>
+  //           {/* Players to Release Card */}
+  //           <Col md={8}>
+  //             <Card 
+  //               title="Players to Release"
+  //               className="waiver-card players-drop-card"
+  //             >
+  //               {isLoading ? (
+  //                 <div className="spinner-container">
+  //                   <Spin />
+  //                 </div>
+  //               ) : (
+  //                 <div>
+  //                   {[0].map((index) => (
+  //                     <div key={`release-${index}`} className="select-container">
+  //                       <Text className="select-label">{`Release Player ${index + 1}`}</Text>
+  //                       <Select
+  //                         showSearch
+  //                         allowClear
+  //                         placeholder="Select Player"
+  //                         optionFilterProp="children"
+  //                         onChange={(value) => handleDropChange(index, value)}
+  //                         onClear={() => handleClearDrop(index)}
+  //                         filterOption={(input, option) => 
+  //                           (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+  //                         }
+  //                         filterSort={(optionA, optionB) =>
+  //                           (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+  //                         }
+  //                         options={getFilteredDropOptions(index)}
+  //                         disabled={isSubmitting}
+  //                         value={playersToDrop[index] || undefined}
+  //                         className="custom-select"
+  //                         popupClassName="custom-dropdown"
+  //                       />
+  //                     </div>
+  //                   ))}
+                    
+  //                   {/* Submit Button */}
+  //                   <Button
+  //                     type="primary"
+  //                     icon={isSubmitting ? <Spin size="small" /> : <SwapOutlined />}
+  //                     onClick={handleSubmitTransfer}
+  //                     disabled={isSubmitting || isLoading}
+  //                     //disabled = {true}
+  //                     loading={isSubmitting}
+  //                     className="waiver-submit-button release-submit-button"
+  //                   >
+  //                     {isSubmitting ? "Processing..." : "Release Players"}
+  //                   </Button>
+  //                   {lastupdatedby && (
+  //                     <div 
+  //                       style={{ 
+  //                         marginTop: 12, 
+  //                         textAlign: 'center', 
+  //                         backgroundColor: 'rgba(255, 255, 255, 0.1)', 
+  //                         padding: '8px 12px', 
+  //                         borderRadius: 6,
+  //                         display: 'flex',
+  //                         alignItems: 'center',
+  //                         justifyContent: 'center'
+  //                       }}
+  //                     >
+  //                       <Text 
+  //                         style={{ 
+  //                           color: 'rgba(255, 255, 255, 0.7)', 
+  //                           fontSize: '0.75rem',
+  //                           fontWeight: 500 
+  //                         }}
+  //                       >
+  //                         Last Updated By: {lastupdatedby} 
+  //                         {lastupdatedat && (
+  //                           <span 
+  //                             style={{ 
+  //                               marginLeft: 8, 
+  //                               color: 'rgba(255, 255, 255, 0.5)', 
+  //                               fontSize: '0.675rem' 
+  //                             }}
+  //                           >
+  //                             @ {lastupdatedat}
+  //                           </span>
+  //                         )}
+  //                       </Text>
+  //                     </div>
+  //                   )}
+  //                 </div>
+  //               )}
+  //             </Card>
+  //           </Col>
+            
+  //           {/* Transfer Results Card */}
+  //           <Col md={8}>
+  //             <Card 
+  //               title="Transfer Results"
+  //               className="waiver-card waiver-results-card"
+  //             >
+  //               {renderTransferResults()}
+  //             </Card>
+  //           </Col>
+            
+  //           {/* Empty Column to Match Waiver Layout */}
+  //           {/* <Col md={8}>
+  //             <Card 
+  //               title="Transfer Information"
+  //               className="waiver-card transfer-info-card"
+  //             >
+  //               <div className="result-placeholder">
+  //                 <CalendarOutlined className="calendar-icon" style={{ fontSize: 24, marginBottom: 8 }} />
+  //                 <Text style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.7)' }}>
+  //                   Free Agent Auction Information
+  //                 </Text>
+  //                 <Text style={{ textAlign: 'center', fontSize: 12, marginTop: 8, color: 'rgba(255, 255, 255, 0.5)' }}>
+  //                   Released players enter the free agent pool
+  //                 </Text>
+  //               </div>
+  //             </Card>
+  //           </Col> */}
+  //         </Row>
+  //       </div>
+  //     </Card>
+  //   );
+  // };
+
   const renderTransferManagement = () => {
     return (
       <Card 
@@ -725,9 +875,9 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
           />
         </div>
         <div className="waiver-view-container">
-          <Row gutter={[16, 16]}>
+          <Row gutter={[24, 16]}>
             {/* Players to Release Card */}
-            <Col md={8}>
+            <Col xs={24} md={12}>
               <Card 
                 title="Players to Release"
                 className="waiver-card players-drop-card"
@@ -769,7 +919,6 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                       icon={isSubmitting ? <Spin size="small" /> : <SwapOutlined />}
                       onClick={handleSubmitTransfer}
                       disabled={isSubmitting || isLoading}
-                      //disabled = {true}
                       loading={isSubmitting}
                       className="waiver-submit-button release-submit-button"
                     >
@@ -816,30 +965,13 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
             </Col>
             
             {/* Transfer Results Card */}
-            <Col md={8}>
+            <Col xs={24} md={12}>
               <Card 
                 title="Transfer Results"
                 className="waiver-card waiver-results-card"
+                bodyStyle={{ maxHeight: '450px', overflowY: 'auto' }}
               >
                 {renderTransferResults()}
-              </Card>
-            </Col>
-            
-            {/* Empty Column to Match Waiver Layout */}
-            <Col md={8}>
-              <Card 
-                title="Transfer Information"
-                className="waiver-card transfer-info-card"
-              >
-                <div className="result-placeholder">
-                  <CalendarOutlined className="calendar-icon" style={{ fontSize: 24, marginBottom: 8 }} />
-                  <Text style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.7)' }}>
-                    Free Agent Auction Information
-                  </Text>
-                  <Text style={{ textAlign: 'center', fontSize: 12, marginTop: 8, color: 'rgba(255, 255, 255, 0.5)' }}>
-                    Released players enter the free agent pool
-                  </Text>
-                </div>
               </Card>
             </Col>
           </Row>

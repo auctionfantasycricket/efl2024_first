@@ -299,9 +299,9 @@ export const NewAuction = () => {
                                 </>
                             )}
                         </div>
-                        <div className="timer-and-actions">
+                        <div className="auction-timer-and-actions">
                                 {isTimerRunning && (
-                                <div className={`timer ${timer <= 5 ? 'timer-warning' : ''}`}>
+                                <div className={`auction-timer ${timer <= 5 ? 'auction-timer-warning' : ''}`}>
                                     {timer}
                                 </div>
                                 )}
