@@ -65,7 +65,7 @@ export default function DraftOwnerStats({ data }) {
                 <TableCell sx={getCellStyle(row.ballCount, 2)}>{row.ballCount}</TableCell>
                 <TableCell sx={getCellStyle(row.arCount, 2)}>{row.arCount}</TableCell>
                 <TableCell sx={foreigngetCellStyle(row.fCount, 1, 3)}>{row.fCount}</TableCell>
-                <TableCell sx={getCellStyle(row.totalCount, 8)}>{row.totalCount}</TableCell>
+                <TableCell sx={foreigngetCellStyle(row.totalCount,0, 8)}>{row.totalCount}</TableCell>
               </TableRow>
             ))}
           </TableBody>

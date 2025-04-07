@@ -24,6 +24,28 @@ export default function OwnerStats({ data }) {
     textAlign: 'center',
   });
 
+  const foreigngetCellStyle = (value, minimum, threshold) => {
+    if (value < minimum) {
+      return {
+        backgroundColor: 'transparent',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    } else if (value >= minimum && value < threshold) {
+      return {
+        backgroundColor: 'lightgreen',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    } else {
+      return {
+        backgroundColor: '#FF435A',
+        fontWeight: 'bold',
+        textAlign: 'center',
+      };
+    }
+  };
+
   return (
     <Box sx={{ maxWidth: 900, margin: 'auto' }}>
       {/* <Typography variant="h5" gutterBottom>
@@ -47,8 +69,8 @@ export default function OwnerStats({ data }) {
                 <TableCell sx={getCellStyle(row.batCount, 4)}>{row.batCount}</TableCell>
                 <TableCell sx={getCellStyle(row.ballCount, 4)}>{row.ballCount}</TableCell>
                 <TableCell sx={getCellStyle(row.arCount, 2)}>{row.arCount}</TableCell>
-                <TableCell sx={getCellStyle(row.fCount, 4)}>{row.fCount}</TableCell>
-                <TableCell sx={getCellStyle(row.totalCount, 15)}>{row.totalCount}</TableCell>
+                <TableCell sx={foreigngetCellStyle(row.fCount, 4,6)}>{row.fCount}</TableCell>
+                <TableCell sx={foreigngetCellStyle(row.totalCount,0, 15)}>{row.totalCount}</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>₹{row.currentPurse}</TableCell>
               </TableRow>
             ))}
