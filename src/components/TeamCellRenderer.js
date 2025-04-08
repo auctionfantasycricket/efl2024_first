@@ -1,14 +1,14 @@
 import React from "react";
-import csk from '../assets/images/csk.png';
-import dc from '../assets/images/DC.jpg';
-import gt from '../assets/images/GT.jpg';
-import kkr from '../assets/images/KKR.png';
-import kxip from '../assets/images/KXIP.png';
-import mi from '../assets/images/MI.png';
-import rr from '../assets/images/RR.jpg';
-import rcb from '../assets/images/RCB.jpg';
-import srh from '../assets/images/SRH.jpg';
-import lsg from '../assets/images/LSG.jpg';
+import csk from '../assets/images/Chennai_Super_Kings_Logo.svg';
+import dc from '../assets/images/Delhi_Capitals.svg';
+import gt from '../assets/images/Gujarat_Titans_Logo.svg';
+import kkr from '../assets/images/Kolkata_Knight_Riders_Logo.svg';
+import kxip from '../assets/images/Punjab_Kings_Logo.svg';
+import mi from '../assets/images/Mumbai_Indians_Logo.svg';
+import rr from '../assets/images/Rajasthan_Royals.svg';
+import rcb from '../assets/images/Royal_Challengers_Bengaluru_Logo.svg';
+import srh from '../assets/images/Sunrisers_Hyderabad_Logo.svg';
+import lsg from '../assets/images/Lucknow_Super_Giants_IPL_Logo.svg';
 
 const TeamCellRenderer = (props) => {
     const { value } = props;

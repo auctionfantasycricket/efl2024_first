@@ -1,15 +1,15 @@
 import React from 'react';
 import './PlayerCard.css'
-import csk from '../assets/images/csk_nobck.png';
-import dc from '../assets/images/DC_nobck.png';
-import gt from '../assets/images/GT_nobck.png';
-import kkr from '../assets/images/KKR_nobck.png';
-import kxip from '../assets/images/KXIP_nobck.png';
-import mi from '../assets/images/MI_nobck.png';
-import rr from '../assets/images/rr_nobck.png';
-import rcb from '../assets/images/RCB_bck.png';
-import srh from '../assets/images/srh-nobck.png';
-import lsg from '../assets/images/LSG_nobck.png';
+import csk from '../assets/images/Chennai_Super_Kings_Logo.svg';
+import dc from '../assets/images/Delhi_Capitals.svg';
+import gt from '../assets/images/Gujarat_Titans_Logo.svg';
+import kkr from '../assets/images/Kolkata_Knight_Riders_Logo.svg';
+import kxip from '../assets/images/Punjab_Kings_Logo.svg';
+import mi from '../assets/images/Mumbai_Indians_Logo.svg';
+import rr from '../assets/images/Rajasthan_Royals.svg';
+import rcb from '../assets/images/Royal_Challengers_Bengaluru_Logo.svg';
+import srh from '../assets/images/Sunrisers_Hyderabad_Logo.svg';
+import lsg from '../assets/images/Lucknow_Super_Giants_IPL_Logo.svg';
 
  const PlayerCard = ({playerName, country, type, franchise}) => {
 
