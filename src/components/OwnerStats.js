@@ -1,8 +1,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Box } from '@mui/material';
-import bat from '../assets/images/bat.jpg'
-import ball from '../assets/images/ball.jpg'
-import AR from '../assets/images/allrounder.jpg'
+import bat from '../assets/images/Cricket_bat.svg.png';
+import ball from '../assets/images/Cricketball.svg.png';
+import AR from '../assets/images/AR.png';
 import FlightIcon from '@mui/icons-material/Flight';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';

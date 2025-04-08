@@ -1,7 +1,7 @@
 import React from 'react';
-import bat from '../assets/images/bat.jpg';
-import ball from '../assets/images/ball.jpg';
-import allround from '../assets/images/allrounder.jpg';
+import bat from '../assets/images/Cricket_bat.svg.png';
+import ball from '../assets/images/Cricketball.svg.png';
+import allround from '../assets/images/AR.png';
 
 const RoleCellRenderer = (props) => {
   const { value } = props;
