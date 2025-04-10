@@ -292,6 +292,8 @@ nav.navbar .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
 .offcanvas-body .nav-link:hover,
 .offcanvas-body .nav-link.active {
   opacity: 1;
+  font-weight: 700;
+  /* box-shadow: #121212 0px 0px 0px 2px inset; */
 }
 
 .offcanvas-body .navbar-text {
