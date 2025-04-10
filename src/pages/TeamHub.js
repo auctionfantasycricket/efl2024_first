@@ -31,6 +31,7 @@ const TeamHub = () => {
   const leagueinfo = useSelector((state) => state.league.currentLeague);
   const league_type = leagueinfo?.league_type
 
+
   const navigate = useNavigate()
 
 
@@ -210,6 +211,11 @@ const TeamHub = () => {
               <Typography variant="h5" className="team-name reduced-team-name">
                 {userTeam?.teamName}
               </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography variant="body2" className="team-id">
+                    League Name: {leagueinfo?.league_name}
+                </Typography>
+              </Box>
               
               {/* Team ID Display */}
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
