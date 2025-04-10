@@ -1,63 +1,81 @@
 .landingbody {
-    margin-top: 0;
-    padding: 160px 0 100px 0;
-    background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin-top: 0;
+  padding: 160px 0 100px 0;
+  background: linear-gradient(90.21deg, rgba(21, 18, 97, 0.5) -5.91%, rgba(0, 34, 81, 0.5) 111.58%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-  
-  .landingcontainer {
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
-  }
-  
-  .landingcontainer h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
 
-  .MuiSelect-icon {
-    color: rgba(255, 255, 255, 0.7) !important;
-  }
-  
-  /* .landingcontainer .button-group {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-  }
-  
-  .landingcontainer button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  
-  .landingcontainer .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .landingcontainer input {
-    padding: 10px;
-    font-size: 16px;
-  }
-  
-  @media (max-width: 600px) {
-    .landingcontainer .button-group {
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    .landingcontainer button {
-      width: 100%;
-    }
-  } */
-  
+.landingcontainer {
+width: 90%;
+display: flex;
+flex-direction: column;
+padding: 20px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+border-radius: 8px;
+background: rgba(255, 255, 255, 0.1);
+}
+
+.landingcontainer h1 {
+text-align: center;
+margin-bottom: 20px;
+color: white;
+}
+
+.MuiSelect-icon {
+color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Responsive button groups */
+.button-group-flex {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 992px) {
+.landingcontainer {
+  width: 95%;
+}
+}
+
+@media (max-width: 768px) {
+.landingbody {
+  padding: 120px 0 60px 0;
+}
+
+.landingcontainer {
+  padding: 15px;
+}
+
+.landingcontainer h1 {
+  font-size: 24px;
+}
+}
+
+@media (max-width: 576px) {
+.landingbody {
+  padding: 100px 0 40px 0;
+  align-items: flex-start;
+}
+
+.button-group-flex {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.landingcontainer {
+  width: 95%;
+  padding: 10px;
+}
+
+/* Fix for cards on mobile */
+.MuiCard-root {
+  min-width: auto !important;
+  width: 100% !important;
+  margin: 10px 0 !important;
+}
+}

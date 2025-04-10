@@ -82,3 +82,19 @@ p.success {
 p.danger {
 	color: red;
 }
+
+/************ Custom float button css ************/
+/* .ant-float-btn .ant-float-btn-body {
+  background-color: #ea7013 !important;
+  color: white !important;
+}
+
+
+.ant-float-btn .anticon {
+  color: white !important;
+}
+
+
+.ant-float-btn:hover .ant-float-btn-body {
+  background-color: #9e3d0d !important; 
+} */

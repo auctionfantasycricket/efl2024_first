@@ -1,6 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import {Route, Routes, HashRouter, useNavigate} from 'react-router-dom'
+import {Route, Routes, HashRouter} from 'react-router-dom'
 import { NavBar } from './components/NavBar';
 import HomePage from './pages/HomePage';
 import { Provider, useSelector } from 'react-redux';
@@ -27,30 +27,24 @@ const queryClient = new QueryClient();
 
 // Create a separate component for the float button that can access Redux state
 function HelpButton() {
-  const navigate = useNavigate();
+
   // Access the league info from Redux store
   const leagueInfo = useSelector((state) => state.league.currentLeague);
-  
-  const handleFloatButtonClick = () => {
-    navigate('/league');
-  };
   
   // Create a description based on league info
   const description = leagueInfo ? `${leagueInfo.league_name || 'League Info'}` : 'HELP INFO';
   
   return (
     <FloatButton
-      // icon={<FileTextOutlined />}
       trigger="click"
-      onClick={handleFloatButtonClick}
+      href="#/league"
       type="primary"
       tooltip={<div style={{ color: "white" }}>League Name</div>}
       description={description}
       shape="circle"
       style={{ insetInlineEnd: 24, 
         width: '60px',
-        height: '60px' }}
-      size="large"
+        height: '60px'}}
     />
   );
 }
@@ -93,7 +87,6 @@ function AppContent() {
         <Route path="/teamhub" element={<TeamHub />}/>
       </Routes>
       
-      {/* HelpButton can now access both Router context and Redux state */}
       <HelpButton />
     </>
   );
