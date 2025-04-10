@@ -5,7 +5,7 @@ import navIcon1 from '../assets/images/nav-icon1.svg';
 import navIcon2 from '../assets/images/nav-icon2.svg';
 import navIcon3 from '../assets/images/nav-icon3.svg';
 import './NavBar.css';
-import { Link, BrowserRouter as Router, useNavigate } from "react-router-dom";
+import { Link, BrowserRouter as Router, useNavigate, useLocation  } from "react-router-dom";
 import { FaTimes } from 'react-icons/fa';
 import {useGoogleLogin, googleLogout} from '@react-oauth/google';
 import axios from "axios";
@@ -23,6 +23,9 @@ export const NavBar = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 768);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [showTeamHub, setshowTeamHub] = useState(false)
+
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
@@ -171,6 +174,16 @@ export const NavBar = () => {
     navigate('/');
   };
 
+
+  const isLinkActive = (path) => {
+    // For the home route, only match exact path
+    if (path === '/' && currentPath === '/') {
+      return true;
+    }
+    // For other routes, check if current path starts with the path
+    return path !== '/' && currentPath.startsWith(path);
+  };
+
   // Login button with loading state
   const LoginButton = () => (
     <button 
@@ -212,28 +225,28 @@ export const NavBar = () => {
           )}
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              <Nav.Link as={Link} to="/" className='navbar-link' onClick={() => handleScrollToSection('home')}>
+              <Nav.Link as={Link} to="/" className={`navbar-link ${isLinkActive('/') ? 'active' : ''}`} onClick={() => handleScrollToSection('home')}>
                 Home
               </Nav.Link>
-              <Nav.Link as={Link} to="/players" className='navbar-link'>
+              <Nav.Link as={Link} to="/players" className={`navbar-link ${isLinkActive('/players') ? 'active' : ''}`}>
                 Players List
               </Nav.Link>
-              {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className='navbar-link'>
+              {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`}>
                 Auction
               </Nav.Link>}
-              {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className='navbar-link'>
+              {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className={`navbar-link ${isLinkActive('/draft') ? 'active' : ''}`}>
                 Draft
               </Nav.Link>}
-              {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => null}>
+              {isLoggedIn && <Nav.Link as={Link} to="/teams" className={`navbar-link ${isLinkActive('/teams') ? 'active' : ''}`} onClick={() => null}>
                 Teams
               </Nav.Link>}
-              {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => null}>
+              {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className={`navbar-link ${isLinkActive('/teampoints') ? 'active' : ''}`} onClick={() => null}>
                 Points Table
               </Nav.Link>}
-              {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className='navbar-link' onClick={() => null}>
+              {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => null}>
                 Trends
               </Nav.Link>}
-              {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => null}>
+              {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => null}>
                 Team Hub
               </Nav.Link>}
             </Nav>
@@ -268,28 +281,28 @@ export const NavBar = () => {
               </Offcanvas.Header>
               <Offcanvas.Body>
                 <Nav className="ms-auto">
-                  <Nav.Link as={Link} to="/" className='navbar-link' onClick={() => handleScrollToSection('home')}>
+                  <Nav.Link as={Link} to="/" className={`navbar-link ${isLinkActive('/') ? 'active' : ''}`} onClick={() => handleScrollToSection('home')}>
                     Home
                   </Nav.Link>
-                  <Nav.Link as={Link} to="/players" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  <Nav.Link as={Link} to="/players" className={`navbar-link ${isLinkActive('/players') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Players List
                   </Nav.Link>
-                  {(isleagueAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {(isleagueAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Auction
                   </Nav.Link>}
-                  {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className='navbar-link'>
+                  {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className={`navbar-link ${isLinkActive('/draft') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Draft
                   </Nav.Link>}
-                  {isLoggedIn && <Nav.Link as={Link} to="/teams" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {isLoggedIn && <Nav.Link as={Link} to="/teams" className={`navbar-link ${isLinkActive('/teams') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Teams
                   </Nav.Link>}
-                  {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className={`navbar-link ${isLinkActive('/teampoints') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Points Table
                   </Nav.Link>}
-                  {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Trends
                   </Nav.Link>}
-                  {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className='navbar-link' onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Team Hub
                   </Nav.Link>}
                 </Nav>
