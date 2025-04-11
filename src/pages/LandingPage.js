@@ -118,7 +118,7 @@ const LandingPage = () => {
     localStorage.setItem('leagueId', league._id)
     dispatch(setCurrentLeague(league))
     localStorage.setItem('currentLeague',JSON.stringify(league))
-    navigate('/teams')
+    navigate('/teampoints')
   };
 
   const handleManageLeagueClick = (league) => {
