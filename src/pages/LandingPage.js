@@ -168,207 +168,211 @@ const LandingPage = () => {
       <div className="landingcontainer">
         <h1>Welcome to Fantasy League</h1>
         <Container fluid={isSmallScreen}> 
-          <Row className={isSmallScreen ? 'flex-column' : ''}>
-            <Col xs={12} md={4} className="mb-3">
-              <Card sx={cardStyle}>
-                <CardContent>
-                  <Typography variant="h5" color="white" component="div">
-                    Join a League
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="rgba(255, 255, 255, 0.7)">
-                    Enter the league code to join an existing league.
-                  </Typography>
-                  <TextField 
-                    label="League Code" 
-                    variant="outlined" 
-                    value={leagueCode} 
-                    onChange={(e) => setLeagueCode(e.target.value)} 
-                    fullWidth
-                    sx={{
-                      '& label': {
-                        color: 'rgba(255, 255, 255, 0.7)',
-                      },
-                      '& label.Mui-focused': {
-                        color: 'black',
-                      },
-                      input: {
-                        color: 'white', 
-                      }
-                    }}
-                  />
-                </CardContent>
-                <CardActions>
-                  <Button 
-                    variant="contained" 
-                    onClick={handleJoinLeague} 
-                    disabled={!leagueCode || isLoadingJoin} 
-                    sx={{
-                      borderRadius:'9px',
-                      '&.Mui-disabled': {
-                          color: 'rgba(255, 255, 255, 0.5)',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      },
-                    }}>
-                    {isLoadingJoin ? <CircularProgress size={24} /> : "Join League"}
-                  </Button>
-                </CardActions>
-              </Card>
-            </Col>
-
-            <Col xs={12} md={4} className="mb-3">
-              <Card sx={cardStyle}>
-                <CardContent>
-                  <Typography variant="h5" color="white" component="div">
-                    Create My League
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="rgba(255, 255, 255, 0.7)">
-                    Start a new league and invite your friends!
-                  </Typography>
+        <Row className={isSmallScreen ? 'flex-column' : ''}>
+  {/* My Leagues First */}
+  <Col xs={12} md={4} className="mb-3">
+    <Card sx={cardStyle}>
+      <CardContent>
+        <Typography variant="h5" color="white" component="div">
+          My Leagues
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color='rgba(255, 255, 255, 0.7)'>
+          View and manage your existing leagues.
+        </Typography>
+        {myLeagues && myLeagues.length > 0 ? (
+          <div style={{ width: '100%' }}>
+            {myLeagues.map((league) => (
+              <div 
+                key={league._id} 
+                style={{ 
+                  display: 'flex', 
+                  flexWrap: 'wrap', 
+                  gap: '5px', 
+                  marginBottom: '10px',
+                  justifyContent: isSmallScreen ? 'space-between' : 'flex-start',
+                  width: '100%'
+                }}
+                className="button-group-flex"
+              >
+                <Button 
+                  variant="contained" 
+                  onClick={() => handleLeagueClick(league)}
+                  sx={{ 
+                    borderRadius: '9px',
+                    flex: isSmallScreen ? '1 1 auto' : '0 1 auto'
+                  }}
+                >
+                  {league.league_name}
+                </Button>
+                {league.admins.includes(userProfile?.email) && (
                   <>
-                    <TextField 
-                      label="League Name" 
-                      variant="outlined" 
-                      value={leagueName} 
-                      onChange={(e) => setLeagueName(e.target.value)} 
-                      fullWidth 
-                      sx={{ marginBottom: '10px',
-                          '& label': {
-                            color: 'rgba(255, 255, 255, 0.7)',
-                          },
-                          '& label.Mui-focused': {
-                            color: 'black',
-                          },
-                          input: {
-                            color: 'white',
-                          }
-                       }}
-                    />
-                    <TextField
-                      label="Type of League"
-                      select
-                      variant="outlined"
-                      value={leagueType}
-                      onChange={(e) => setLeagueType(e.target.value)}
-                      fullWidth
-                      sx={{
-                        '& label': {
-                          color: 'rgba(255, 255, 255, 0.7)',
-                        },
-                        '& label.Mui-focused': {
-                          color: 'black',
-                        },
-                        '& .MuiSelect-select': {
-                          color: 'white',
-                        },
+                    <Button
+                      variant="contained" 
+                      color="success"
+                      onClick={() => handleManageLeagueClick(league)}
+                      sx={{ 
+                        borderRadius: '9px',
+                        minWidth: isSmallScreen ? '40px' : 'auto'
                       }}
                     >
-                      <MenuItem value="auction">Auction</MenuItem>
-                      <MenuItem value="draft">Draft</MenuItem>
-                    </TextField>
+                      {isSmallScreen ? <ManageAccountsIcon /> : 'Manage'}
+                    </Button>
+                    <Button
+                      variant="contained" 
+                      color="error"
+                      onClick={() => handleDeleteLeagueClick(league)}
+                      sx={{
+                        borderRadius: '9px',
+                        minWidth: '40px'
+                      }}
+                    >
+                      {isLoadingDelete ? <CircularProgress size={24} /> : <DeleteIcon/>}
+                    </Button>
                   </>
-                </CardContent>
-                <CardActions>
-                  <Button 
-                    variant="contained" 
-                    onClick={handleCreateLeague} 
-                    disabled={!leagueName || !leagueType || isLoadingCreate} 
-                    sx={{borderRadius:'9px',
-                      '&.Mui-disabled': {
-                          color: 'rgba(255, 255, 255, 0.5)',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                      },
-                    }}>
-                  {isLoadingCreate ? <CircularProgress size={24} /> : "Create League"}
-                  </Button>
-                </CardActions>
-              </Card>
-            </Col>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div>
+            <Button 
+              variant="contained" 
+              disabled 
+              sx={{ 
+                display: 'block',
+                marginBottom: '5px',
+                '&.Mui-disabled': {
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                },
+              }}
+            >
+              No Leagues Found
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  </Col>
 
-            <Col xs={12} md={4} className="mb-3">
-              <Card sx={cardStyle}>
-                <CardContent>
-                  <Typography variant="h5" color="white" component="div">
-                    My Leagues
-                  </Typography>
-                  <Typography sx={{ mb: 1.5 }} color='rgba(255, 255, 255, 0.7)'>
-                    View and manage your existing leagues.
-                  </Typography>
-                  {myLeagues && myLeagues.length > 0 ? (
-                    <div style={{ width: '100%' }}>
-                      {myLeagues.map((league) => (
-                        <div 
-                          key={league._id} 
-                          style={{ 
-                            display: 'flex', 
-                            flexWrap: 'wrap', 
-                            gap: '5px', 
-                            marginBottom: '10px',
-                            justifyContent: isSmallScreen ? 'space-between' : 'flex-start',
-                            width: '100%'
-                          }}
-                          className="button-group-flex"
-                        >
-                          <Button 
-                            variant="contained" 
-                            onClick={() => handleLeagueClick(league)}
-                            sx={{ 
-                              borderRadius: '9px',
-                              flex: isSmallScreen ? '1 1 auto' : '0 1 auto'
-                            }}
-                          >
-                            {league.league_name}
-                          </Button>
-                          {league.admins.includes(userProfile?.email) && (
-                            <>
-                              <Button
-                                variant="contained" 
-                                color="success"
-                                onClick={() => handleManageLeagueClick(league)}
-                                sx={{ 
-                                  borderRadius: '9px',
-                                  minWidth: isSmallScreen ? '40px' : 'auto'
-                                }}
-                              >
-                                {isSmallScreen ? <ManageAccountsIcon /> : 'Manage'}
-                              </Button>
-                              <Button
-                                variant="contained" 
-                                color="error"
-                                onClick={() => handleDeleteLeagueClick(league)}
-                                sx={{
-                                  borderRadius: '9px',
-                                  minWidth: '40px'
-                                }}
-                              >
-                                {isLoadingDelete ? <CircularProgress size={24} /> : <DeleteIcon/>}
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div>
-                      <Button 
-                        variant="contained" 
-                        disabled 
-                        sx={{ 
-                          display: 'block',
-                          marginBottom: '5px',
-                          '&.Mui-disabled': {
-                            color: 'rgba(255, 255, 255, 0.5)',
-                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          },
-                        }}
-                      >
-                        No Leagues Found
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Col>
-          </Row>
+  {/* Join a League */}
+  <Col xs={12} md={4} className="mb-3">
+    <Card sx={cardStyle}>
+      <CardContent>
+        <Typography variant="h5" color="white" component="div">
+          Join a League
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="rgba(255, 255, 255, 0.7)">
+          Enter the league code to join an existing league.
+        </Typography>
+        <TextField 
+          label="League Code" 
+          variant="outlined" 
+          value={leagueCode} 
+          onChange={(e) => setLeagueCode(e.target.value)} 
+          fullWidth
+          sx={{
+            '& label': {
+              color: 'rgba(255, 255, 255, 0.7)',
+            },
+            '& label.Mui-focused': {
+              color: 'black',
+            },
+            input: {
+              color: 'white', 
+            }
+          }}
+        />
+      </CardContent>
+      <CardActions>
+        <Button 
+          variant="contained" 
+          onClick={handleJoinLeague} 
+          disabled={!leagueCode || isLoadingJoin} 
+          sx={{
+            borderRadius:'9px',
+            '&.Mui-disabled': {
+                color: 'rgba(255, 255, 255, 0.5)',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+          }}>
+          {isLoadingJoin ? <CircularProgress size={24} /> : "Join League"}
+        </Button>
+      </CardActions>
+    </Card>
+  </Col>
+
+  {/* Create League */}
+  <Col xs={12} md={4} className="mb-3">
+    <Card sx={cardStyle}>
+      <CardContent>
+        <Typography variant="h5" color="white" component="div">
+          Create My League
+        </Typography>
+        <Typography sx={{ mb: 1.5 }} color="rgba(255, 255, 255, 0.7)">
+          Start a new league and invite your friends!
+        </Typography>
+        <>
+          <TextField 
+            label="League Name" 
+            variant="outlined" 
+            value={leagueName} 
+            onChange={(e) => setLeagueName(e.target.value)} 
+            fullWidth 
+            sx={{ marginBottom: '10px',
+                '& label': {
+                  color: 'rgba(255, 255, 255, 0.7)',
+                },
+                '& label.Mui-focused': {
+                  color: 'black',
+                },
+                input: {
+                  color: 'white',
+                }
+             }}
+          />
+          <TextField
+            label="Type of League"
+            select
+            variant="outlined"
+            value={leagueType}
+            onChange={(e) => setLeagueType(e.target.value)}
+            fullWidth
+            sx={{
+              '& label': {
+                color: 'rgba(255, 255, 255, 0.7)',
+              },
+              '& label.Mui-focused': {
+                color: 'black',
+              },
+              '& .MuiSelect-select': {
+                color: 'white',
+              },
+            }}
+          >
+            <MenuItem value="auction">Auction</MenuItem>
+            <MenuItem value="draft">Draft</MenuItem>
+          </TextField>
+        </>
+      </CardContent>
+      <CardActions>
+        <Button 
+          variant="contained" 
+          onClick={handleCreateLeague} 
+          disabled={!leagueName || !leagueType || isLoadingCreate} 
+          sx={{borderRadius:'9px',
+            '&.Mui-disabled': {
+                color: 'rgba(255, 255, 255, 0.5)',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+          }}>
+        {isLoadingCreate ? <CircularProgress size={24} /> : "Create League"}
+        </Button>
+      </CardActions>
+    </Card>
+  </Col>
+</Row>
+
         </Container>
       </div>
       <Modal
