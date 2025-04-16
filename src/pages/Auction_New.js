@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col } from "react-bootstrap";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoginSuccess } from '../components/redux/reducer/authReducer';
 import { setselectedLeagueId } from '../components/redux/reducer/leagueReducer';
@@ -11,375 +10,492 @@ import { useQuery } from '@tanstack/react-query';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
-const fetchteamlist = async (Id) => {
-    const response = await fetch(baseURL + '/get_data?collectionName=teams&leagueId=' + Id);
-    if (!response.ok) {
-        throw new Error('Failed to fetch data');
-    }
+// Separate API service functions
+const apiService = {
+  fetchTeamList: async (leagueId) => {
+    const response = await fetch(`${baseURL}/get_data?collectionName=teams&leagueId=${leagueId}`);
+    if (!response.ok) throw new Error('Failed to fetch teams');
     return response.json();
+  },
+  
+  getSpecificPlayer: async (leagueId, playerName) => {
+    const response = await fetch(`${baseURL}/getspecificplayer?leagueId=${leagueId}&player_name=${playerName}`);
+    if (!response.ok) throw new Error(`Failed to fetch player: ${playerName}`);
+    return response.json();
+  },
+  
+  getNextPlayer: async (leagueId) => {
+    const response = await fetch(`${baseURL}/getplayer?leagueId=${leagueId}`);
+    if (!response.ok) throw new Error('Failed to fetch next player');
+    return response.json();
+  },
+  
+  updatePlayerStatus: async (playerId, payload) => {
+    const response = await fetch(`${baseURL}/updateplayer/${playerId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) throw new Error('Failed to update player status');
+    return response.json();
+  }
+};
+
+// Helper functions
+const calculateIncrement = (currentAmount) => {
+  if (currentAmount >= 500) return 50;
+  if (currentAmount >= 200) return 20;
+  if (currentAmount >= 100) return 10;
+  return 5;
+};
+
+const isBidderDisabled = (owner, currentAmount, playerCountry) => {
+  const squadFull = owner.totalCount >= settings.squadSize;
+  const foreignFull = owner.fCount >= 6 && playerCountry === 'FOREIGN';
+  const maxBidLow = owner.maxBid < currentAmount;
+  return squadFull || foreignFull || maxBidLow;
+};
+
+// Default player object
+const DEFAULT_PLAYER = {
+  "_id": { "$oid": "63b90a44f4902c26b5359388" },
+  "player_name": "Player Name",
+  "ipl_salary": "50.0 L",
+  "status": "unsold",
+  "tier": 4,
+  "player_role": "Type",
+  "isOverseas": true,
+  "ipl_team_name": "Franchise",
+  "afc_base_salary": 20,
+  "rank": 172,
+  "points": 0,
+  "todayPoints": 0
 };
 
 export const NewAuction = () => {
-    const [selectedButton, setSelectedButton] = useState(null);
-    const [bidder, setBidder] = useState('');
-    const [amount, setAmount] = useState(20);
-    const [disableMap, setDisableMap] = useState({});
-    const [requestedPlayer, setRequestedPlayerChange] = useState("");
-    const [editing, setEditing] = useState(false);
-    const [timer, setTimer] = useState(15);
-    const [isTimerRunning, setIsTimerRunning] = useState(false);
-    const [isSold, setIsSold] = useState(false);
-    const [isunSold, setIsunSold] = useState(false);
-    const [buttonSold, setButtonSold] = useState(true);
-    const [buttonUnSold, setButtonUnSold] = useState(true);
-    const [ownerToMaxBid, setOwnerToMaxBid] = useState({});
-    const [ownersData, setOwnersData] = useState();
-    const timerId = useRef();
-    const dispatch = useDispatch();
-    const [buttonTexts, setButtonTexts] = useState([]);
+  // State variables
+  const [selectedButton, setSelectedButton] = useState(null);
+  const [bidder, setBidder] = useState('');
+  const [amount, setAmount] = useState(20);
+  const [disableMap, setDisableMap] = useState({});
+  const [requestedPlayer, setRequestedPlayerChange] = useState("");
+  const [editing, setEditing] = useState(false);
+  const [timer, setTimer] = useState(15);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [isSold, setIsSold] = useState(false);
+  const [isunSold, setIsunSold] = useState(false);
+  const [buttonSold, setButtonSold] = useState(true);
+  const [buttonUnSold, setButtonUnSold] = useState(true);
+  const [ownerToMaxBid, setOwnerToMaxBid] = useState({});
+  const [ownersData, setOwnersData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [player, setPlayerData] = useState(DEFAULT_PLAYER);
+  const [firstBidMade, setFirstBidMade] = useState(false);
+  
+  // Refs
+  const timerId = useRef(null);
+  
+  // Redux
+  const dispatch = useDispatch();
+  const auctionleagueid = useSelector((state) => state.league.selectedLeagueId);
 
-    const auctionleagueid = useSelector((state) => state.league.selectedLeagueId);
+  // Initialize from localStorage
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const leagueId = localStorage.getItem('leagueId');
+    
+    if (token) {
+      try {
+        const user = JSON.parse(atob(token.split('.')[1]));
+        dispatch(setLoginSuccess(user));
+      } catch (e) {
+        console.error("Failed to parse token:", e);
+      }
+    }
 
-    const sample = {
-        "_id": { "$oid": "63b90a44f4902c26b5359388" },
-        "player_name": "Player Name",
-        "ipl_salary": "50.0 L",
-        "status": "unsold",
-        "tier": 4,
-        "player_role": "Type",
-        "isOverseas": true,
-        "ipl_team_name": "Franchise",
-        "afc_base_salary": 20,
-        "rank": 172,
-        "points": 0,
-        "todayPoints": 0
-    };
-    const [getPlayer, setPlayerData] = useState(sample);
+    if (leagueId) {
+      dispatch(setselectedLeagueId(leagueId));
+    }
+  }, [dispatch]);
+
+  // Timer effect
+//   useEffect(() => {
+//     if (timerId.current) {
+//       clearInterval(timerId.current);
+//       timerId.current = null;
+//     }
+    
+//     if (isTimerRunning && timer > 0) {
+//       timerId.current = setInterval(() => {
+//         setTimer(prevTimer => {
+//           if (prevTimer <= 1) {
+//             clearInterval(timerId.current);
+//             timerId.current = null;
+//             setIsTimerRunning(false);
+//             return 0;
+//           }
+//           return prevTimer - 1;
+//         });
+//       }, 1000);
+//     }
+    
+//     return () => {
+//       if (timerId.current) {
+//         clearInterval(timerId.current);
+//         timerId.current = null;
+//       }
+//     };
+//   }, [isTimerRunning]);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        const leagueId = localStorage.getItem('leagueId');
-        if (token) {
-            const user = JSON.parse(atob(token.split('.')[1]));
-            dispatch(setLoginSuccess(user));
-        }
-
-        if (leagueId) {
-            dispatch(setselectedLeagueId(leagueId));
-        }
-    }, [dispatch]);
-
-    useEffect(() => {
-        if (isTimerRunning) {
+        // Clear any existing interval first to prevent multiple timers
+        clearInterval(timerId.current);
+        
+        if (isTimerRunning && timer > 0) {
             timerId.current = setInterval(() => {
-                setTimer(timer => timer - 1);
+                setTimer(prevTimer => prevTimer - 1);
             }, 1000);
         }
+        
         return () => clearInterval(timerId.current);
-    }, [isTimerRunning]);
+    }, [isTimerRunning, timer]);
 
     useEffect(() => {
         if (timer <= 0) {
             clearInterval(timerId.current);
-           // setIsTimerRunning(false);
+            // setIsTimerRunning(false);
         }
     }, [timer]);
 
-    const handleRequestedPlayerChange = event => {
-        setRequestedPlayerChange(event.target.value);
-    };
+  // Fetch teams data using react-query
+  const { data: teamnameinfo, isLoading: teamsLoading } = useQuery({
+    queryKey: ['teamsnameinfo', auctionleagueid],
+    queryFn: () => apiService.fetchTeamList(auctionleagueid),
+    enabled: !!auctionleagueid,
+    onError: (error) => setError(`Failed to load teams: ${error.message}`)
+  });
 
-    const handleClick = async () => {
-        if (requestedPlayer !== "") {
-            try {
-                const response = await fetch(baseURL + '/getspecificplayer?leagueId=' + auctionleagueid + '&player_name=' + requestedPlayer);
-                if (response.ok) {
-                    const json = await response.json();
-                    actionsAfterGetPlayer(json);
-                } else {
-                    console.log('Error: ' + response.status + response.body);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-            return;
-        }
+  // Store team names in state whenever teamnameinfo updates
+  const buttonTexts = useMemo(() => {
+    return teamnameinfo ? teamnameinfo.map(team => team.teamName) : [];
+  }, [teamnameinfo]);
 
-        try {
-            const response = await fetch(baseURL + '/getplayer?leagueId=' + auctionleagueid);
-            if (response.ok) {
-                const json = await response.json();
-                actionsAfterGetPlayer(json);
-            } else {
-                console.log('Error: ' + response.status + response.body);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    const updateDisableMap = (owners, currentAmount, playerCountry) => {
-        return owners.reduce((map, curr) => {
-            const squadFull = curr.totalCount >= settings.squadSize;
-            const foreignFull = curr.fCount >= 6 && playerCountry === 'FOREIGN';
-            const maxBidLow = curr.maxBid < currentAmount;
-            map[curr.teamName] = squadFull || foreignFull || maxBidLow;
-            return map;
-        }, {});
-    };
-
-    async function getOwnersData(playerCountry) {
-        try {
-            const response = await fetch(baseURL + '/get_data?leagueId=' + auctionleagueid + '&collectionName=teams');
-            if (response.ok) {
-                const json = await response.json();
-                setOwnersData(json);
-                const data = json.reduce((acc, curr) => {
-                    acc[curr.teamName] = { maxBid: curr.maxBid, currentPurse: curr.currentPurse };
-                    return acc;
-                }, {});
-                setOwnerToMaxBid(data);
-                setDisableMap(updateDisableMap(json, amount, playerCountry));
-            } else {
-                console.log('Error: ' + response.status + response.body);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const { isLoading, error, data: teamnameinfo } = useQuery({
-        queryKey: ['teamsnameinfo'],
-        queryFn: async () => {
-            let response;
-            try {
-                response = await fetchteamlist(auctionleagueid);
-            } catch (error) {
-                console.log(error);
-            }
-            return response;
-        },
-        enabled: (auctionleagueid !== null && buttonTexts.length === 0),
-    });
-
-    useEffect(() => {
-        if (teamnameinfo) {
-            const teamNames = teamnameinfo.map(team => team.teamName);
-            setButtonTexts(teamNames);
-        }
-    }, [teamnameinfo]);
-
-    function actionsAfterGetPlayer(json) {
-        setPlayerData(json);
-        setAmount(json.afc_base_salary);
-        setBidder('');
-        setSelectedButton(null);
-        setRequestedPlayerChange("");
-        getOwnersData(json.isOverseas ? "FOREIGN" : "INDIAN");
-        setTimer(15);
-        setIsTimerRunning(true);
-        setIsSold(false);
-        setIsunSold(false);
-        setButtonSold(false);
-        setButtonUnSold(false);
-    }
-
-    function increaseAmount(playerCountry) {
-        if (!isTimerRunning) return;
-        let increment = 5;
-        if (amount >= 500) {
-            increment = 50;
-        } else if (amount >= 200 && amount < 500) {
-            increment = 20;
-        } else if (amount >= 100 && amount < 200) {
-            increment = 10;
-        }
-        const newAmount = amount + increment;
-        setAmount(newAmount);
-        setDisableMap(updateDisableMap(ownersData, newAmount, playerCountry));
-    }
-
-    const handleDoubleClick = () => {
-        setEditing(true);
-    };
-
-    const handleBlur = () => {
-        setEditing(false);
-    };
-
-    const handleChange = event => {
-        const newAmount= parseInt(event.target.value);
-        setAmount(newAmount);
-        if (ownersData) {
-            setDisableMap(updateDisableMap(ownersData, newAmount, getPlayer.isOverseas ? "FOREIGN" : "INDIAN"));
-        }
-    };
-
-    const handleSoldClick = (inStatus, inBidder, inAmount) => {
-        const payload = {
-            ownerTeam: inBidder,
-            status: inStatus,
-            boughtFor: inAmount,
-            player_role: getPlayer.player_role,
-            isOverseas: getPlayer.isOverseas
+  // Fetch owners data
+  const fetchOwnersData = useCallback(async (playerCountry) => {
+    try {
+      const ownersData = await apiService.fetchTeamList(auctionleagueid);
+      setOwnersData(ownersData);
+      
+      // Create a map of team name to maxBid and currentPurse
+      const ownerMap = ownersData.reduce((acc, curr) => {
+        acc[curr.teamName] = { 
+          maxBid: curr.maxBid, 
+          currentPurse: curr.currentPurse 
         };
-
-        if (inStatus === 'sold') {
-            setIsSold(true);
-            setButtonSold(true);
-        } else {setIsunSold(true);
-            setButtonUnSold(true);
-        }
-
-        fetch(baseURL + '/updateplayer/' + getPlayer._id.$oid, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-
-        setIsTimerRunning(false);
+        return acc;
+      }, {});
+      setOwnerToMaxBid(ownerMap);
+      
+      // Update disable map based on current amount and player country
+      const newDisableMap = {};
+      ownersData.forEach(owner => {
+        newDisableMap[owner.teamName] = isBidderDisabled(owner, amount, playerCountry);
+      });
+      setDisableMap(newDisableMap);
+      
+      return ownersData;
+    } catch (error) {
+      setError(`Failed to fetch owners data: ${error.message}`);
+      return [];
     }
+  }, [auctionleagueid, amount]);
 
-    return (
-        <div className="auction-page">
-            <div className="main-container">
-                {/* Top Left (Player Display) */}
-                <div className="player-display">
-                    <div className="player-card-wrapper">
-                        <PlayerCard
-                            playerName={getPlayer?.player_name}
-                            country={getPlayer?.isOverseas ? "FOREIGN" : "INDIAN"}
-                            type={getPlayer?.player_role}
-                            franchise={getPlayer?.ipl_team_name}
-                        />
-                        {isSold && <div className="sold-tag">SOLD</div>}
-                        {isunSold && <div className="unsold-tag">UNSOLD</div>}
-                    </div>
-                    <div className="bidding-area">
-                        <div className="bid-info">
-                            <div className="bid-detail">
-                                <span className="label">Current Bidder:</span>
-                                <span className="value">{bidder || "—"}</span>
-                            </div>
-                            <div className="bid-detail">
-                                <span className="label">Bid Amount:</span>
-                                {editing ? (
-                                    <input
-                                        type="text"
-                                        value={amount}
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        className="bid-input"
-                                    />
-                                ) : (
-                                    <span className="value" onDoubleClick={handleDoubleClick}>
-                                        {amount} lacs
-                                    </span>
-                                )}
-                            </div>
-                            {bidder && (
-                                <>
-                                    <div className="bid-detail">
-                                        <span className="label">Current Purse:</span>
-                                        <span className="value">{ownerToMaxBid[bidder]?.currentPurse || 0} lacs</span>
-                                    </div>
-                                    <div className="bid-detail">
-                                        <span className="label">Max Bid:</span>
-                                        <span className="value">{ownerToMaxBid[bidder]?.maxBid || 0} lacs</span>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                        <div className="auction-timer-and-actions">
-                                {isTimerRunning && (
-                                <div className={`auction-timer ${timer <= 5 ? 'auction-timer-warning' : ''}`}>
-                                    {timer}
-                                </div>
-                                )}
-                            <div className="action-buttons">
-                                <button
-                                    className={`btn ${isSold ? 'btn-success' : 'btn-primary'}`}
-                                    onClick={() => handleSoldClick('sold', bidder, amount)}
-                                    disabled={buttonSold || !bidder}
-                                >
-                                    Mark Sold
-                                </button>
-                                <button
-                                    className={`btn ${isunSold ? 'btn-secondary' : 'btn-outline-secondary'}`}
-                                    onClick={() => handleSoldClick('unsold-processed', '', 0)}
-                                    disabled={buttonUnSold}
-                                >
-                                    Mark Unsold
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  // Handle player search and fetch
+  const handlePlayerFetch = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      let playerData;
+      
+      if (requestedPlayer) {
+        playerData = await apiService.getSpecificPlayer(auctionleagueid, requestedPlayer);
+      } else {
+        playerData = await apiService.getNextPlayer(auctionleagueid);
+      }
+      
+      // Reset auction state
+      setPlayerData(playerData);
+      setAmount(playerData.afc_base_salary);
+      setBidder('');
+      setSelectedButton(null);
+      setRequestedPlayerChange("");
+      setIsSold(false);
+      setIsunSold(false);
+      setButtonSold(false);
+      setButtonUnSold(false);
+      setFirstBidMade(false);
+      
+      // Reset and start timer
+      if (timerId.current) {
+        clearInterval(timerId.current);
+        timerId.current = null;
+      }
+      setTimer(15);
+      setIsTimerRunning(true);
+      
+      // Fetch updated owners data based on new player
+      await fetchOwnersData(playerData.isOverseas ? "FOREIGN" : "INDIAN");
+    } catch (error) {
+      setError(`Failed to fetch player: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [auctionleagueid, requestedPlayer, fetchOwnersData]);
 
-                {/* Top Right (Owner Stats) */}
-                <div className="owner-stats-container">
-                    {ownersData && <OwnerStats data={ownersData} />}
-                </div>
+  // Handle bidding and amount increase
+  const handleBid = useCallback((teamName, index) => {
+    if (!isTimerRunning || disableMap[teamName]) return;
+    
+    setSelectedButton(index);
+    setBidder(teamName);
+    
+    // Reset timer on new bid
+    setTimer(15);
+    
+    // Only increase amount after first bid has been made
+    if (firstBidMade) {
+      const increment = calculateIncrement(amount);
+      const newAmount = amount + increment;
+      setAmount(newAmount);
+      
+      // Update disable map with new amount
+      if (ownersData.length > 0) {
+        const playerCountry = player.isOverseas ? "FOREIGN" : "INDIAN";
+        const newDisableMap = {};
+        ownersData.forEach(owner => {
+          newDisableMap[owner.teamName] = isBidderDisabled(owner, newAmount, playerCountry);
+        });
+        setDisableMap(newDisableMap);
+      }
+    } else {
+      // Mark that first bid has been made
+      setFirstBidMade(true);
+    }
+  }, [isTimerRunning, disableMap, amount, ownersData, player, firstBidMade]);
 
-                {/* Bottom Left (Team Buttons) */}
-                <div className="team-buttons">
-                    <div className="team-buttons-grid">
-                        {buttonTexts?.map((text, index) => (
-                            <div
-                                key={index}
-                                className={`team-btn-container ${selectedButton === index ? 'selected' : ''} ${disableMap[text] ? 'disabled' : ''}`}
-                            >
-                                {selectedButton === index && (
-                                    <img
-                                        src={require('../assets/images/auction_hand.png')}
-                                        alt="bidding"
-                                        className="bid-paddle"
-                                    />
-                                )}
-                                <button
-                                    disabled={disableMap[text]}
-                                    onClick={() => {
-                                        setSelectedButton(index);
-                                        setBidder(text);
-                                        increaseAmount(getPlayer.isOverseas ? "FOREIGN" : "INDIAN");
-                                        setTimer(15);
-                                        setIsTimerRunning(true);
-                                    }}
-                                >
-                                    {text}
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+  // Handle manual amount editing
+  const handleAmountChange = (event) => {
+    // Parse and validate input
+    const newAmount = parseInt(event.target.value);
+    if (isNaN(newAmount) || newAmount < 0) return;
+    
+    setAmount(newAmount);
+    
+    // Update disable map with new amount if owners data is available
+    if (ownersData.length > 0) {
+      const playerCountry = player.isOverseas ? "FOREIGN" : "INDIAN";
+      const newDisableMap = {};
+      ownersData.forEach(owner => {
+        newDisableMap[owner.teamName] = isBidderDisabled(owner, newAmount, playerCountry);
+      });
+      setDisableMap(newDisableMap);
+    }
+  };
 
-                {/* Bottom Right (Next Player Controls) */}
-                <div className="next-player-controls">
-                    <div className="search-player">
-                        <input
-                            type="text"
-                            placeholder="Search player by name..."
-                            value={requestedPlayer}
-                            onChange={handleRequestedPlayerChange}
-                            className="player-search-input"
-                        />
-                        <button className="btn btn-primary" onClick={handleClick}>
-                            {requestedPlayer ? "Search Player" : "Next Player"}
-                        </button>
-                    </div>
-                </div>
+  // Handle sold/unsold status
+  const handlePlayerStatus = async (status, currentBidder, currentAmount) => {
+    if (loading) return;
+    
+    setLoading(true);
+    
+    try {
+      const payload = {
+        ownerTeam: currentBidder,
+        status: status,
+        boughtFor: currentAmount,
+        player_role: player.player_role,
+        isOverseas: player.isOverseas
+      };
+      
+      if (status === 'sold') {
+        setIsSold(true);
+        setButtonSold(true);
+        setButtonUnSold(true);
+      } else {
+        setIsunSold(true);
+        setButtonSold(true);
+        setButtonUnSold(true);
+      }
+      
+      // Stop timer
+      setIsTimerRunning(false);
+      if (timerId.current) {
+        clearInterval(timerId.current);
+        timerId.current = null;
+      }
+      
+      // Update player status on server
+      await apiService.updatePlayerStatus(player._id.$oid, payload);
+      
+      // Refresh owners data after successful update
+      await fetchOwnersData(player.isOverseas ? "FOREIGN" : "INDIAN");
+    } catch (error) {
+      setError(`Failed to update player status: ${error.message}`);
+      
+      // Reset status on error
+      if (status === 'sold') {
+        setIsSold(false);
+        setButtonSold(false);
+      } else {
+        setIsunSold(false);
+        setButtonUnSold(false);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="auction-page">
+      <div className="main-container">
+        {/* Error display */}
+        {error && (
+          <div className="error-message">
+            <div className="alert alert-danger">{error}</div>
+          </div>
+        )}
+        
+        {/* Top Left (Player Display) */}
+        <div className="player-display">
+          <div className="player-card-wrapper">
+            <PlayerCard
+              playerName={player?.player_name}
+              country={player?.isOverseas ? "FOREIGN" : "INDIAN"}
+              type={player?.player_role}
+              franchise={player?.ipl_team_name}
+            />
+            {isSold && <div className="sold-tag">SOLD</div>}
+            {isunSold && <div className="unsold-tag">UNSOLD</div>}
+          </div>
+          <div className="bidding-area">
+            <div className="bid-info">
+              <div className="bid-detail">
+                <span className="label">Current Bidder:</span>
+                <span className="value">{bidder || "—"}</span>
+              </div>
+              <div className="bid-detail">
+                <span className="label">Bid Amount:</span>
+                {editing ? (
+                  <input
+                    type="number"
+                    value={amount}
+                    min={1}
+                    onBlur={() => setEditing(false)}
+                    onChange={handleAmountChange}
+                    className="bid-input"
+                    autoFocus
+                  />
+                ) : (
+                  <span className="value" onDoubleClick={() => setEditing(true)}>
+                    {amount} lacs
+                  </span>
+                )}
+              </div>
+              {bidder && (
+                <>
+                  <div className="bid-detail">
+                    <span className="label">Current Purse:</span>
+                    <span className="value">{ownerToMaxBid[bidder]?.currentPurse || 0} lacs</span>
+                  </div>
+                  <div className="bid-detail">
+                    <span className="label">Max Bid:</span>
+                    <span className="value">{ownerToMaxBid[bidder]?.maxBid || 0} lacs</span>
+                  </div>
+                </>
+              )}
             </div>
+            <div className="auction-timer-and-actions">
+              {isTimerRunning && (
+                <div className={`auction-timer ${timer <= 5 ? 'auction-timer-warning' : ''}`}>
+                  {timer}
+                </div>
+              )}
+              <div className="action-buttons">
+                <button
+                  className={`btn ${isSold ? 'btn-success' : 'btn-primary'}`}
+                  onClick={() => handlePlayerStatus('sold', bidder, amount)}
+                  disabled={buttonSold || !bidder || loading}
+                >
+                  {loading && isSold ? "Processing..." : "Mark Sold"}
+                </button>
+                <button
+                  className={`btn ${isunSold ? 'btn-secondary' : 'btn-outline-secondary'}`}
+                  onClick={() => handlePlayerStatus('unsold-processed', '', 0)}
+                  disabled={buttonUnSold || loading}
+                >
+                  {loading && isunSold ? "Processing..." : "Mark Unsold"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+
+        {/* Top Right (Owner Stats) */}
+        <div className="owner-stats-container">
+          {ownersData.length > 0 && <OwnerStats data={ownersData} />}
+        </div>
+
+        {/* Bottom Left (Team Buttons) */}
+        <div className="team-buttons">
+          <div className="team-buttons-grid">
+            {buttonTexts.map((text, index) => (
+              <div
+                key={index}
+                className={`team-btn-container ${selectedButton === index ? 'selected' : ''} ${disableMap[text] ? 'disabled' : ''}`}
+              >
+                {selectedButton === index && (
+                  <img
+                    src={require('../assets/images/auction_hand.png')}
+                    alt="bidding"
+                    className="bid-paddle"
+                  />
+                )}
+                <button
+                  disabled={disableMap[text] || loading || isSold || isunSold}
+                  onClick={() => handleBid(text, index)}
+                >
+                  {text}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom Right (Next Player Controls) */}
+        <div className="next-player-controls">
+          <div className="search-player">
+            <input
+              type="text"
+              placeholder="Search player by name..."
+              value={requestedPlayer}
+              onChange={(e) => setRequestedPlayerChange(e.target.value)}
+              className="player-search-input"
+              disabled={loading}
+            />
+            <button 
+              className="btn btn-primary" 
+              onClick={handlePlayerFetch}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : requestedPlayer ? "Search Player" : "Next Player"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default NewAuction;
