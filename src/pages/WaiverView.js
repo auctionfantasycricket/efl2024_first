@@ -804,7 +804,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <SwapOutlined />}
                       onClick={handleSubmitTransfer}
-                      disabled={isSubmitting || isLoading}
+                      // disabled={isSubmitting || isLoading}
+                      disabled={true}
                       loading={isSubmitting}
                       className="waiver-submit-button release-submit-button"
                     >
