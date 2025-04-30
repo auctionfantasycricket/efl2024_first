@@ -775,7 +775,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                       </div>
                     )}
                     {/* View History Button */}
-                    <Button
+                    {waiverHistory && <Button
                       type="default"
                       icon={<HistoryOutlined />}
                       onClick={handleOpenHistory}
@@ -791,7 +791,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                       }}
                     >
                       View Waiver History
-                    </Button>
+                    </Button>}
                     
                     {/* Waiver History Modal */}
                     <WaiverHistory
