@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Row, Col, Typography, Spin, message, Modal } from 'antd';
-import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined, EyeOutlined } from '@ant-design/icons';
+import { ReloadOutlined, UserOutlined, CalendarOutlined, SwapOutlined, EyeOutlined, HistoryOutlined  } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import './WaiverView.css';
@@ -8,6 +8,7 @@ import { encryptData, decryptData } from '../components/Encryption';
 import { Alert } from 'antd';
 import Marquee from 'react-fast-marquee';
 import WaiverResults from './WaiverResults';
+import WaiverHistory from './WaiverHistory';
 
 // Material UI imports
 import FormControl from '@mui/material/FormControl';
@@ -40,6 +41,14 @@ const fetchWaiverPlayerslist = async (id) => {
 
 const fetchTeamInfo = async (teamid) => {
   const response = await fetch(`${baseURL}/getTeamById/${teamid}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch team info');
+  }
+  return response.json();
+};
+
+const fetchWaiverHistory = async (teamid) => {
+  const response = await fetch(`${baseURL}/getWaiverHistory/${teamid}`);
   if (!response.ok) {
     throw new Error('Failed to fetch team info');
   }
@@ -97,6 +106,10 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   const [waiverProcessedAt, setWaiverProcessedAt] = useState('');
 
   const [isWaiverResultsModalVisible, setIsWaiverResultsModalVisible] = useState(false);
+
+  const [isHistoryModalVisible, setIsHistoryModalVisible] = useState(false);
+  const [waiverHistory, setWaiverHistory] = useState([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   // Get player list using React Query
   const {
@@ -163,6 +176,21 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
       }
       return response;
     }
+  });
+
+
+  const { isLoading: isLoadingWH, error: errorWH, data: waiverHistoryData } = useQuery({
+    queryKey: ['waiverhistory', teamId],
+    queryFn: async () => {
+      let response;
+      try {
+        response = await fetchWaiverHistory(teamId);
+      } catch (error) {
+        console.log(error);
+      }
+      return response;
+    },
+    enabled: teamId !== null,
   });
 
   useEffect(() => {
@@ -234,6 +262,13 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
       }
     }
   }, [LeagueData, leaguetype]);
+
+  // Set waiver history data when it's fetched
+  useEffect(() => {
+    if (waiverHistoryData) {
+      setWaiverHistory(waiverHistoryData);
+    }
+  }, [waiverHistoryData]);
 
   const handledecrypt = (val, opt) => {
     if (opt === "pref") {
@@ -391,6 +426,16 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Open waiver history modal
+  const handleOpenHistory = () => {
+    setIsHistoryModalVisible(true);
+  };
+
+  // Close waiver history modal
+  const handleCloseHistory = () => {
+    setIsHistoryModalVisible(false);
   };
 
   // Render waiver results section
@@ -729,6 +774,31 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                         </Text>
                       </div>
                     )}
+                    {/* View History Button */}
+                    <Button
+                      type="default"
+                      icon={<HistoryOutlined />}
+                      onClick={handleOpenHistory}
+                      style={{
+                        marginTop: 12,
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white'
+                      }}
+                    >
+                      View Waiver History
+                    </Button>
+                    
+                    {/* Waiver History Modal */}
+                    <WaiverHistory
+                      visible={isHistoryModalVisible}
+                      onClose={handleCloseHistory}
+                      historyData={waiverHistory}
+                    />
                   </div>
                 )}
               </Card>

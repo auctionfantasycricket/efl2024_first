@@ -1,0 +1,113 @@
+.waiver-history-modal .ant-modal-content {
+    background-color: #001529;
+    border-radius: 8px;
+  }
+  
+  .waiver-history-modal .ant-modal-header {
+    background-color: #001529;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .waiver-history-modal .ant-modal-title {
+    color: white;
+  }
+  
+  .waiver-history-modal .ant-modal-close {
+    color: rgba(255, 255, 255, 0.65);
+  }
+  
+  .waiver-history-modal .ant-modal-close:hover {
+    color: white;
+  }
+  
+  .waiver-history-header h4 {
+    color: white;
+    margin-bottom: 4px;
+  }
+  
+  .waiver-history-content {
+    overflow-y: auto;
+    max-height: 70vh;
+    padding: 8px 0;
+  }
+  
+  .waiver-history-card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 16px;
+  }
+  
+  .waiver-history-card:last-child {
+    margin-bottom: 0;
+  }
+  
+  .waiver-history-card .ant-card-head {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    min-height: auto;
+    padding: 12px 16px;
+  }
+  
+  .waiver-history-card .ant-card-head-title {
+    padding: 0;
+  }
+  
+  .waiver-history-card .ant-card-body {
+    padding: 16px;
+  }
+  
+  .waiver-history-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .waiver-history-card-header span {
+    color: white;
+  }
+  
+  .waiver-history-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  
+  .waiver-history-section {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .waiver-history-section-title {
+    display: block;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .player-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .player-history-tag {
+    background-color: rgba(24, 144, 255, 0.1);
+    border: 1px solid rgba(24, 144, 255, 0.3);
+    color: #1890ff;
+    padding: 4px 12px;
+    border-radius: 4px;
+  }
+  
+  .no-selection {
+    color: rgba(255, 255, 255, 0.45);
+    font-style: italic;
+  }
+  
+  .waiver-history-empty {
+    padding: 40px 0;
+  }
+  
+  .waiver-history-empty .ant-empty-description {
+    color: rgba(255, 255, 255, 0.45);
+  }
