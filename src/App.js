@@ -83,8 +83,8 @@ function AppContent() {
         <Route path="/waiver" element={<WaiverSystem/>} /> */}
         <Route path="/SignIn" element={<SignIn />} />
         <Route path='/league' element={<LandingPage />} />
-        <Route path="/manageleague" element={<LeagueManagement />}/>
-        <Route path="/teamhub" element={<TeamHub />}/>
+        {/* <Route path="/manageleague" element={<LeagueManagement />}/>
+        <Route path="/teamhub" element={<TeamHub />}/> */}
       </Routes>
       
       <HelpButton />

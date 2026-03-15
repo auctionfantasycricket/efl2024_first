@@ -231,7 +231,7 @@ export const NavBar = () => {
               <Nav.Link as={Link} to="/players" className={`navbar-link ${isLinkActive('/players') ? 'active' : ''}`}>
                 Players List
               </Nav.Link>
-              {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`}>
+              {/* {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`}>
                 Auction
               </Nav.Link>}
               {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className={`navbar-link ${isLinkActive('/draft') ? 'active' : ''}`}>
@@ -248,7 +248,7 @@ export const NavBar = () => {
               </Nav.Link>}
               {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => null}>
                 Team Hub
-              </Nav.Link>}
+              </Nav.Link>} */}
             </Nav>
             <span className="navbar-text">
               <div className="social-icon">
@@ -287,7 +287,7 @@ export const NavBar = () => {
                   <Nav.Link as={Link} to="/players" className={`navbar-link ${isLinkActive('/players') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Players List
                   </Nav.Link>
-                  {(isleagueAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {/* {(isleagueAdmin && isLoggedIn) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Auction
                   </Nav.Link>}
                   {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className={`navbar-link ${isLinkActive('/draft') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -304,7 +304,7 @@ export const NavBar = () => {
                   </Nav.Link>}
                   {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Team Hub
-                  </Nav.Link>}
+                  </Nav.Link>} */}
                 </Nav>
                 <div className="social-icon">
                   <a href="#"><img src={navIcon2} alt="" /></a>
