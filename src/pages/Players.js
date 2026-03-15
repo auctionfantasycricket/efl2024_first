@@ -222,7 +222,8 @@ const onBtnExport = useCallback(() => {
                 ref={gridRef}
                 loading={isInitializing || leagueplayerlist.isLoading || listplayers.isLoading}
                 rowData={Allplayers}
-                columnDefs={datacolumndefs()}
+                // columnDefs={datacolumndefs()}
+                columnDefs={auctioncolumnDefs()}
                 defaultColDef={defaultColDef}
                 //pagination={true}
                 //paginationPageSize={50}

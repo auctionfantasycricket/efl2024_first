@@ -75,12 +75,12 @@ function AppContent() {
         <Route path="/" element={<HomePage />} />
         <Route path="/players" element={<AllPlayers />} />
         <Route path="/auction" element={<NewAuction />}/>
-        <Route path="/draft" element={<SnakeDraft />}/>
+        {/* <Route path="/draft" element={<SnakeDraft />}/>
         <Route path="/manageteam" element={<ManageTeam />}/>
         <Route path="/teams" element={<Teams />}/>
         <Route path="/teampoints" element={<TeamPoints />} />
         <Route path="/linegraph" element={<Linegraph />} />
-        <Route path="/waiver" element={<WaiverSystem/>} />
+        <Route path="/waiver" element={<WaiverSystem/>} /> */}
         <Route path="/SignIn" element={<SignIn />} />
         <Route path='/league' element={<LandingPage />} />
         <Route path="/manageleague" element={<LeagueManagement />}/>
