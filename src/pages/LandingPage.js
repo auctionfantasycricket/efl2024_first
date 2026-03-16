@@ -1,3 +1,4 @@
+//src/pages/LandingPage.js
 import React from 'react'
 import { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";

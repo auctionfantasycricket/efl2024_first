@@ -1,3 +1,4 @@
+//src/pages/LeagueManagement.js
 import React, { useState, useEffect } from 'react';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import {
@@ -43,6 +44,8 @@ const LeagueManagement = () => {
     const leagueId = useSelector((state) => state.league.selectedLeagueId);
     const userProfile = useSelector((state) => state.login.userProfile);
     const leagueinfo = useSelector((state) => state.league.currentLeague);
+
+    const leagueInviteUrl = `${window.location.origin}/join/${leagueinfo?._id}`;
 
     const adminEmails = leagueinfo?.admins;
     const isAdmin = adminEmails && adminEmails.includes(userProfile?.email);
@@ -244,7 +247,8 @@ const LeagueManagement = () => {
                             <Typography variant="h8" color="white" style={{ marginRight: '8px' }}>
                                 {leagueinfo?._id || 'Loading...'}
                             </Typography>
-                            <IconButton onClick={() => handleCopy(leagueinfo?._id)} style={{color:"rgba(255, 255, 255, 0.7)"}}>
+                            {/* <IconButton onClick={() => handleCopy(leagueinfo?._id)} style={{color:"rgba(255, 255, 255, 0.7)"}}> */}
+                            <IconButton onClick={() => handleCopy(leagueInviteUrl)} style={{color:"rgba(255, 255, 255, 0.7)"}}>
                                 <FileCopyIcon />
                             </IconButton>
                         </div>

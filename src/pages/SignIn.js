@@ -67,7 +67,7 @@
 
 // export default SignIn
 
-
+//src/pages/SignIn.js
 import React, { useEffect, useCallback } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
@@ -99,7 +99,15 @@ const SignIn = () => {
 
       localStorage.setItem('token', backendtoken.data.token);
       dispatch(setLoginSuccess(jwtDecode(backendtoken.data.token)));
-      navigate('/league');
+      // navigate('/league');
+      
+      // ✅ Check if user arrived via an invite link
+      const pendingLeagueJoin = localStorage.getItem('pendingLeagueJoin');
+      if (pendingLeagueJoin) {
+        navigate(`/join/${pendingLeagueJoin}`); // JoinLeague page will handle the actual join
+      } else {
+        navigate('/league');
+      }
     } catch (err) {
       console.log(err);
     }
