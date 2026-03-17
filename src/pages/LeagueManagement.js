@@ -45,7 +45,7 @@ const LeagueManagement = () => {
     const userProfile = useSelector((state) => state.login.userProfile);
     const leagueinfo = useSelector((state) => state.league.currentLeague);
 
-    const leagueInviteUrl = `${window.location.origin}/join/${leagueinfo?._id}`;
+    const leagueInviteUrl = `${window.location.origin}/#/join/${leagueinfo?._id}`;
 
     const adminEmails = leagueinfo?.admins;
     const isAdmin = adminEmails && adminEmails.includes(userProfile?.email);
