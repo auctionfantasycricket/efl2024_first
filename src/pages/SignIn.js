@@ -100,9 +100,10 @@ const SignIn = () => {
       localStorage.setItem('token', backendtoken.data.token);
       dispatch(setLoginSuccess(jwtDecode(backendtoken.data.token)));
       // navigate('/league');
-      
+
       // ✅ Check if user arrived via an invite link
       const pendingLeagueJoin = localStorage.getItem('pendingLeagueJoin');
+      console.log('Pending league join:', pendingLeagueJoin);
       if (pendingLeagueJoin) {
         navigate(`/join/${pendingLeagueJoin}`); // JoinLeague page will handle the actual join
       } else {
