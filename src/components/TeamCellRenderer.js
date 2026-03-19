@@ -15,34 +15,34 @@ const TeamCellRenderer = (props) => {
   
     let imageSrc;
     switch (value) {
-      case 'Lucknow Super Giants':
+      case 'LSG':
         imageSrc = lsg;
         break;
-      case 'Punjab Kings':
+      case 'PBKS':
         imageSrc = kxip;
         break;
-      case 'Chennai Super Kings':
+      case 'CSK':
         imageSrc = csk;
         break;
-      case 'Delhi Capitals':
+      case 'DC':
         imageSrc = dc;
         break;
-      case 'Gujarat Titans':
+      case 'GT':
         imageSrc = gt;
         break;
-      case 'Kolkata Knight Riders':
+      case 'KKR':
         imageSrc = kkr;
         break;
-      case 'Mumbai Indians':
+      case 'MI':
         imageSrc = mi;
         break;
-      case 'Rajasthan Royals':
+      case 'RR':
         imageSrc = rr;
         break;
-      case 'Royal Challengers Bengaluru':
+      case 'RCB':
         imageSrc = rcb;
         break;
-      case 'Sunrisers Hyderabad':
+      case 'SRH':
         imageSrc = srh;
         break;
       default:

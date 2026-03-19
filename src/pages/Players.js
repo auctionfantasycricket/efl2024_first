@@ -227,6 +227,7 @@ const onBtnExport = useCallback(() => {
                 //pagination={true}
                 //paginationPageSize={50}
                 components={components}
+                //components={{ loadingOverlay: CustomLoadingOverlay }}
                 suppressExcelExport={true}
                 animateRows={true}
                 gridOptions={gridOptions}
