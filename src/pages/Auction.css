@@ -22,7 +22,7 @@
   min-height: calc(100vh - 120px);
   display: grid;
   grid-template-columns: 75% 24%; /* 65% width for player details/team buttons, 34% for owner table/next player */
-  grid-template-rows: 75% 24%; /* 65% height for player details/owner table, 34% for team buttons/next player */
+  grid-template-rows: 60% 38%; /* more room for team buttons */
   column-gap: 1%; /* 1% gap between columns */
   row-gap: 1%; /* 1% gap between rows */
 }
@@ -33,7 +33,7 @@
   grid-row: 1 / 2;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 20px;
@@ -47,7 +47,7 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 50%;
+  flex: 0 0 auto;
 }
 
 .sold-tag, .unsold-tag {
@@ -82,39 +82,66 @@
   border-radius: 12px;
   padding: 14px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  height: 45%;
+  flex: 1;
+  min-height: 0;
 }
 
 .bid-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 60%;
+  align-content: start;
+}
+
+/* Legacy selectors kept for safety */
+.bid-detail { display: flex; align-items: center; gap: 9px; }
+.label { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.7); width: 120px; }
+.value { font-size: 15px; font-weight: 600; color: white; background-color: rgba(255,255,255,0.15); padding: 3px 8px; border-radius: 6px; min-width: 100px; text-align: center; }
+
+/* New stat cards */
+.bid-stat-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 60%;
-}
-
-.bid-detail {
-  display: flex;
   align-items: center;
-  gap: 9px;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  gap: 6px;
 }
 
-.label {
+.bid-stat-card.amount-card {
+  border-color: rgba(255, 193, 7, 0.4);
+  background: rgba(255, 193, 7, 0.08);
+}
+
+.bid-stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.bid-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.amount-value {
+  font-size: 28px;
+  color: #ffd35b;
+}
+
+.bid-unit {
   font-size: 12px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  width: 120px;
-}
-
-.value {
-  font-size: 15px;
-  font-weight: 600;
-  color: white;
-  background-color: rgba(255, 255, 255, 0.15);
-  padding: 3px 8px;
-  border-radius: 6px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  min-width: 100px;
-  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 2px;
 }
 
 .bid-input {
@@ -139,10 +166,10 @@
 }
 
 .auction-timer {
-  font-size: 45px;
+  font-size: 64px;
   font-weight: 700;
-  width: 70px;
-  height: 70px;
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -244,7 +271,7 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: auto;
+  overflow: visible;
   /* border: 1px solid rgba(255, 255, 255, 0.5); */
 }
 
@@ -255,6 +282,8 @@
   height: 100%;
   justify-content: center;
   align-items: center;
+  padding-top: 65px; /* room for the paddle to float above buttons */
+  overflow: visible;
 }
 
 .team-btn-container {
@@ -271,7 +300,6 @@
   height: 100%;
   border: none;
   border-radius: 8px;
-  /* background: linear-gradient(135deg, #c28bf5 0%, #6d387e 100%); */
   background: linear-gradient(135deg, #5d79fb 0%, #2d46b5 100%);
   color: white;
   font-weight: 600;
@@ -280,6 +308,11 @@
   transition: all 0.3s ease;
   padding: 8px;
   border: 1px solid rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
 }
 
 .team-btn-container button:hover:not([disabled]) {
@@ -300,7 +333,8 @@
 
 .bid-paddle {
   position: absolute;
-  top: -20px;
+  top: -65px;
+  left: calc(50% - 30px);
   width: 60px;
   height: 60px;
   z-index: 5;
@@ -469,4 +503,67 @@
   .team-buttons-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* Player stat chips */
+.player-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.stat-chip {
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+}
+
+.stat-chip.highlight {
+  background-color: rgba(255, 193, 7, 0.25);
+  border-color: rgba(255, 193, 7, 0.5);
+}
+
+/* Keyboard shortcut hint button */
+.shortcut-hint-btn {
+  background: transparent;
+  border: 1px solid var(--border-color, rgba(255,255,255,0.2));
+  color: var(--text-secondary, #B8B8B8);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition, 0.3s ease-in-out);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+}
+
+.shortcut-hint-btn:hover {
+  background: var(--bg-surface-hover, rgba(255,255,255,0.1));
+  color: var(--text-primary, #fff);
+}
+
+/* Shortcut key badge on team buttons */
+.team-btn-shortcut-key {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 0.65rem;
+  font-weight: 700;
+  vertical-align: middle;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
 }

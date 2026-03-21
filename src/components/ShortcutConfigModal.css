@@ -1,0 +1,99 @@
+.shortcut-modal .shortcut-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.shortcut-modal .shortcut-row:hover {
+  background: var(--bg-surface-hover);
+}
+
+.shortcut-modal .shortcut-row.listening {
+  border-color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb, 74, 128, 240), 0.1);
+}
+
+.shortcut-modal .shortcut-team-name {
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+.shortcut-modal .shortcut-key-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 var(--spacing-sm);
+  border-radius: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  font-family: monospace;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.shortcut-modal .shortcut-key-badge.unset {
+  color: var(--text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.shortcut-modal .listening-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-primary);
+  font-style: italic;
+}
+
+.shortcut-modal .shortcut-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.shortcut-modal .shortcut-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--border-color);
+}
+
+.shortcut-modal .shortcut-hint-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.shortcut-modal .amount-shortcuts-section {
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--bg-surface);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: var(--spacing-md);
+}
+
+.shortcut-modal .amount-shortcuts-section h4 {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.shortcut-modal .amount-shortcut-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}

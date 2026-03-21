@@ -7,6 +7,8 @@ import OwnerStats from '../components/OwnerStats';
 import settings from '../settings.json';
 import './Auction.css';
 import { useQuery } from '@tanstack/react-query';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import ShortcutConfigModal from '../components/ShortcutConfigModal';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
 
@@ -92,9 +94,12 @@ export const NewAuction = () => {
   const [error, setError] = useState(null);
   const [player, setPlayerData] = useState(DEFAULT_PLAYER);
   const [firstBidMade, setFirstBidMade] = useState(false);
-  
+  const [shortcutModalOpen, setShortcutModalOpen] = useState(false);
+
   // Refs
   const timerId = useRef(null);
+  const amountInputRef = useRef(null);
+  const searchInputRef = useRef(null);
   
   // Redux
   const dispatch = useDispatch();
@@ -181,26 +186,28 @@ export const NewAuction = () => {
     return teamnameinfo ? teamnameinfo.map(team => team.teamName) : [];
   }, [teamnameinfo]);
 
+  const { shortcuts, setShortcut, resetShortcuts } = useKeyboardShortcuts(buttonTexts);
+
   // Fetch owners data
-  const fetchOwnersData = useCallback(async (playerCountry) => {
+  const fetchOwnersData = useCallback(async (playerCountry, startingAmount = amount) => {
     try {
       const ownersData = await apiService.fetchTeamList(auctionleagueid);
       setOwnersData(ownersData);
-      
+
       // Create a map of team name to maxBid and currentPurse
       const ownerMap = ownersData.reduce((acc, curr) => {
-        acc[curr.teamName] = { 
-          maxBid: curr.maxBid, 
-          currentPurse: curr.currentPurse 
+        acc[curr.teamName] = {
+          maxBid: curr.maxBid,
+          currentPurse: curr.currentPurse
         };
         return acc;
       }, {});
       setOwnerToMaxBid(ownerMap);
-      
+
       // Update disable map based on current amount and player country
       const newDisableMap = {};
       ownersData.forEach(owner => {
-        newDisableMap[owner.teamName] = isBidderDisabled(owner, amount, playerCountry);
+        newDisableMap[owner.teamName] = isBidderDisabled(owner, startingAmount, playerCountry);
       });
       setDisableMap(newDisableMap);
       
@@ -245,8 +252,9 @@ export const NewAuction = () => {
       setTimer(15);
       setIsTimerRunning(true);
       
-      // Fetch updated owners data based on new player
-      await fetchOwnersData(playerData.isOverseas ? "FOREIGN" : "INDIAN");
+      // Fetch updated owners data based on new player — pass base salary explicitly
+      // to avoid stale `amount` closure reading the previous player's final bid
+      await fetchOwnersData(playerData.isOverseas ? "FOREIGN" : "INDIAN", playerData.afc_base_salary);
     } catch (error) {
       setError(`Failed to fetch player: ${error.message}`);
     } finally {
@@ -284,6 +292,75 @@ export const NewAuction = () => {
       setFirstBidMade(true);
     }
   }, [isTimerRunning, disableMap, amount, ownersData, player, firstBidMade]);
+
+  // Keyboard shortcuts handler
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      const tag = e.target.tagName;
+      // Don't fire when typing in any input/textarea except our amount field
+      if ((tag === 'INPUT' || tag === 'TEXTAREA') && e.target !== amountInputRef.current) return;
+
+      const key = e.key === '?' ? '?' : e.key.toLowerCase();
+
+      // Open shortcut config modal
+      if (key === '?') {
+        setShortcutModalOpen(true);
+        return;
+      }
+
+      if (shortcutModalOpen) return;
+
+      // Amount shortcuts
+      if (key === 'a') {
+        setEditing(true);
+        setTimeout(() => amountInputRef.current?.focus(), 0);
+        return;
+      }
+
+      // Search / Next Player shortcuts
+      if (key === 's') {
+        searchInputRef.current?.focus();
+        return;
+      }
+      if (key === 'n') {
+        handlePlayerFetch();
+        return;
+      }
+      if (key === 'arrowup') {
+        e.preventDefault();
+        const next = amount + calculateIncrement(amount);
+        setAmount(next);
+        if (ownersData.length > 0) {
+          const playerCountry = player.isOverseas ? 'FOREIGN' : 'INDIAN';
+          const newDisableMap = {};
+          ownersData.forEach(owner => { newDisableMap[owner.teamName] = isBidderDisabled(owner, next, playerCountry); });
+          setDisableMap(newDisableMap);
+        }
+        return;
+      }
+      if (key === 'arrowdown') {
+        e.preventDefault();
+        const next = Math.max(player.afc_base_salary, amount - calculateIncrement(amount));
+        setAmount(next);
+        if (ownersData.length > 0) {
+          const playerCountry = player.isOverseas ? 'FOREIGN' : 'INDIAN';
+          const newDisableMap = {};
+          ownersData.forEach(owner => { newDisableMap[owner.teamName] = isBidderDisabled(owner, next, playerCountry); });
+          setDisableMap(newDisableMap);
+        }
+        return;
+      }
+
+      // Team bid shortcuts
+      const teamName = Object.keys(shortcuts).find(t => shortcuts[t] === key);
+      if (teamName) {
+        const index = buttonTexts.indexOf(teamName);
+        if (index !== -1) handleBid(teamName, index);
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [shortcuts, buttonTexts, amount, player, ownersData, shortcutModalOpen, handleBid, handlePlayerFetch]);
 
   // Handle manual amount editing
   const handleAmountChange = (event) => {
@@ -376,19 +453,27 @@ export const NewAuction = () => {
               type={player?.player_role}
               franchise={player?.ipl_team_name}
             />
+            <div className="player-stats">
+              <div className="stat-chip highlight">Rank #{player?.rank}</div>
+              <div className="stat-chip">Tier {player?.tier}</div>
+              <div className="stat-chip">Base {player?.afc_base_salary}L</div>
+              <div className="stat-chip">IPL {player?.ipl_salary}</div>
+              <div className="stat-chip">{player?.points} pts</div>
+            </div>
             {isSold && <div className="sold-tag">SOLD</div>}
             {isunSold && <div className="unsold-tag">UNSOLD</div>}
           </div>
           <div className="bidding-area">
             <div className="bid-info">
-              <div className="bid-detail">
-                <span className="label">Current Bidder:</span>
-                <span className="value">{bidder || "—"}</span>
+              <div className="bid-stat-card">
+                <span className="bid-stat-label">Current Bidder</span>
+                <span className="bid-stat-value">{bidder || "—"}</span>
               </div>
-              <div className="bid-detail">
-                <span className="label">Bid Amount:</span>
+              <div className="bid-stat-card amount-card">
+                <span className="bid-stat-label">Bid Amount</span>
                 {editing ? (
                   <input
+                    ref={amountInputRef}
                     type="number"
                     value={amount}
                     min={1}
@@ -398,23 +483,19 @@ export const NewAuction = () => {
                     autoFocus
                   />
                 ) : (
-                  <span className="value" onDoubleClick={() => setEditing(true)}>
-                    {amount} lacs
+                  <span className="bid-stat-value amount-value" onDoubleClick={() => setEditing(true)}>
+                    {amount} <span className="bid-unit">lacs</span>
                   </span>
                 )}
               </div>
-              {bidder && (
-                <>
-                  <div className="bid-detail">
-                    <span className="label">Current Purse:</span>
-                    <span className="value">{ownerToMaxBid[bidder]?.currentPurse || 0} lacs</span>
-                  </div>
-                  <div className="bid-detail">
-                    <span className="label">Max Bid:</span>
-                    <span className="value">{ownerToMaxBid[bidder]?.maxBid || 0} lacs</span>
-                  </div>
-                </>
-              )}
+              <div className="bid-stat-card">
+                <span className="bid-stat-label">Current Purse</span>
+                <span className="bid-stat-value">{bidder ? (ownerToMaxBid[bidder]?.currentPurse || 0) : "—"} {bidder ? <span className="bid-unit">lacs</span> : ""}</span>
+              </div>
+              <div className="bid-stat-card">
+                <span className="bid-stat-label">Max Bid</span>
+                <span className="bid-stat-value">{bidder ? (ownerToMaxBid[bidder]?.maxBid || 0) : "—"} {bidder ? <span className="bid-unit">lacs</span> : ""}</span>
+              </div>
             </div>
             <div className="auction-timer-and-actions">
               {isTimerRunning && (
@@ -422,6 +503,13 @@ export const NewAuction = () => {
                   {timer}
                 </div>
               )}
+              <button
+                className="shortcut-hint-btn"
+                onClick={() => setShortcutModalOpen(true)}
+                title="Keyboard shortcuts"
+              >
+                ?
+              </button>
               <div className="action-buttons">
                 <button
                   className={`btn ${isSold ? 'btn-success' : 'btn-primary'}`}
@@ -467,16 +555,29 @@ export const NewAuction = () => {
                   onClick={() => handleBid(text, index)}
                 >
                   {text}
+                  {shortcuts[text] && (
+                    <span className="team-btn-shortcut-key">{shortcuts[text].toUpperCase()}</span>
+                  )}
                 </button>
               </div>
             ))}
           </div>
         </div>
 
+        <ShortcutConfigModal
+          open={shortcutModalOpen}
+          onClose={() => setShortcutModalOpen(false)}
+          teams={buttonTexts}
+          shortcuts={shortcuts}
+          setShortcut={setShortcut}
+          resetShortcuts={resetShortcuts}
+        />
+
         {/* Bottom Right (Next Player Controls) */}
         <div className="next-player-controls">
           <div className="search-player">
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Search player by name..."
               value={requestedPlayer}
