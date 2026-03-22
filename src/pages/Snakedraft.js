@@ -13,7 +13,7 @@ import DraftOwnerStats from '../components/DraftOwnerStats';
 
 // Constants
 const baseURL = process.env.REACT_APP_BASE_URL;
-const ROUNDS = 8;
+const ROUNDS = 10;
 const TIMER_DURATION = 30;
 
 const Snakedraft = () => {
@@ -468,7 +468,7 @@ const Snakedraft = () => {
                     headerHeight={50}
                     suppressMovableColumns={true}
                     animateRows={true}
-                    domLayout="autoHeight"
+                    domLayout="normal"
                   />
                 ) : (
                   <div className="no-data-message">
