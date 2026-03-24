@@ -16,6 +16,33 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { jwtDecode } from 'jwt-decode';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
+const TOKEN_EXPIRY_KEY = 'tokenExpiry';
+const TOKEN_KEY = 'token';
+const LEAGUE_ID_KEY = 'leagueId';
+const CURRENT_LEAGUE_KEY = 'currentLeague';
+const PENDING_LEAGUE_JOIN_KEY = 'pendingLeagueJoin';
+const DEFAULT_TOKEN_EXPIRY = new Date('2026-06-01T00:00:00.000Z').toISOString();
+
+const clearLocalAuthData = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(TOKEN_EXPIRY_KEY);
+  localStorage.removeItem(LEAGUE_ID_KEY);
+  localStorage.removeItem(CURRENT_LEAGUE_KEY);
+  localStorage.removeItem(PENDING_LEAGUE_JOIN_KEY);
+};
+
+const isTokenValid = () => {
+  const expiryRaw = localStorage.getItem(TOKEN_EXPIRY_KEY);
+  if (!expiryRaw) return false;
+  const expiryDate = new Date(expiryRaw);
+  if (Number.isNaN(expiryDate.getTime())) return false;
+  return expiryDate.getTime() >= Date.now();
+};
+
+const setAuthData = (token) => {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(TOKEN_EXPIRY_KEY, DEFAULT_TOKEN_EXPIRY);
+};
 
 export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -80,6 +107,35 @@ export const NavBar = () => {
   },[leagueId])
 
   useEffect(() => {
+    // Global auth guard: on page load, force logout if no valid tokenExpiry
+    const token = localStorage.getItem(TOKEN_KEY);
+
+    if (!token || !isTokenValid()) {
+      console.info('Auth check failed (missing/expired token); clearing storage and logging out');
+      clearLocalAuthData();
+      dispatch(setLogoutSuccess());
+      dispatch(clearLeagueState());
+      if (window.location.pathname !== '/') {
+        navigate('/');
+      }
+      return;
+    }
+
+    try {
+      const user = JSON.parse(atob(token.split('.')[1]));
+      dispatch(setLoginSuccess(user));
+    } catch (err) {
+      console.warn('Malformed token on load, clearing local storage and logging out', err);
+      clearLocalAuthData();
+      dispatch(setLogoutSuccess());
+      dispatch(clearLeagueState());
+      if (window.location.pathname !== '/') {
+        navigate('/');
+      }
+    }
+  }, [dispatch, navigate]);
+
+  useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
     };
@@ -124,10 +180,8 @@ export const NavBar = () => {
           name: res.data.name
         });
 
-        localStorage.setItem('token', backendtoken.data.token);
-
-        //dispatch(setLoginSuccess(res.data));
-        dispatch(setLoginSuccess(jwtDecode(backendtoken.data.token)))
+        setAuthData(backendtoken.data.token);
+        dispatch(setLoginSuccess(jwtDecode(backendtoken.data.token)));
         navigate('/league');
       } catch (err) {
         console.log(err);
@@ -145,20 +199,32 @@ export const NavBar = () => {
   const handlelogin = () => {
     // Set loading state to true when login process starts
     setIsLoggingIn(true);
-    
+
+    if (!isTokenValid()) {
+      clearLocalAuthData();
+      login();
+      return;
+    }
+
     const token = localStorage.getItem('token');
     const storedLeagueId = localStorage.getItem('leagueId');
-    
+
     if (storedLeagueId) {
       dispatch(setselectedLeagueId(storedLeagueId));
     }
-    
+
     if (token) {
-      const user = JSON.parse(atob(token.split('.')[1]));
-      dispatch(setLoginSuccess(user));
-      navigate('/league');
-      // If token exists, login is immediate, so reset loading state
-      setIsLoggingIn(false);
+      try {
+        const user = JSON.parse(atob(token.split('.')[1]));
+        dispatch(setLoginSuccess(user));
+        navigate('/league');
+      } catch (err) {
+        console.warn('Invalid token in storage, clearing out and re-running login', err);
+        clearLocalAuthData();
+        login();
+      } finally {
+        setIsLoggingIn(false);
+      }
     } else {
       // Google login will be initiated, loading state will be reset in callbacks
       login();
@@ -166,8 +232,7 @@ export const NavBar = () => {
   };
 
   const handlelogOut = () => {
-    localStorage.removeItem('leagueId');
-    localStorage.removeItem('currentLeague');
+    clearLocalAuthData();
     dispatch(setLogoutSuccess());
     dispatch(clearLeagueState());
     googleLogout();

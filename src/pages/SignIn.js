@@ -79,6 +79,35 @@ import './SignIn.css';
 import { jwtDecode } from 'jwt-decode';
 
 const baseURL = process.env.REACT_APP_BASE_URL;
+const TOKEN_EXPIRY_KEY = 'tokenExpiry';
+const TOKEN_KEY = 'token';
+const LEAGUE_ID_KEY = 'leagueId';
+const CURRENT_LEAGUE_KEY = 'currentLeague';
+const PENDING_LEAGUE_JOIN_KEY = 'pendingLeagueJoin';
+
+// Default expiry to June 1, 2026 (UTC)
+const DEFAULT_TOKEN_EXPIRY = new Date('2026-06-01T00:00:00.000Z').toISOString();
+
+const clearLocalAuthData = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(TOKEN_EXPIRY_KEY);
+  localStorage.removeItem(LEAGUE_ID_KEY);
+  localStorage.removeItem(CURRENT_LEAGUE_KEY);
+  localStorage.removeItem(PENDING_LEAGUE_JOIN_KEY);
+};
+
+const setAuthData = (token) => {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(TOKEN_EXPIRY_KEY, DEFAULT_TOKEN_EXPIRY);
+};
+
+const isTokenValid = () => {
+  const expiryRaw = localStorage.getItem(TOKEN_EXPIRY_KEY);
+  if (!expiryRaw) return false;
+  const expiryDate = new Date(expiryRaw);
+  if (Number.isNaN(expiryDate.getTime())) return false;
+  return expiryDate.getTime() >= Date.now();
+};
 
 const SignIn = () => {
   const dispatch = useDispatch();
@@ -97,7 +126,7 @@ const SignIn = () => {
         name: res.data.name
       });
 
-      localStorage.setItem('token', backendtoken.data.token);
+      setAuthData(backendtoken.data.token);
       dispatch(setLoginSuccess(jwtDecode(backendtoken.data.token)));
       // navigate('/league');
 
@@ -119,17 +148,30 @@ const SignIn = () => {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const leagueId = localStorage.getItem('leagueId');
-    
+    // Expiry check: if tokenExpiry is missing/expired, clear and force a full re-auth.
+    if (!isTokenValid()) {
+      clearLocalAuthData();
+      login();
+      return;
+    }
+
+    const token = localStorage.getItem(TOKEN_KEY);
+    const leagueId = localStorage.getItem(LEAGUE_ID_KEY);
+
     if (leagueId) {
       dispatch(setselectedLeagueId(leagueId));
     }
-    
+
     if (token) {
-      const user = JSON.parse(atob(token.split('.')[1]));
-      dispatch(setLoginSuccess(user));
-      navigate('/league');
+      try {
+        const user = JSON.parse(atob(token.split('.')[1]));
+        dispatch(setLoginSuccess(user));
+        navigate('/league');
+      } catch (err) {
+        console.warn('Invalid token format, clearing storage:', err);
+        clearLocalAuthData();
+        login();
+      }
     } else {
       login();
     }

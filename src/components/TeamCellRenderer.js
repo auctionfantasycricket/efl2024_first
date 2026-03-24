@@ -8,7 +8,7 @@ import mi from '../assets/images/Mumbai_Indians_Logo.svg';
 import rr from '../assets/images/Rajasthan_Royals.svg';
 import rcb from '../assets/images/Royal_Challengers_Bengaluru_Logo.svg';
 import srh from '../assets/images/Sunrisers_Hyderabad_Logo.svg';
-import lsg from '../assets/images/Lucknow_Super_Giants_IPL_Logo.svg';
+import lsg from '../assets/images/Lucknow_Super_Giants_Logo.svg';
 
 const TeamCellRenderer = (props) => {
     const { value } = props;
