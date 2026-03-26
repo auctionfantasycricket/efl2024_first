@@ -468,7 +468,7 @@ const Snakedraft = () => {
                     headerHeight={50}
                     suppressMovableColumns={true}
                     animateRows={true}
-                    domLayout="normal"
+                    domLayout="autoHeight"
                   />
                 ) : (
                   <div className="no-data-message">
