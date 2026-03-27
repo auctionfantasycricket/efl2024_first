@@ -99,7 +99,7 @@ export const NavBar = () => {
   // }, [dispatch]);
 
   useEffect(()=>{
-    if (leagueId === '67d4dd408786c3e1b4ee172a' || leagueId === '67da30b26a17f44a19c2241a'){
+    if (leagueId === '69b8f3329617ab57b73fe0f2' || leagueId === '69bb53f6d126798f01a796c6' || leagueId === '69bb5791d126798f01a797c0'){
       setshowTeamHub(true)
     }else{
       setshowTeamHub(false)

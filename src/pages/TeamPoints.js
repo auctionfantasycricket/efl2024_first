@@ -499,8 +499,10 @@ export default function TeamPoints() {
         acc[player.ownerTeam] = [];
         acc[player.ownerTeam].teamplayerpoints = 0;
       }
+
       acc[player.ownerTeam].push({
         name: player.player_name,
+        team: player.ipl_team_name,
         points: player.points,
         todayspoints: player.todayPoints,
       });
@@ -556,6 +558,7 @@ export default function TeamPoints() {
 
   const playerColumns = [
     { headerName: "Name", field: "name", width: 120 },
+    { headerName: "Team", field: "team", width: 100 },
     { headerName: "Points", field: "points", width: 100, sort: "desc" },
     { headerName: "TodaysPoints", field: "todayspoints", width: 130 },
   ];

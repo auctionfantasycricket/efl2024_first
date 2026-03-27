@@ -19,6 +19,7 @@ import DraftTeams from './pages/DraftTeams';
 import SignIn from './pages/SignIn';
 import LandingPage from './pages/LandingPage';
 import LeagueManagement from './pages/LeagueManagement'
+import UserManagement from './pages/UserManagement'
 import TeamHub from './pages/TeamHub'
 import JoinLeague from './pages/JoinLeague';
 import { FileTextOutlined } from '@ant-design/icons';
@@ -86,6 +87,7 @@ function AppContent() {
         <Route path='/league' element={<LandingPage />} />
         <Route path="/manageleague" element={<LeagueManagement />}/>
         <Route path="/teamhub" element={<TeamHub />}/>
+        <Route path="/usermgmt" element={<UserManagement />}/>
         <Route path="/join/:leagueId" element={<JoinLeague />} />
       </Routes>
       
