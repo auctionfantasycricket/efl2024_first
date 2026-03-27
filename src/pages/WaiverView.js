@@ -864,10 +864,10 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
                       index={0} 
                       label="Release Player 1" 
                     />
-                    <MaterialDropSelect 
+                    {/* <MaterialDropSelect 
                       index={1} 
                       label="Release Player 2" 
-                    />
+                    /> */}
 
                     {/* Submit Button */}
                     <Button
