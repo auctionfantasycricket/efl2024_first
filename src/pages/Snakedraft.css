@@ -64,43 +64,53 @@
 
 .search-timer-controls {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
-    gap: 15px;
+    gap: var(--spacing-sm, 8px);
+    flex-wrap: wrap;
 }
 
 .search-container {
     position: relative;
-    width: 40%;
+    width: 220px;
+    flex-shrink: 0;
 }
 
 .search-input {
     width: 100%;
-    padding: 10px 35px 10px 10px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
+    padding: 8px 32px 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-sm, 8px);
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary, white);
+    font-size: var(--font-size-sm, 0.875rem);
+    font-family: var(--font-family, inherit);
+    transition: var(--transition, 0.3s ease-in-out);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary, #3e63dd);
+    background-color: rgba(255, 255, 255, 0.12);
 }
 
 .search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted, rgba(255, 255, 255, 0.45));
 }
 
 .search-icon {
     position: absolute;
-    right: 10px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-muted, rgba(255, 255, 255, 0.45));
+    font-size: 18px;
 }
 
 .action-controls {
     display: flex;
     align-items: center;
-    gap: 10px;
-    width: 58%;
-    justify-content: flex-end;
+    gap: var(--spacing-sm, 8px);
 }
 
 .admin-team-status {
@@ -134,37 +144,42 @@
     margin: 0;
   }
   
-  /* Enhancing existing timer classes */
   .timer-display {
     display: flex;
     align-items: center;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-weight: bold;
+    gap: 4px;
+    padding: 7px 12px;
+    border-radius: var(--border-radius-sm, 8px);
+    font-weight: 600;
+    font-size: var(--font-size-sm, 0.875rem);
+    border: 1px solid transparent;
+    transition: var(--transition, 0.3s ease-in-out);
+    white-space: nowrap;
   }
-  
+
   .timer-normal {
-    background-color:rgba(255, 255, 255, 0.15);
-    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary, white);
   }
-  
+
   .timer-warning {
-    background-color: #ffc107;
-    color: white;
-    animation: none;
+    background-color: rgba(255, 193, 7, 0.25);
+    border-color: rgba(255, 193, 7, 0.5);
+    color: #ffc107;
   }
-  
+
   .timer-critical {
-    background-color: rgba(220, 53, 69, 0.6);
+    background-color: rgba(220, 53, 69, 0.25);
+    border-color: rgba(220, 53, 69, 0.6);
+    color: #ff6b7a;
     animation: pulse 1s infinite;
-    box-shadow: 0 0 20px rgba(220, 53, 69, 0.4);
-    color: white;
   }
-  
+
   @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% { box-shadow: 0 0 0 rgba(220, 53, 69, 0.4); }
+    50% { box-shadow: 0 0 10px rgba(220, 53, 69, 0.5); }
+    100% { box-shadow: 0 0 0 rgba(220, 53, 69, 0.4); }
 } 
 
 /* .timer-display {
@@ -207,23 +222,100 @@
     100% { transform: scale(1); }
 } */
 
-.search-button, .draft-button {
-    background-color: #3e63dd;
-    color: white;
-    padding: 10px 15px;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
+.search-button, .draft-button, .pause-button {
+    padding: 7px 14px;
+    border-radius: var(--border-radius-sm, 8px);
+    font-size: var(--font-size-sm, 0.875rem);
+    font-family: var(--font-family, inherit);
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border: 1px solid transparent;
+    transition: var(--transition, 0.3s ease-in-out);
+    white-space: nowrap;
 }
 
-.search-button:hover, .draft-button:hover {
+.search-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary, white);
+}
+
+.search-button:hover:not(:disabled) {
+    background-color: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.draft-button {
+    background-color: var(--color-primary, #3e63dd);
+    border-color: var(--color-primary, #3e63dd);
+    color: white;
+}
+
+.draft-button:hover:not(:disabled) {
     background-color: #2e53cd;
+    border-color: #2e53cd;
 }
 
-.draft-button:disabled {
-    background-color: rgba(62, 99, 221, 0.5);
+.draft-button:disabled, .search-button:disabled {
+    opacity: 0.4;
     cursor: not-allowed;
+}
+
+.pause-button {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary, #b8b8b8);
+}
+
+.pause-button:hover {
+    background-color: rgba(255, 255, 255, 0.14);
+}
+
+.pause-button.is-paused {
+    background-color: rgba(40, 167, 69, 0.2);
+    border-color: rgba(40, 167, 69, 0.6);
+    color: #7dcc7d;
+}
+
+.pause-button.is-paused:hover {
+    background-color: rgba(40, 167, 69, 0.3);
+}
+
+/* On-the-clock cell highlight */
+.on-the-clock-cell {
+    background: linear-gradient(135deg, rgba(62, 99, 221, 0.3), rgba(62, 99, 221, 0.1));
+    border: 2px solid var(--color-primary, #3e63dd);
+    border-radius: 8px;
+    text-align: center;
+    padding: 10px;
+    font-weight: 600;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    animation: clock-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes clock-pulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(62, 99, 221, 0.4); }
+    50% { box-shadow: 0 0 16px rgba(62, 99, 221, 0.8); }
+}
+
+.on-the-clock-cell-wrapper {
+    padding: 0 !important;
+}
+
+/* Draft complete badge */
+.draft-complete-badge {
+    background-color: rgba(40, 167, 69, 0.2);
+    border: 1px solid rgba(40, 167, 69, 0.6);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: #7dcc7d;
+    font-weight: 600;
+    font-size: 14px;
 }
 
 .selected-player-card {
@@ -357,7 +449,7 @@
   .stats-container .MuiTable-root {
     width: 100%;
     border-collapse: collapse;
-    background-color: lightgray;
+    background-color: var(--bg-surface, rgba(255, 255, 255, 0.05));
   }
   
   .stats-container .MuiTableHead-root {
