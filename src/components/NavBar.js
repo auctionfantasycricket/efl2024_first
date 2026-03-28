@@ -296,21 +296,19 @@ export const NavBar = () => {
               <Nav.Link as={Link} to="/players" className={`navbar-link ${isLinkActive('/players') ? 'active' : ''}`}>
                 Players List
               </Nav.Link>
-              {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`}>
+              {/* {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`}>
                 Auction
-              </Nav.Link>}
+              </Nav.Link>} */}
               {isLoggedIn && <Nav.Link as={Link} to="/teams" className={`navbar-link ${isLinkActive('/teams') ? 'active' : ''}`} onClick={() => null}>
                 Teams
               </Nav.Link>}
               {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className={`navbar-link ${isLinkActive('/draft') ? 'active' : ''}`}>
                 Draft
               </Nav.Link>}
-              {/* {isLoggedIn && <Nav.Link as={Link} to="/teams" className={`navbar-link ${isLinkActive('/teams') ? 'active' : ''}`} onClick={() => null}>
-                Teams
-              </Nav.Link>}
               {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className={`navbar-link ${isLinkActive('/teampoints') ? 'active' : ''}`} onClick={() => null}>
                 Points Table
               </Nav.Link>}
+              {/* 
               {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => null}>
                 Trends
               </Nav.Link>}*/}
@@ -355,19 +353,19 @@ export const NavBar = () => {
                   <Nav.Link as={Link} to="/players" className={`navbar-link ${isLinkActive('/players') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Players List
                   </Nav.Link>
-                  {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {/* {(isleagueAdmin && isLoggedIn && (league_type==='auction')) && <Nav.Link as={Link} to="/auction" className={`navbar-link ${isLinkActive('/auction') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Auction
-                  </Nav.Link>}
+                  </Nav.Link>} */}
                   {(isLoggedIn && (league_type==='draft')) && <Nav.Link as={Link} to="/draft" className={`navbar-link ${isLinkActive('/draft') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Draft
                   </Nav.Link>}
                   {isLoggedIn && <Nav.Link as={Link} to="/teams" className={`navbar-link ${isLinkActive('/teams') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Teams
                   </Nav.Link>}
-                  {/* {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className={`navbar-link ${isLinkActive('/teampoints') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className={`navbar-link ${isLinkActive('/teampoints') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Points Table
                   </Nav.Link>}
-                  {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {/* {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Trends
                   </Nav.Link>}*/}
                   {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
