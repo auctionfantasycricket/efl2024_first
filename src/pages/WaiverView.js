@@ -431,25 +431,49 @@ const getFilteredDropOptions = (index) => {
     try {
       fetch(`${baseURL}/updateCurrentWaiver/${userId}/${teamId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       })
-        .then(response => response.json())
-        .then(data => {
-          message.success("Your waivers saved successfully!! The selection will be locked on Tuesday at 11:59 pm");
-          refetch();
+        .then(async response => {
+          const data = await response.json();
+          if (response.status === 200) {
+            message.success("Your waivers saved successfully!! The selection will be locked on Tuesday at 11:59 pm");
+            refetch();
+          } else if (response.status === 400) {
+            const errors = data?.errors || ['Something went wrong. Please try again.'];
+            errors.forEach((err, i) => {
+              const key = `waiver-error-${i}`;
+              message.open({
+                type: 'error',
+                content: (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+                    {err}
+                    <span
+                      style={{ cursor: 'pointer', fontWeight: 'bold', fontSize: 14, opacity: 0.7 }}
+                      onClick={() => message.destroy(key)}
+                    >
+                      ✕
+                    </span>
+                  </span>
+                ),
+                duration: 0,
+                key,
+              });
+            });
+          } else {
+            message.error('Unexpected error. Please try again.');
+          }
         })
         .catch(error => {
           console.error(error);
+          message.error('Network error. Please check your connection.');
         });
 
-    } catch (error) {
-      message.error('Error submitting waiver: ' + error);
-    } finally {
-      setIsSubmitting(false);
-    }
+      } catch (error) {
+        message.error('Error submitting waiver: ' + error);
+      } finally {
+        setIsSubmitting(false);
+      }
   };
 
   // Handle transfer submission (for auction leagues)
@@ -711,6 +735,9 @@ const getFilteredDropOptions = (index) => {
 
   // Render Waiver Management (for draft leagues)
 const renderWaiverManagement = () => {
+  const filledPicks = waiverPairs.filter(p => p.pick).length;
+  const filledDrops = waiverPairs.filter(p => p.drop).length;
+  const isWaiverValid = filledPicks > 0 && filledPicks === filledDrops;
   return (
     <Card
       title="Waiver Management"
@@ -738,13 +765,27 @@ const renderWaiverManagement = () => {
               title={
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <span>Waiver Picks</span>
-                  <button
-                    className="waiver-add-btn"
-                    onClick={handleAddPair}
-                    title="Add waiver"
-                  >
-                    <span style={{ fontSize: 20, lineHeight: 1 }}>+</span>
-                  </button>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <button
+                      className="waiver-add-btn"
+                      onClick={handleAddPair}
+                      title="Add waiver"
+                    >
+                      <span style={{ fontSize: 20, lineHeight: 1 }}>+</span>
+                    </button>
+
+                      {waiverHistory && (
+                        <Button
+                          type="default"
+                          icon={<HistoryOutlined />}
+                          onClick={handleOpenHistory}
+                          className="waiver-history-btn"
+                          size="small"
+                        >
+                          History
+                        </Button>
+                      )}
+                  </div>
                 </div>
               }
               className="waiver-card player-preferences-card"
@@ -805,7 +846,7 @@ const renderWaiverManagement = () => {
                                 <ClearIcon fontSize="small" />
                               </IconButton>
                             }
-                            disabled={isSubmitting}
+                            disabled={!pair.drop || isSubmitting}
                           />
                         </div>
 
@@ -843,14 +884,14 @@ const renderWaiverManagement = () => {
                         type="primary"
                         icon={isSubmitting ? <Spin size="small" /> : <ReloadOutlined />}
                         onClick={handleSubmitWaiver}
-                        disabled={isSubmitting || isLoading}
+                        disabled={isSubmitting || isLoading || !isWaiverValid}
                         loading={isSubmitting}
                         className="waiver-submit-button"
                         style={{ flex: 1 }}
                       >
                         {isSubmitting ? "Saving..." : "Save Waivers"}
                       </Button>
-                      {waiverHistory && (
+                      {/* {waiverHistory && (
                         <Button
                           type="default"
                           icon={<HistoryOutlined />}
@@ -859,7 +900,7 @@ const renderWaiverManagement = () => {
                         >
                           History
                         </Button>
-                      )}
+                      )} */}
                     </div>
                   </div>
 
