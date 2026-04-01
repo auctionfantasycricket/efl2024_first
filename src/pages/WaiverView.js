@@ -82,8 +82,13 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   const [playerPreferences, setPlayerPreferences] = useState(['', '', '', '']);
   const [encryptplayerPreferences, setEncryptPlayerPreferences] = useState(['', '', '', '']);
 
+
   const [playersToDrop, setPlayersToDrop] = useState(['', '']);
   const [encryptplayersToDrop, setEncryptplayersToDrop] = useState(['', '']);
+
+  // Each waiver pair: { pick: '', drop: '' }
+  const [waiverPairs, setWaiverPairs] = useState([{ pick: '', drop: '' }]);
+  const [encryptWaiverPairs, setEncryptWaiverPairs] = useState([{ pick: '', drop: '' }]);
 
   // User Info
   const [lastupdatedby, setLastupdatedby] = useState('');
@@ -226,16 +231,25 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   }, [playerData, teamname]);
 
   // Get Team Info
+  // useEffect(() => {
+  //   if (teamdetails) {
+  //     if (teamdetails?.currentWaiver) {
+  //       handledecrypt(teamdetails?.currentWaiver.in, "pref");
+  //       handledecrypt(teamdetails?.currentWaiver.out, "drop");
+  //       setLastupdatedby(teamdetails?.currentWaiver.lastUpdatedBy);
+  //       setLastupdatedat(teamdetails?.currentWaiver.lastUpdatedTime);
+  //     }
+  //   };
+  // }, [teamdetails, teamId]);
   useEffect(() => {
-    if (teamdetails) {
-      if (teamdetails?.currentWaiver) {
-        handledecrypt(teamdetails?.currentWaiver.in, "pref");
-        handledecrypt(teamdetails?.currentWaiver.out, "drop");
-        setLastupdatedby(teamdetails?.currentWaiver.lastUpdatedBy);
-        setLastupdatedat(teamdetails?.currentWaiver.lastUpdatedTime);
-      }
-    };
-  }, [teamdetails, teamId]);
+  if (teamdetails) {
+    if (teamdetails?.currentWaiver) {
+      handledecrypt(teamdetails.currentWaiver, "all");
+      setLastupdatedby(teamdetails?.currentWaiver.lastUpdatedBy);
+      setLastupdatedat(teamdetails?.currentWaiver.lastUpdatedTime);
+    }
+  }
+}, [teamdetails, teamId]);
 
   useEffect(() => {
     if (LeagueData) {
@@ -270,17 +284,65 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     }
   }, [waiverHistoryData]);
 
+  // const handledecrypt = (val, opt) => {
+  //   if (opt === "pref") {
+  //     const newPreferences = val.map(item => decryptData(item));
+  //     setEncryptPlayerPreferences(val);
+  //     setPlayerPreferences(newPreferences);
+  //   } else if (opt === "drop") {
+  //     const newDrops = val.map(item => decryptData(item));
+  //     setPlayersToDrop(newDrops);
+  //     setEncryptplayersToDrop(val);
+  //   }
+  // };
+
+
+
+  //new
+
   const handledecrypt = (val, opt) => {
-    if (opt === "pref") {
-      const newPreferences = val.map(item => decryptData(item));
-      setEncryptPlayerPreferences(val);
-      setPlayerPreferences(newPreferences);
-    } else if (opt === "drop") {
-      const newDrops = val.map(item => decryptData(item));
-      setPlayersToDrop(newDrops);
-      setEncryptplayersToDrop(val);
-    }
-  };
+  // val.in = array of encrypted picks, val.out = array of encrypted drops
+  // Rebuild waiverPairs from parallel arrays
+  const inArr = val?.in || [];
+  const outArr = val?.out || [];
+  const maxLen = Math.max(inArr.length, outArr.length, 1);
+  const pairs = Array.from({ length: maxLen }, (_, i) => ({
+    pick: inArr[i] ? decryptData(inArr[i]) : '',
+    drop: outArr[i] ? decryptData(outArr[i]) : '',
+  }));
+  const encPairs = Array.from({ length: maxLen }, (_, i) => ({
+    pick: inArr[i] || '',
+    drop: outArr[i] || '',
+  }));
+  setWaiverPairs(pairs);
+  setEncryptWaiverPairs(encPairs);
+};
+
+const handlePairChange = (index, field, value) => {
+  const newPairs = [...waiverPairs];
+  const newEncPairs = [...encryptWaiverPairs];
+  newPairs[index] = { ...newPairs[index], [field]: value };
+  newEncPairs[index] = { ...newEncPairs[index], [field]: value ? encryptData(value) : '' };
+  setWaiverPairs(newPairs);
+  setEncryptWaiverPairs(newEncPairs);
+};
+
+const handleClearPair = (index, field) => {
+  handlePairChange(index, field, '');
+};
+
+const handleAddPair = () => {
+  setWaiverPairs(prev => [...prev, { pick: '', drop: '' }]);
+  setEncryptWaiverPairs(prev => [...prev, { pick: '', drop: '' }]);
+};
+
+const handleRemovePair = (index) => {
+  setWaiverPairs(prev => prev.filter((_, i) => i !== index));
+  setEncryptWaiverPairs(prev => prev.filter((_, i) => i !== index));
+};
+
+
+  ////////////////////
 
   // Handle preference selection change
   const handlePreferenceChange = (index, value) => {
@@ -328,39 +390,41 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
     setEncryptplayersToDrop(newEncryptedDrops);
   };
 
-  // Get filtered options for preference dropdowns
-  const getFilteredPreferenceOptions = (index) => {
-    // Filter out already selected players (except the current one)
-    const filteredPlayers = unsoldPlayers.filter(player => {
-      return !playerPreferences.includes(player.value) || playerPreferences[index] === player.value;
-    });
 
-    // Sort the filtered players by points in descending order
-    return filteredPlayers.sort((a, b) => b.points - a.points);
-  };
+  const getFilteredPickOptions = (index) => {
+  const selectedPicks = waiverPairs.map((p, i) => i !== index ? p.pick : null).filter(Boolean);
+  return unsoldPlayers
+    .filter(player => !selectedPicks.includes(player.value))
+    .sort((a, b) => b.points - a.points);
+};
 
-  // Get filtered options for drop dropdowns
-  const getFilteredDropOptions = (index) => {
-    // Filter out already selected players (except the current one)
-    return teamPlayers.filter(player => {
-      return !playersToDrop.includes(player.value) || playersToDrop[index] === player.value;
-    });
-  };
+const getFilteredDropOptions = (index) => {
+  return teamPlayers;
+};
 
   // Handle waiver submission
   const handleSubmitWaiver = async () => {
     setIsSubmitting(true);
 
-    const uniquedrops = new Set(playersToDrop.filter(drop => drop !== ''));
-    if (uniquedrops.size !== playersToDrop.filter(drop => drop !== '').length) {
-      message.error('You can\'t drop same player for both picks');
-      setIsSubmitting(false);
-      return;
-    }
+    // const uniquedrops = new Set(playersToDrop.filter(drop => drop !== ''));
+    // if (uniquedrops.size !== playersToDrop.filter(drop => drop !== '').length) {
+    //   message.error('You can\'t drop same player for both picks');
+    //   setIsSubmitting(false);
+    //   return;
+    // }
+    // const payload = {
+    //   "currentWaiver": {
+    //     "in": encryptplayerPreferences,
+    //     "out": encryptplayersToDrop
+    //   }
+    // };
+    const inArr = encryptWaiverPairs.map(p => p.pick).filter(Boolean);
+    const outArr = encryptWaiverPairs.map(p => p.drop).filter(Boolean);
+
     const payload = {
       "currentWaiver": {
-        "in": encryptplayerPreferences,
-        "out": encryptplayersToDrop
+        "in": inArr,
+        "out": outArr
       }
     };
 
@@ -564,45 +628,45 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   };
 
   // Custom Material UI select component for preferences
-  const MaterialPreferenceSelect = ({ index, label }) => {
-    const options = getFilteredPreferenceOptions(index);
+  // const MaterialPreferenceSelect = ({ index, label }) => {
+  //   const options = getFilteredPreferenceOptions(index);
     
-    return (
-      <div className="select-container mui-select-wrapper">
-        <Text className="select-label">{label}</Text>
-        <Autocomplete
-          value={playerPreferences[index] || null}
-          onChange={(event, newValue) => {
-            handlePreferenceChange(index, newValue ? newValue.value : '');
-          }}
-          disabled={isSubmitting}
-          options={options}
-          getOptionLabel={(option) => typeof option === 'string' ? option : option.label}
-          renderInput={(params) => (
-            <TextField 
-              {...params} 
-              variant="outlined" 
-              placeholder="Select Player" 
-              fullWidth
-              className="mui-select-input"
-            />
-          )}
-          className="mui-autocomplete"
-          size="small"
-          clearOnBlur={false}
-          clearIcon={
-            <IconButton 
-              size="small" 
-              onClick={() => handleClearPreference(index)}
-              disabled={isSubmitting}
-            >
-              <ClearIcon fontSize="small" />
-            </IconButton>
-          }
-        />
-      </div>
-    );
-  };
+  //   return (
+  //     <div className="select-container mui-select-wrapper">
+  //       <Text className="select-label">{label}</Text>
+  //       <Autocomplete
+  //         value={playerPreferences[index] || null}
+  //         onChange={(event, newValue) => {
+  //           handlePreferenceChange(index, newValue ? newValue.value : '');
+  //         }}
+  //         disabled={isSubmitting}
+  //         options={options}
+  //         getOptionLabel={(option) => typeof option === 'string' ? option : option.label}
+  //         renderInput={(params) => (
+  //           <TextField 
+  //             {...params} 
+  //             variant="outlined" 
+  //             placeholder="Select Player" 
+  //             fullWidth
+  //             className="mui-select-input"
+  //           />
+  //         )}
+  //         className="mui-autocomplete"
+  //         size="small"
+  //         clearOnBlur={false}
+  //         clearIcon={
+  //           <IconButton 
+  //             size="small" 
+  //             onClick={() => handleClearPreference(index)}
+  //             disabled={isSubmitting}
+  //           >
+  //             <ClearIcon fontSize="small" />
+  //           </IconButton>
+  //         }
+  //       />
+  //     </div>
+  //   );
+  // };
 
   // Custom Material UI select component for drops
   const MaterialDropSelect = ({ index, label }) => {
@@ -646,178 +710,184 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   };
 
   // Render Waiver Management (for draft leagues)
-  const renderWaiverManagement = () => {
-    return (
-      <Card
-        title="Waiver Management"
-        className="team-hub-card waiver-view-card"
-      >
-        <div className="waiver-alert-container">
-          <Alert
-            banner
-            type="info"
-            message={
-              <Marquee
-                pauseOnHover
-                gradient={false}
-                style={{
-                  color: 'white',
-                  fontWeight: 500,
-                  fontSize: '0.875rem'
-                }}
-              >
-                {`Waiver submissions will be locked on ${waiverDeadline}. Please make your selections carefully.`}
-              </Marquee>
-            }
-            className="waiver-management-alert"
-          />
-        </div>
-        <div className="waiver-view-container">
-          <Row gutter={[16, 16]}>
-            {/* Player Preferences Card */}
-            <Col md={8}>
-              <Card
-                title="Players to Pick (Preference Order)"
-                className="waiver-card player-preferences-card"
-              >
-                {isLoading ? (
-                  <div className="spinner-container">
-                    <Spin />
-                  </div>
-                ) : (
-                  <div>
-                    <MaterialPreferenceSelect 
-                      index={0} 
-                      label="1st Preference" 
-                    />
-                    <MaterialPreferenceSelect 
-                      index={1} 
-                      label="2nd Preference" 
-                    />
-                    <MaterialPreferenceSelect 
-                      index={2} 
-                      label="3rd Preference" 
-                    />
-                    <MaterialPreferenceSelect 
-                      index={3} 
-                      label="4th Preference" 
-                    />
-                  </div>
-                )}
-              </Card>
-            </Col>
+const renderWaiverManagement = () => {
+  return (
+    <Card
+      title="Waiver Management"
+      className="team-hub-card waiver-view-card"
+    >
+      <div className="waiver-alert-container">
+        <Alert
+          banner
+          type="info"
+          message={
+            <Marquee pauseOnHover gradient={false} style={{ color: 'white', fontWeight: 500, fontSize: '0.875rem' }}>
+              {`Waiver submissions will be locked on ${waiverDeadline}. Please make your selections carefully.`}
+            </Marquee>
+          }
+          className="waiver-management-alert"
+        />
+      </div>
 
-            {/* Players to Drop Card */}
-            <Col md={8}>
-              <Card
-                title="Players to Drop (Preference Order)"
-                className="waiver-card players-drop-card"
-              >
-                {isLoading ? (
-                  <div className="spinner-container">
-                    <Spin />
-                  </div>
-                ) : (
-                  <div>
-                    <MaterialDropSelect 
-                      index={0} 
-                      label="Drop Player 1" 
-                    />
-                    <MaterialDropSelect 
-                      index={1} 
-                      label="Drop Player 2" 
-                    />
+      <div className="waiver-view-container">
+        <Row gutter={[16, 16]}>
 
-                    {/* Submit Button */}
-                    <Button
-                      type="primary"
-                      icon={isSubmitting ? <Spin size="small" /> : <ReloadOutlined />}
-                      onClick={handleSubmitWaiver}
-                      disabled={isSubmitting || isLoading}
-                      loading={isSubmitting}
-                      className="waiver-submit-button"
-                    >
-                      {isSubmitting ? "Submitting..." : "File Waivers"}
-                    </Button>
+          {/* === Merged Waiver Picks Card === */}
+          <Col xs={24} md={16}>
+            <Card
+              title={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span>Waiver Picks</span>
+                  <button
+                    className="waiver-add-btn"
+                    onClick={handleAddPair}
+                    title="Add waiver"
+                  >
+                    <span style={{ fontSize: 20, lineHeight: 1 }}>+</span>
+                  </button>
+                </div>
+              }
+              className="waiver-card player-preferences-card"
+            >
+              {isLoading ? (
+                <div className="spinner-container"><Spin /></div>
+              ) : (
+                <>
+                  <div className="waiver-pairs-header">
+                    <span className="waiver-col-label">Drop Player</span>
+                    <span className="waiver-col-label">Pick Player</span>
+                  </div>
+                  <div className="waiver-pairs-scroll">
+                    {waiverPairs.map((pair, index) => (
+                      <div key={index} className="waiver-pair-row">
+                        <span className="waiver-pair-index">{index + 1}</span>
+
+                        {/* Drop dropdown */}
+                        <div className="waiver-pair-select">
+                          <Autocomplete
+                            value={pair.drop || null}
+                            onChange={(_, newValue) => handlePairChange(index, 'drop', newValue?.value || '')}
+                            options={getFilteredDropOptions(index)}
+                            getOptionLabel={(opt) => typeof opt === 'string' ? opt : opt.label}
+                            renderInput={(params) => (
+                              <TextField {...params} variant="outlined" placeholder="Select player to drop" fullWidth className="mui-select-input" />
+                            )}
+                            className="mui-autocomplete"
+                            size="small"
+                            clearOnBlur={false}
+                            clearIcon={
+                              <IconButton size="small" onClick={() => handleClearPair(index, 'drop')} disabled={isSubmitting}>
+                                <ClearIcon fontSize="small" />
+                              </IconButton>
+                            }
+                            disabled={isSubmitting}
+                          />
+                        </div>
+
+                        {/* Arrow */}
+                        <span className="waiver-pair-arrow">→</span>
+
+                        {/* Pick dropdown */}
+                        <div className="waiver-pair-select">
+                          <Autocomplete
+                            value={pair.pick || null}
+                            onChange={(_, newValue) => handlePairChange(index, 'pick', newValue?.value || '')}
+                            options={getFilteredPickOptions(index)}
+                            getOptionLabel={(opt) => typeof opt === 'string' ? opt : opt.label}
+                            renderInput={(params) => (
+                              <TextField {...params} variant="outlined" placeholder="Select player to pick" fullWidth className="mui-select-input" />
+                            )}
+                            className="mui-autocomplete"
+                            size="small"
+                            clearOnBlur={false}
+                            clearIcon={
+                              <IconButton size="small" onClick={() => handleClearPair(index, 'pick')} disabled={isSubmitting}>
+                                <ClearIcon fontSize="small" />
+                              </IconButton>
+                            }
+                            disabled={isSubmitting}
+                          />
+                        </div>
+
+                        {/* Remove button */}
+                        {waiverPairs.length > 1 && (
+                          <IconButton
+                            size="small"
+                            onClick={() => handleRemovePair(index)}
+                            className="waiver-pair-remove"
+                            title="Remove"
+                          >
+                            <ClearIcon fontSize="small" />
+                          </IconButton>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Footer: last updated + save + history */}
+                  <div className="waiver-pairs-footer">
                     {lastupdatedby && (
-                      <div
-                        style={{
-                          marginTop: 12,
-                          textAlign: 'center',
-                          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                          padding: '8px 12px',
-                          borderRadius: 6,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            fontSize: '0.75rem',
-                            fontWeight: 500
-                          }}
-                        >
+                      <div className="waiver-last-updated">
+                        <Text style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.75rem' }}>
                           Last Updated By: {lastupdatedby}
                           {lastupdatedat && (
-                            <span
-                              style={{
-                                marginLeft: 8,
-                                color: 'rgba(255, 255, 255, 0.5)',
-                                fontSize: '0.675rem'
-                              }}
-                            >
+                            <span style={{ marginLeft: 8, color: 'rgba(255,255,255,0.4)', fontSize: '0.675rem' }}>
                               @ {lastupdatedat}
                             </span>
                           )}
                         </Text>
                       </div>
                     )}
-                    {/* View History Button */}
-                    {waiverHistory && <Button
-                      type="default"
-                      icon={<HistoryOutlined />}
-                      onClick={handleOpenHistory}
-                      style={{
-                        marginTop: 12,
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        background: 'rgba(255, 255, 255, 0.1)',
-                        borderColor: 'rgba(255, 255, 255, 0.2)',
-                        color: 'white'
-                      }}
-                    >
-                      View Waiver History
-                    </Button>}
-                    
-                    {/* Waiver History Modal */}
-                    <WaiverHistory
-                      visible={isHistoryModalVisible}
-                      onClose={handleCloseHistory}
-                      historyData={waiverHistory}
-                    />
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <Button
+                        type="primary"
+                        icon={isSubmitting ? <Spin size="small" /> : <ReloadOutlined />}
+                        onClick={handleSubmitWaiver}
+                        disabled={isSubmitting || isLoading}
+                        loading={isSubmitting}
+                        className="waiver-submit-button"
+                        style={{ flex: 1 }}
+                      >
+                        {isSubmitting ? "Saving..." : "Save Waivers"}
+                      </Button>
+                      {waiverHistory && (
+                        <Button
+                          type="default"
+                          icon={<HistoryOutlined />}
+                          onClick={handleOpenHistory}
+                          className="waiver-history-btn"
+                        >
+                          History
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                )}
-              </Card>
-            </Col>
 
-            {/* Waiver Results Card */}
-            <Col md={8}>
-              <Card
-                title="Waiver Order & Results"
-                className="waiver-card waiver-results-card"
-              >
-                {renderWaiverResults()}
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      </Card>
-    );
-  };
+                  <WaiverHistory
+                    visible={isHistoryModalVisible}
+                    onClose={handleCloseHistory}
+                    historyData={waiverHistory}
+                  />
+                </>
+              )}
+            </Card>
+          </Col>
+
+          {/* === Waiver Results Card === */}
+          <Col xs={24} md={8}>
+            <Card
+              title="Waiver Order & Results"
+              className="waiver-card waiver-results-card"
+            >
+              {renderWaiverResults()}
+            </Card>
+          </Col>
+
+        </Row>
+      </div>
+    </Card>
+  );
+};
 
   // Render Transfer Management (for auction leagues)
   const renderTransferManagement = () => {
