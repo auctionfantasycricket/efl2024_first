@@ -120,7 +120,12 @@ export default function Teams() {
 
   const teampurse = Teamsstats.reduce((tcc, teams) => {
     if (!tcc[teams.teamName]) {
-      tcc[teams.teamName] = teams.currentPurse;
+      tcc[teams.teamName] = {
+        purse: teams.currentPurse,
+        ballCount: teams.ballCount || 0,
+        batCount: teams.batCount || 0,
+        arCount: teams.arCount || 0
+      };
     }
     return tcc;
   }, {});
@@ -128,11 +133,15 @@ export default function Teams() {
   const data = [];
   
   for (const [teamName, players] of Object.entries(teamsData)) {
+    const teamStats = teampurse[teamName] || {};
     const team = {
       teamName: teamName,
       players: players,
-      sqaudsize:players.length,
-      purse:teampurse[teamName]
+      sqaudsize: players.length,
+      purse: teamStats.purse || 0,
+      ballCount: teamStats.ballCount || 0,
+      batCount: teamStats.batCount || 0,
+      arCount: teamStats.arCount || 0
     };
     data.push(team);
   }
@@ -146,12 +155,18 @@ export default function Teams() {
   const auctioncolumnDefs = () => [
     { field: "teamName", headerName: "Team", width: 200, filter: true,sort: "asc"},
     { field: "sqaudsize", headerName: "Squad Size", width: 120, filter: true },
-    { field: "purse", headerName: "Remaining Purse", width: 180,filter: true },
+    { field: "purse", headerName: "Remaining Purse", width: 160,filter: true },
+    { field: "ballCount", headerName: "Bowlers", width: 120, filter: true },
+    { field: "batCount", headerName: "Batters", width: 120, filter: true },
+    { field: "arCount", headerName: "AR", width: 120, filter: true },
   ];
 
   const draftcolumnDefs =()=> [
     { field: "teamName", headerName: "Team", width: 200, filter: true,sort: "asc"},
     { field: "sqaudsize", headerName: "Squad Size", width: 120, filter: true },
+    { field: "ballCount", headerName: "Bowlers", width: 120, filter: true },
+    { field: "batCount", headerName: "Batters", width: 120, filter: true },
+    { field: "arCount", headerName: "AR", width: 120, filter: true },
   ];
 
   const teamcolumndefs = useMemo(()=>{
