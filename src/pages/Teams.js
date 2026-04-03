@@ -124,7 +124,8 @@ export default function Teams() {
         purse: teams.currentPurse,
         ballCount: teams.ballCount || 0,
         batCount: teams.batCount || 0,
-        arCount: teams.arCount || 0
+        arCount: teams.arCount || 0,
+        fCount: teams.fCount || 0
       };
     }
     return tcc;
@@ -141,7 +142,8 @@ export default function Teams() {
       purse: teamStats.purse || 0,
       ballCount: teamStats.ballCount || 0,
       batCount: teamStats.batCount || 0,
-      arCount: teamStats.arCount || 0
+      arCount: teamStats.arCount || 0,
+      fCount: teamStats.fCount || 0
     };
     data.push(team);
   }
@@ -159,6 +161,7 @@ export default function Teams() {
     { field: "ballCount", headerName: "Bowlers", width: 120, filter: true },
     { field: "batCount", headerName: "Batters", width: 120, filter: true },
     { field: "arCount", headerName: "AR", width: 120, filter: true },
+    { field: "fCount", headerName: "Foreign", width: 120, filter: true },
   ];
 
   const draftcolumnDefs =()=> [
@@ -167,6 +170,7 @@ export default function Teams() {
     { field: "ballCount", headerName: "Bowlers", width: 120, filter: true },
     { field: "batCount", headerName: "Batters", width: 120, filter: true },
     { field: "arCount", headerName: "AR", width: 120, filter: true },
+    { field: "fCount", headerName: "Foreign", width: 120, filter: true },
   ];
 
   const teamcolumndefs = useMemo(()=>{
