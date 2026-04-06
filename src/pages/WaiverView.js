@@ -429,7 +429,7 @@ const getFilteredDropOptions = (index) => {
     };
 
     try {
-      fetch(`${baseURL}/updateCurrentWaiver/${userId}/${teamId}`, {
+      fetch(`${baseURL}/submitWaiverPreferences/${userId}/${teamId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
