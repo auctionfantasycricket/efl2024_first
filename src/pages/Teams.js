@@ -158,19 +158,19 @@ export default function Teams() {
     { field: "teamName", headerName: "Team", width: 200, filter: true,sort: "asc"},
     { field: "sqaudsize", headerName: "Squad Size", width: 120, filter: true },
     { field: "purse", headerName: "Remaining Purse", width: 160,filter: true },
-    { field: "ballCount", headerName: "Bowlers", width: 120, filter: true },
-    { field: "batCount", headerName: "Batters", width: 120, filter: true },
-    { field: "arCount", headerName: "AR", width: 120, filter: true },
-    { field: "fCount", headerName: "Foreign", width: 120, filter: true },
+    { field: "ballCount", headerName: "Bowlers", width: 120, filter: true, cellStyle: (params) => params.value >= 4 ? {backgroundColor: 'green'} : {} },
+    { field: "batCount", headerName: "Batters", width: 120, filter: true, cellStyle: (params) => params.value >= 4 ? {backgroundColor: 'green'} : {} },
+    { field: "arCount", headerName: "AR", width: 120, filter: true, cellStyle: (params) => params.value >= 2 ? {backgroundColor: 'green'} : {} },
+    { field: "fCount", headerName: "Foreign", width: 120, filter: true, cellStyle: (params) => params.value < 6 ? {backgroundColor: 'green'} : {backgroundColor: 'red'} },
   ];
 
   const draftcolumnDefs =()=> [
     { field: "teamName", headerName: "Team", width: 200, filter: true,sort: "asc"},
     { field: "sqaudsize", headerName: "Squad Size", width: 120, filter: true },
-    { field: "ballCount", headerName: "Bowlers", width: 120, filter: true },
-    { field: "batCount", headerName: "Batters", width: 120, filter: true },
-    { field: "arCount", headerName: "AR", width: 120, filter: true },
-    { field: "fCount", headerName: "Foreign", width: 120, filter: true },
+    { field: "ballCount", headerName: "Bowlers", width: 120, filter: true, cellStyle: (params) => params.value >= 2 ? {backgroundColor: 'green'} : {} },
+    { field: "batCount", headerName: "Batters", width: 120, filter: true, cellStyle: (params) => params.value >= 2 ? {backgroundColor: 'green'} : {} },
+    { field: "arCount", headerName: "AR", width: 120, filter: true, cellStyle: (params) => params.value >= 2 ? {backgroundColor: 'green'} : {} },
+    { field: "fCount", headerName: "Foreign", width: 120, filter: true, cellStyle: (params) => (params.value >= 1 && params.value < 3) ? {backgroundColor: 'green'} : {backgroundColor: 'red'} },
   ];
 
   const teamcolumndefs = useMemo(()=>{
