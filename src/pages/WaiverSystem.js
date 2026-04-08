@@ -199,7 +199,7 @@ export const WaiverSystem = () => {
             console.error(error);
         });
 
-    alert('Your waivers saved successfully!!The selection will be locked on Tuesday at 11:59 pm');
+    alert('Your waivers saved successfully!!The selection will be locked on Tuesday at 8:59 pm');
     getTeamInfo(useremail);
   };
 

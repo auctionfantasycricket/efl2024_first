@@ -437,7 +437,7 @@ const getFilteredDropOptions = (index) => {
         .then(async response => {
           const data = await response.json();
           if (response.status === 200) {
-            message.success("Your waivers saved successfully!! The selection will be locked on Tuesday at 11:59 pm");
+            message.success("Your waivers saved successfully!! The selection will be locked on Tuesday at 8:59 pm");
             refetch();
           } else if (response.status === 400) {
             const errors = data?.errors || ['Something went wrong. Please try again.'];
