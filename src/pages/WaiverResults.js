@@ -15,7 +15,9 @@ import { ArrowRight } from 'lucide-react';
 import './WaiverResults.css';
 
 const WaiverResults = ({waiverResults}) => {
-  const [selectedRounds, setSelectedRounds] = useState([1, 2, 3, 4]);
+  const [selectedRounds, setSelectedRounds] = useState(
+    () => waiverResults.map(r => r.round)
+  );
 
   // Sample data for 4 rounds
   // const [waiverResults, setWaiverResults] = useState([
