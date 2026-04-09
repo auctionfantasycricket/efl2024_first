@@ -308,10 +308,9 @@ export const NavBar = () => {
               {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className={`navbar-link ${isLinkActive('/teampoints') ? 'active' : ''}`} onClick={() => null}>
                 Points Table
               </Nav.Link>}
-              {/* 
               {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => null}>
                 Trends
-              </Nav.Link>}*/}
+              </Nav.Link>}
               {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => null}>
                 Team Hub
               </Nav.Link>} 
@@ -365,9 +364,9 @@ export const NavBar = () => {
                   {isLoggedIn && <Nav.Link as={Link} to="/teampoints" className={`navbar-link ${isLinkActive('/teampoints') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Points Table
                   </Nav.Link>}
-                  {/* {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Trends
-                  </Nav.Link>}*/}
+                  </Nav.Link>}
                   {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Team Hub
                   </Nav.Link>}
