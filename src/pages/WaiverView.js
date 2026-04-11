@@ -975,18 +975,18 @@ const renderWaiverManagement = () => {
                       index={0} 
                       label="Release Player 1" 
                     />
-                    {/* <MaterialDropSelect 
+                    <MaterialDropSelect 
                       index={1} 
                       label="Release Player 2" 
-                    /> */}
+                    />
 
                     {/* Submit Button */}
                     <Button
                       type="primary"
                       icon={isSubmitting ? <Spin size="small" /> : <SwapOutlined />}
                       onClick={handleSubmitTransfer}
-                      // disabled={isSubmitting || isLoading}
-                      disabled={true}
+                      disabled={isSubmitting || isLoading}
+                      // disabled={true}
                       loading={isSubmitting}
                       className="waiver-submit-button release-submit-button"
                     >
