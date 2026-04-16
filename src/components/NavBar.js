@@ -311,6 +311,9 @@ export const NavBar = () => {
               {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => null}>
                 Trends
               </Nav.Link>}
+              {isLoggedIn && <Nav.Link as={Link} to="/prediction" className={`navbar-link ${isLinkActive('/prediction') ? 'active' : ''}`} onClick={() => null}>
+                Predictions
+              </Nav.Link>}
               {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => null}>
                 Team Hub
               </Nav.Link>} 
@@ -366,6 +369,9 @@ export const NavBar = () => {
                   </Nav.Link>}
                   {isLoggedIn && <Nav.Link as={Link} to="/linegraph" className={`navbar-link ${isLinkActive('/linegraph') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Trends
+                  </Nav.Link>}
+                  {isLoggedIn && <Nav.Link as={Link} to="/prediction" className={`navbar-link ${isLinkActive('/prediction') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    Predictions
                   </Nav.Link>}
                   {(isLoggedIn && showTeamHub) && <Nav.Link as={Link} to="/teamhub" className={`navbar-link ${isLinkActive('/teamhub') ? 'active' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                     Team Hub

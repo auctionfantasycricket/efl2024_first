@@ -22,6 +22,7 @@ import LeagueManagement from './pages/LeagueManagement'
 import UserManagement from './pages/UserManagement'
 import TeamHub from './pages/TeamHub'
 import JoinLeague from './pages/JoinLeague';
+import Prediction from './pages/Prediction';
 import { FileTextOutlined } from '@ant-design/icons';
 import { FloatButton } from 'antd';
 
@@ -89,6 +90,7 @@ function AppContent() {
         <Route path="/teamhub" element={<TeamHub />}/>
         <Route path="/usermgmt" element={<UserManagement />}/>
         <Route path="/join/:leagueId" element={<JoinLeague />} />
+        <Route path="/prediction" element={<Prediction />} />
       </Routes>
       
       <HelpButton />
