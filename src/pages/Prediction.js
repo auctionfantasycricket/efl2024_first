@@ -143,14 +143,14 @@ export default function Prediction() {
     p => !allMatches.find(m => m.matchId === p.matchId)
   );
 
-  // Populate selected prediction from today's prediction on load
+  // Populate selected predictions from today's predictions on load
   useEffect(() => {
-    if (todayPredictionData?.prediction && allMatches.length > 0) {
-      const prediction = todayPredictionData.prediction;
-      setSelectedPredictions(prev => ({
-        ...prev,
-        [prediction.matchId]: prediction.predictedWinner
-      }));
+    if (todayPredictionData?.predictions?.length > 0 && allMatches.length > 0) {
+      const updates = {};
+      todayPredictionData.predictions.forEach(p => {
+        updates[p.matchId] = p.predictedWinner;
+      });
+      setSelectedPredictions(prev => ({ ...prev, ...updates }));
     }
   }, [todayPredictionData, allMatches]);
 
