@@ -135,23 +135,24 @@ export default function Prediction() {
     enabled: isLoggedIn
   });
 
-  // Get current match (first upcoming match)
-  const currentMatch = scheduleData?.matches?.[0];
+  // Get all matches from schedule
+  const allMatches = scheduleData?.matches || [];
+  const currentMatch = allMatches?.[0];
   const isMatchLocked = currentMatch?.status !== 'UpComing';
   const otherMatches = (predictionsData?.predictions || []).filter(
-    p => currentMatch?.matchId !== p.matchId
+    p => !allMatches.find(m => m.matchId === p.matchId)
   );
 
   // Populate selected prediction from today's prediction on load
   useEffect(() => {
-    if (todayPredictionData?.prediction && currentMatch) {
+    if (todayPredictionData?.prediction && allMatches.length > 0) {
       const prediction = todayPredictionData.prediction;
       setSelectedPredictions(prev => ({
         ...prev,
-        [currentMatch.matchId]: prediction.predictedWinner
+        [prediction.matchId]: prediction.predictedWinner
       }));
     }
-  }, [todayPredictionData, currentMatch]);
+  }, [todayPredictionData, allMatches]);
 
   const handlePredictionChange = (matchId, winner) => {
     // Toggle logic: if same team is clicked, deselect it
@@ -167,6 +168,15 @@ export default function Prediction() {
         [matchId]: winner
       });
     }
+  };
+
+  // Helper function to check if prediction is correct
+  const isPredictionCorrect = (match) => {
+    if (match.status !== 'PostGame' || !match.winner) {
+      return false;
+    }
+    const prediction = selectedPredictions[match.matchId];
+    return prediction === match.winner;
   };
 
   const handleSavePrediction = async (match) => {
@@ -357,96 +367,116 @@ export default function Prediction() {
               <div className="loading-center">
                 <Spin size="large" />
               </div>
-            ) : scheduleError || !currentMatch ? (
+            ) : scheduleError || allMatches.length === 0 ? (
               <div className="empty-state">
                 <Empty description="No upcoming matches today" />
               </div>
             ) : (
-              <Card className="match-card">
-                {/* Match Header with Title and Status */}
-                <div className="match-header">
-                  <h4 className="match-title">Match {currentMatch.matchNumber}</h4>
-                  <span className={`status-badge status-${currentMatch.status}`}>
-                    {currentMatch.status}
-                  </span>
-                </div>
-
-                {/* Match Details as Chips (1 Row) */}
-                <div className="match-chips">
-                  <Chip 
-                    label={currentMatch.venue} 
-                    size="small"
-                    sx={{ 
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      color: 'rgba(255, 255, 255, 0.9)',
-                      fontSize: '11px'
-                    }} 
-                  />
-                  <Chip 
-                    label={currentMatch.scheduledAt} 
-                    size="small"
-                    sx={{ 
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      color: 'rgba(255, 255, 255, 0.9)',
-                      fontSize: '11px'
-                    }} 
-                  />
-                </div>
-
-                {/* Prediction Form */}
-                <div className="prediction-form">
-                  <p className="form-label">Who will win?</p>
-
-                  {/* Teams Display */}
-                  <div className="teams-display">
-                    <button
-                      className={`team-button ${selectedPredictions[currentMatch.matchId] === currentMatch.team1 ? 'selected' : ''}`}
-                      onClick={() => !isMatchLocked && handlePredictionChange(currentMatch.matchId, currentMatch.team1)}
-                      disabled={isMatchLocked}
-                    >
-                      {currentMatch.team1}
-                    </button>
-                    <span className="vs-divider">VS</span>
-                    <button
-                      className={`team-button ${selectedPredictions[currentMatch.matchId] === currentMatch.team2 ? 'selected' : ''}`}
-                      onClick={() => !isMatchLocked && handlePredictionChange(currentMatch.matchId, currentMatch.team2)}
-                      disabled={isMatchLocked}
-                    >
-                      {currentMatch.team2}
-                    </button>
-                  </div>
-
-                  {isMatchLocked && (
-                    <div className="lock-warning">
-                      <strong>Match locked</strong> - Predictions cannot be changed
+              <div className="matches-container">
+                {allMatches.map((match) => (
+                  <Card key={match.matchId} className="match-card">
+                    {/* Match Header with Title and Status */}
+                    <div className="match-header">
+                      <div className="match-title-section">
+                        <h4 className="match-title">Match {match.matchNumber}</h4>
+                        {isPredictionCorrect(match) && (
+                          <Chip 
+                            label="Correct" 
+                            size="small"
+                            sx={{ 
+                              background: 'rgba(16, 185, 129, 0.8)',
+                              color: '#ffffff',
+                              fontSize: '10px',
+                              fontWeight: '600',
+                              height: '20px',
+                              marginLeft: '8px'
+                            }} 
+                          />
+                        )}
+                      </div>
+                      <span className={`status-badge status-${match.status}`}>
+                        {match.status}
+                      </span>
                     </div>
-                  )}
 
-                  {/* Action Buttons */}
-                  <div className="action-buttons">
-                    <Button
-                      type="primary"
-                      disabled={!selectedPredictions[currentMatch.matchId] || isMatchLocked || savingMatchId === currentMatch.matchId}
-                      loading={savingMatchId === currentMatch.matchId}
-                      onClick={() => handleSavePrediction(currentMatch)}
-                      className="btn-save"
-                    >
-                      Save
-                    </Button>
-                    {selectedPredictions[currentMatch.matchId] && !isMatchLocked && (
-                      <Button
-                        danger
-                        disabled={savingMatchId === currentMatch.matchId}
-                        loading={savingMatchId === currentMatch.matchId}
-                        onClick={() => handleClearPrediction(currentMatch)}
-                        className="btn-clear"
-                      >
-                        Clear
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </Card>
+                    {/* Match Details as Chips (1 Row) */}
+                    <div className="match-chips">
+                      <Chip 
+                        label={match.venue} 
+                        size="small"
+                        sx={{ 
+                          background: 'rgba(255, 255, 255, 0.1)',
+                          color: 'rgba(255, 255, 255, 0.9)',
+                          fontSize: '11px'
+                        }} 
+                      />
+                      <Chip 
+                        label={match.scheduledAt} 
+                        size="small"
+                        sx={{ 
+                          background: 'rgba(255, 255, 255, 0.1)',
+                          color: 'rgba(255, 255, 255, 0.9)',
+                          fontSize: '11px'
+                        }} 
+                      />
+                    </div>
+
+                    {/* Prediction Form */}
+                    <div className="prediction-form">
+                      <p className="form-label">Who will win?</p>
+
+                      {/* Teams Display */}
+                      <div className="teams-display">
+                        <button
+                          className={`team-button ${selectedPredictions[match.matchId] === match.team1 ? 'selected' : ''}`}
+                          onClick={() => match.status === 'UpComing' && handlePredictionChange(match.matchId, match.team1)}
+                          disabled={match.status !== 'UpComing'}
+                        >
+                          {match.team1}
+                        </button>
+                        <span className="vs-divider">VS</span>
+                        <button
+                          className={`team-button ${selectedPredictions[match.matchId] === match.team2 ? 'selected' : ''}`}
+                          onClick={() => match.status === 'UpComing' && handlePredictionChange(match.matchId, match.team2)}
+                          disabled={match.status !== 'UpComing'}
+                        >
+                          {match.team2}
+                        </button>
+                      </div>
+
+                      {match.status !== 'UpComing' && (
+                        <div className="lock-warning">
+                          <strong>Match locked</strong> - Predictions cannot be changed
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="action-buttons">
+                        <Button
+                          type="primary"
+                          disabled={!selectedPredictions[match.matchId] || match.status !== 'UpComing' || savingMatchId === match.matchId}
+                          loading={savingMatchId === match.matchId}
+                          onClick={() => handleSavePrediction(match)}
+                          className="btn-save"
+                        >
+                          Save
+                        </Button>
+                        {selectedPredictions[match.matchId] && match.status === 'UpComing' && (
+                          <Button
+                            danger
+                            disabled={savingMatchId === match.matchId}
+                            loading={savingMatchId === match.matchId}
+                            onClick={() => handleClearPrediction(match)}
+                            className="btn-clear"
+                          >
+                            Clear
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
             )}
           </div>
         </div>

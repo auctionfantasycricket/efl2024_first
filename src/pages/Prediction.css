@@ -1401,3 +1401,19 @@
     height: 300px;
   }
 
+
+/* Matches Container for scrollable matches */
+.matches-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Match Title Section - for title and correct chip */
+.match-title-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
