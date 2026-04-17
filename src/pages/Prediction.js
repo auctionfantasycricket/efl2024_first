@@ -3,7 +3,7 @@ import './Prediction.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import { Chip } from '@mui/material';
-import { Card, Radio, Button, Alert, Spin, Empty, message } from 'antd';
+import { Card, Button, Spin, Empty, message } from 'antd';
 import axios from 'axios';
 import { setLoginSuccess } from '../components/redux/reducer/authReducer';
 import { AgGridReact } from 'ag-grid-react';
@@ -15,7 +15,7 @@ const baseURL = process.env.REACT_APP_BASE_URL;
 
 // API Functions
 const fetchTodaySchedule = async () => {
-  const response = await fetch(`${baseURL}/schedule/today?dummy=true`);
+  const response = await fetch(`${baseURL}/schedule/today`);
   if (!response.ok) {
     throw new Error('Failed to fetch schedule');
   }
@@ -23,15 +23,23 @@ const fetchTodaySchedule = async () => {
 };
 
 const fetchUserPredictions = async (userId) => {
-  const response = await fetch(`${baseURL}/predictions/my?dummy=true&userId=${userId}`);
+  const response = await fetch(`${baseURL}/predictions/my?&userId=${userId}`);
   if (!response.ok) {
     throw new Error('Failed to fetch predictions');
   }
   return response.json();
 };
 
+const fetchTodayPrediction = async (userId) => {
+  const response = await fetch(`${baseURL}/predictions/my?userId=${userId}&today=true`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch today\'s prediction');
+  }
+  return response.json();
+};
+
 const fetchLeaderboard = async () => {
-  const response = await fetch(`${baseURL}/predictions/leaderboard?dummy=true`);
+  const response = await fetch(`${baseURL}/predictions/leaderboard`);
   if (!response.ok) {
     throw new Error('Failed to fetch leaderboard');
   }
@@ -92,7 +100,7 @@ export default function Prediction() {
     enabled: isLoggedIn
   });
 
-  // Fetch user predictions
+  // Fetch user predictions (for history)
   const {
     data: predictionsData,
     isLoading: predictionsLoading,
@@ -101,6 +109,18 @@ export default function Prediction() {
   } = useQuery({
     queryKey: ['user-predictions', userId],
     queryFn: () => fetchUserPredictions(userId),
+    enabled: isLoggedIn && !!userId
+  });
+
+  // Fetch today's prediction
+  const {
+    data: todayPredictionData,
+    isLoading: todayPredictionLoading,
+    error: todayPredictionError,
+    refetch: refetchTodayPrediction
+  } = useQuery({
+    queryKey: ['today-prediction', userId],
+    queryFn: () => fetchTodayPrediction(userId),
     enabled: isLoggedIn && !!userId
   });
 
@@ -115,33 +135,38 @@ export default function Prediction() {
     enabled: isLoggedIn
   });
 
-  // Populate selected predictions from history on load
+  // Get current match (first upcoming match)
+  const currentMatch = scheduleData?.matches?.[0];
+  const isMatchLocked = currentMatch?.status !== 'UpComing';
+  const otherMatches = (predictionsData?.predictions || []).filter(
+    p => currentMatch?.matchId !== p.matchId
+  );
+
+  // Populate selected prediction from today's prediction on load
   useEffect(() => {
-    if (predictionsData?.predictions) {
-      const predictions = predictionsData.predictions;
-      const todayMatches = scheduleData?.matches || [];
-      
-      // Find current/upcoming match
-      const currentMatch = todayMatches.find(m => m.status === 'UpComing');
-      
-      if (currentMatch) {
-        // Check if there's a prediction for current match
-        const currentPrediction = predictions.find(p => p.matchId === currentMatch.matchId);
-        if (currentPrediction) {
-          setSelectedPredictions({
-            ...selectedPredictions,
-            [currentMatch.matchId]: currentPrediction.predictedWinner
-          });
-        }
-      }
+    if (todayPredictionData?.prediction && currentMatch) {
+      const prediction = todayPredictionData.prediction;
+      setSelectedPredictions(prev => ({
+        ...prev,
+        [currentMatch.matchId]: prediction.predictedWinner
+      }));
     }
-  }, [predictionsData, scheduleData]);
+  }, [todayPredictionData, currentMatch]);
 
   const handlePredictionChange = (matchId, winner) => {
-    setSelectedPredictions({
-      ...selectedPredictions,
-      [matchId]: winner
-    });
+    // Toggle logic: if same team is clicked, deselect it
+    const currentSelection = selectedPredictions[matchId];
+    if (currentSelection === winner) {
+      setSelectedPredictions({
+        ...selectedPredictions,
+        [matchId]: undefined
+      });
+    } else {
+      setSelectedPredictions({
+        ...selectedPredictions,
+        [matchId]: winner
+      });
+    }
   };
 
   const handleSavePrediction = async (match) => {
@@ -161,6 +186,7 @@ export default function Prediction() {
     try {
       const response = await savePrediction(userId, match.matchId, winner);
       message.success(response.message);
+      refetchTodayPrediction();
       refetchPredictions();
     } catch (error) {
       const errorMsg = error.response?.data?.error || error.message || 'Failed to save prediction';
@@ -181,6 +207,7 @@ export default function Prediction() {
         ...selectedPredictions,
         [match.matchId]: undefined
       });
+      refetchTodayPrediction();
       refetchPredictions();
     } catch (error) {
       const errorMsg = error.response?.data?.error || error.message || 'Failed to clear prediction';
@@ -190,13 +217,6 @@ export default function Prediction() {
       setSavingMatchId(null);
     }
   };
-
-  // Get current match (first upcoming match)
-  const currentMatch = scheduleData?.matches?.[0];
-  const isMatchLocked = currentMatch?.status !== 'UpComing';
-  const otherMatches = (predictionsData?.predictions || []).filter(
-    p => currentMatch?.matchId !== p.matchId
-  );
 
   // AG Grid Column Definitions
   const defaultColDef = useMemo(() => ({
@@ -373,45 +393,27 @@ export default function Prediction() {
                   />
                 </div>
 
-                {/* Teams Display */}
-                <div className="teams-display">
-                  <div className="team-item">{currentMatch.team1}</div>
-                  <span className="vs-divider">VS</span>
-                  <div className="team-item">{currentMatch.team2}</div>
-                </div>
-
                 {/* Prediction Form */}
                 <div className="prediction-form">
                   <p className="form-label">Who will win?</p>
-                  
-                  {/* Radio Options - 1 Row Layout */}
-                  <div className={`predictions-grid ${isMatchLocked ? 'locked' : ''}`}>
-                    <label className="radio-item">
-                      <Radio
-                        checked={selectedPredictions[currentMatch.matchId] === currentMatch.team1}
-                        onChange={() => !isMatchLocked && handlePredictionChange(currentMatch.matchId, currentMatch.team1)}
-                        disabled={isMatchLocked}
-                      />
-                      <span className="radio-label">{currentMatch.team1}</span>
-                    </label>
 
-                    <label className="radio-item">
-                      <Radio
-                        checked={selectedPredictions[currentMatch.matchId] === currentMatch.team2}
-                        onChange={() => !isMatchLocked && handlePredictionChange(currentMatch.matchId, currentMatch.team2)}
-                        disabled={isMatchLocked}
-                      />
-                      <span className="radio-label">{currentMatch.team2}</span>
-                    </label>
-
-                    <label className="radio-item">
-                      <Radio
-                        checked={selectedPredictions[currentMatch.matchId] === 'NoResult'}
-                        onChange={() => !isMatchLocked && handlePredictionChange(currentMatch.matchId, 'NoResult')}
-                        disabled={isMatchLocked}
-                      />
-                      <span className="radio-label">No Result</span>
-                    </label>
+                  {/* Teams Display */}
+                  <div className="teams-display">
+                    <button
+                      className={`team-button ${selectedPredictions[currentMatch.matchId] === currentMatch.team1 ? 'selected' : ''}`}
+                      onClick={() => !isMatchLocked && handlePredictionChange(currentMatch.matchId, currentMatch.team1)}
+                      disabled={isMatchLocked}
+                    >
+                      {currentMatch.team1}
+                    </button>
+                    <span className="vs-divider">VS</span>
+                    <button
+                      className={`team-button ${selectedPredictions[currentMatch.matchId] === currentMatch.team2 ? 'selected' : ''}`}
+                      onClick={() => !isMatchLocked && handlePredictionChange(currentMatch.matchId, currentMatch.team2)}
+                      disabled={isMatchLocked}
+                    >
+                      {currentMatch.team2}
+                    </button>
                   </div>
 
                   {isMatchLocked && (
