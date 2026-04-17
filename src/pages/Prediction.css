@@ -545,10 +545,11 @@
 @media (max-width: 480px) {
   .prediction-page {
     padding-top: 85px;
+    overflow-y: auto;
   }
 
   .prediction-layout-wrapper {
-    height: calc(100vh - 85px);
+    height: auto;
     flex-direction: column;
   }
 
@@ -1266,10 +1267,11 @@
 @media (max-width: 480px) {
   .prediction-page {
     padding-top: 85px;
+    overflow-y: auto;
   }
 
   .prediction-layout-wrapper {
-    height: calc(100vh - 85px);
+    height: auto;
     flex-direction: column;
   }
 
