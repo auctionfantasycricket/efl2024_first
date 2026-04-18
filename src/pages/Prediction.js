@@ -139,9 +139,10 @@ export default function Prediction() {
   const allMatches = scheduleData?.matches || [];
   const currentMatch = allMatches?.[0];
   const isMatchLocked = currentMatch?.status !== 'UpComing';
-  const otherMatches = (predictionsData?.predictions || []).filter(
-    p => !allMatches.find(m => m.matchId === p.matchId)
-  );
+  const otherMatches = (predictionsData?.predictions || []).filter(p => {
+    const scheduleMatch = allMatches.find(m => m.matchId === p.matchId);
+    return !scheduleMatch || scheduleMatch.status === 'Post' || scheduleMatch.status === 'PostGame';
+  });
 
   // Populate selected predictions from today's predictions on load
   useEffect(() => {
