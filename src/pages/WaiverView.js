@@ -302,7 +302,7 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
 
   const handledecrypt = (val, opt) => {
   // val.in = array of encrypted picks, val.out = array of encrypted drops
-  // Rebuild waiverPairs from parallel arrays
+  // Rebuild waiverPairs from parallel arrays (for draft leagues)
   const inArr = val?.in || [];
   const outArr = val?.out || [];
   const maxLen = Math.max(inArr.length, outArr.length, 1);
@@ -316,6 +316,16 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   }));
   setWaiverPairs(pairs);
   setEncryptWaiverPairs(encPairs);
+
+  // Also update playersToDrop for auction leagues
+  const decryptedDrops = outArr.map(item => item ? decryptData(item) : '');
+  setPlayersToDrop(decryptedDrops);
+  setEncryptplayersToDrop(outArr);
+
+  // Also update playerPreferences for auction leagues
+  const decryptedPicks = inArr.map(item => item ? decryptData(item) : '');
+  setPlayerPreferences(decryptedPicks);
+  setEncryptPlayerPreferences(inArr);
 };
 
 const handlePairChange = (index, field, value) => {
@@ -810,6 +820,7 @@ const renderWaiverManagement = () => {
                             onChange={(_, newValue) => handlePairChange(index, 'drop', newValue?.value || '')}
                             options={getFilteredDropOptions(index)}
                             getOptionLabel={(opt) => typeof opt === 'string' ? opt : opt.label}
+                            isOptionEqualToValue={(option, value) => option?.value === value}
                             renderInput={(params) => (
                               <TextField {...params} variant="outlined" placeholder="Select player to drop" fullWidth className="mui-select-input" />
                             )}
@@ -835,6 +846,7 @@ const renderWaiverManagement = () => {
                             onChange={(_, newValue) => handlePairChange(index, 'pick', newValue?.value || '')}
                             options={getFilteredPickOptions(index)}
                             getOptionLabel={(opt) => typeof opt === 'string' ? opt : opt.label}
+                            isOptionEqualToValue={(option, value) => option?.value === value}
                             renderInput={(params) => (
                               <TextField {...params} variant="outlined" placeholder="Select player to pick" fullWidth className="mui-select-input" />
                             )}
