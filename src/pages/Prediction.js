@@ -3,7 +3,7 @@ import './Prediction.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import { Chip } from '@mui/material';
-import { Card, Button, Spin, Empty, message } from 'antd';
+import { Card, Button, Spin, Empty, message, Modal } from 'antd';
 import axios from 'axios';
 import { setLoginSuccess } from '../components/redux/reducer/authReducer';
 import { AgGridReact } from 'ag-grid-react';
@@ -62,10 +62,19 @@ const savePrediction = async (userId, matchId, predictedWinner) => {
   return response.data;
 };
 
+const fetchUserHistory = async (userId) => {
+  const response = await fetch(`${baseURL}/predictions/my?userId=${userId}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch user history');
+  }
+  return response.json();
+};
+
 export default function Prediction() {
   const dispatch = useDispatch();
   const [selectedPredictions, setSelectedPredictions] = useState({}); // matchId -> team
   const [savingMatchId, setSavingMatchId] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const userProfile = useSelector((state) => state.login.userProfile);
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
@@ -134,6 +143,19 @@ export default function Prediction() {
     queryFn: fetchLeaderboard,
     enabled: isLoggedIn
   });
+
+  // Fetch selected user's history for modal
+  const selectedUserIdForQuery = selectedUser?.userId || selectedUser?._id;
+  const {
+    data: selectedUserHistoryData,
+    isLoading: selectedUserHistoryLoading
+  } = useQuery({
+    queryKey: ['user-history', selectedUserIdForQuery],
+    queryFn: () => fetchUserHistory(selectedUserIdForQuery),
+    enabled: !!selectedUserIdForQuery
+  });
+
+  const selectedUserHistory = selectedUserHistoryData?.predictions || [];
 
   // Get all matches from schedule
   const allMatches = scheduleData?.matches || [];
@@ -255,7 +277,16 @@ export default function Prediction() {
       headerName: 'User Name',
       headerTooltip: 'User Name',
       width: 150,
-      tooltipValueGetter: (params) => params.data.userName
+      cellRenderer: (params) => (
+        <span
+          className="leaderboard-username-link"
+          onClick={() => setSelectedUser(params.data)}
+          title="Click to view history"
+        >
+          {params.data.userName}
+        </span>
+      ),
+      tooltipValueGetter: (params) => `${params.data.userName} — click to view history`
     },
     {
       field: 'totalPoints',
@@ -279,7 +310,7 @@ export default function Prediction() {
       width: 120,
       tooltipValueGetter: (params) => `Max Streak: ${params.data.maxStreak}`
     }
-  ], []);
+  ], [setSelectedUser]);
 
   // History columns for AG Grid
   const historyColumnDefs = useMemo(() => [
@@ -482,44 +513,10 @@ export default function Prediction() {
           </div>
         </div>
 
-        {/* Gap between Prediction and History 1% */}
+        {/* Gap between Prediction and Leaderboard */}
         <div className="layout-gap-small"></div>
 
-        {/* History Card 24% */}
-        <div className="layout-card history-card-wrapper">
-          <div className="history-section">
-            <h3 className="section-title">Your History</h3>
-            {predictionsLoading ? (
-              <div className="loading-center">
-                <Spin size="large" />
-              </div>
-            ) : predictionsError ? (
-              <div className="empty-state">
-                <Empty description="Failed to load history" />
-              </div>
-            ) : otherMatches.length === 0 ? (
-              <div className="empty-state">
-                <Empty description="No predictions yet" />
-              </div>
-            ) : (
-              <div className="ag-theme-alpine-dark history-grid-container">
-                <AgGridReact
-                  rowData={otherMatches}
-                  columnDefs={historyColumnDefs}
-                  defaultColDef={defaultColDef}
-                  animateRows={true}
-                  domLayout="normal"
-                  suppressHorizontalScroll={false}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Gap between History and Leaderboard 2% */}
-        <div className="layout-gap-medium"></div>
-
-        {/* Leaderboard Card 39% */}
+        {/* Leaderboard Card */}
         <div className="layout-card leaderboard-card-wrapper">
           <div className="leaderboard-section">
             <h3 className="section-title">Leaderboard</h3>
@@ -554,6 +551,39 @@ export default function Prediction() {
         <div className="layout-margin-right"></div>
       </div>
 
+      {/* User History Modal */}
+      <Modal
+        open={!!selectedUser}
+        onCancel={() => setSelectedUser(null)}
+        footer={null}
+        title={
+          <span className="history-modal-title">
+            {selectedUser?.userName}'s History
+          </span>
+        }
+        width={720}
+        className="history-modal"
+        centered
+      >
+        {selectedUserHistoryLoading ? (
+          <div className="loading-center" style={{ padding: '40px' }}>
+            <Spin size="large" />
+          </div>
+        ) : selectedUserHistory.length === 0 ? (
+          <Empty description="No history yet" style={{ padding: '40px' }} />
+        ) : (
+          <div className="ag-theme-alpine-dark history-modal-grid">
+            <AgGridReact
+              rowData={selectedUserHistory}
+              columnDefs={historyColumnDefs}
+              defaultColDef={defaultColDef}
+              animateRows={true}
+              domLayout="normal"
+              suppressHorizontalScroll={false}
+            />
+          </div>
+        )}
+      </Modal>
 
     </div>
   );

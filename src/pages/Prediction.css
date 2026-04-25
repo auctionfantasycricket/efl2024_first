@@ -35,30 +35,16 @@
   min-width: 0;
 }
 
-/* Gap between Prediction and History - 1% */
+/* Gap between Prediction and Leaderboard - 1% */
 .layout-gap-small {
   flex-basis: 1%;
   flex-shrink: 0;
   min-width: 0;
 }
 
-/* History Card - 24% */
-.history-card-wrapper {
-  flex-basis: 32%;
-  flex-shrink: 0;
-  min-width: 0;
-}
-
-/* Gap between History and Leaderboard - 2% */
-.layout-gap-medium {
-  flex-basis: 1%;
-  flex-shrink: 0;
-  min-width: 0;
-}
-
-/* Leaderboard Card - 39% */
+/* Leaderboard Card - takes remaining space */
 .leaderboard-card-wrapper {
-  flex-basis: 38%;
+  flex-basis: 73%;
   flex-shrink: 0;
   min-width: 0;
 }
@@ -561,7 +547,6 @@
   }
 
   .prediction-card-wrapper,
-  .history-card-wrapper,
   .leaderboard-card-wrapper {
     flex-basis: auto !important;
     height: auto;
@@ -696,30 +681,16 @@
   min-width: 0;
 }
 
-/* Gap between Prediction and History - 1% */
+/* Gap between Prediction and Leaderboard - 1% */
 .layout-gap-small {
   flex-basis: 1%;
   flex-shrink: 0;
   min-width: 0;
 }
 
-/* History Card - 24% */
-.history-card-wrapper {
-  flex-basis: 32%;
-  flex-shrink: 0;
-  min-width: 0;
-}
-
-/* Gap between History and Leaderboard - 2% */
-.layout-gap-medium {
-  flex-basis: 1%;
-  flex-shrink: 0;
-  min-width: 0;
-}
-
-/* Leaderboard Card - 39% */
+/* Leaderboard Card - takes remaining space */
 .leaderboard-card-wrapper {
-  flex-basis: 38%;
+  flex-basis: 73%;
   flex-shrink: 0;
   min-width: 0;
 }
@@ -1283,7 +1254,6 @@
   }
 
   .prediction-card-wrapper,
-  .history-card-wrapper,
   .leaderboard-card-wrapper {
     flex-basis: auto !important;
     height: auto;
@@ -1417,5 +1387,60 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+/* Clickable username in leaderboard */
+.leaderboard-username-link {
+  color: var(--color-primary, #60a5fa);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: var(--transition);
+}
+
+.leaderboard-username-link:hover {
+  color: #93c5fd;
+}
+
+/* History Modal */
+.history-modal .ant-modal-content {
+  background: var(--bg-primary, #121212) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+}
+
+.history-modal .ant-modal-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px;
+}
+
+.history-modal .ant-modal-title {
+  color: #ffffff !important;
+}
+
+.history-modal .ant-modal-close {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.history-modal .ant-modal-close:hover {
+  color: #ffffff;
+}
+
+.history-modal .ant-modal-body {
+  padding: 16px;
+}
+
+.history-modal-title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.history-modal-grid {
+  height: 420px;
+  width: 100%;
 }
 
