@@ -79,8 +79,8 @@ const WaiverView = ({ leaguetype, teamInfo }) => {
   const userId = userProfile?.userId;
 
   // State for player preferences and drops
-  const [playerPreferences, setPlayerPreferences] = useState(['', '', '', '']);
-  const [encryptplayerPreferences, setEncryptPlayerPreferences] = useState(['', '', '', '']);
+  const [playerPreferences, setPlayerPreferences] = useState(['', '']);
+  const [encryptplayerPreferences, setEncryptPlayerPreferences] = useState(['', '']);
 
 
   const [playersToDrop, setPlayersToDrop] = useState(['', '']);
