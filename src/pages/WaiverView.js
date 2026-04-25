@@ -820,7 +820,7 @@ const renderWaiverManagement = () => {
                             onChange={(_, newValue) => handlePairChange(index, 'drop', newValue?.value || '')}
                             options={getFilteredDropOptions(index)}
                             getOptionLabel={(opt) => typeof opt === 'string' ? opt : opt.label}
-                            isOptionEqualToValue={(option, value) => option?.value === value}
+                            // isOptionEqualToValue={(option, value) => option?.value === value}
                             renderInput={(params) => (
                               <TextField {...params} variant="outlined" placeholder="Select player to drop" fullWidth className="mui-select-input" />
                             )}
@@ -846,7 +846,7 @@ const renderWaiverManagement = () => {
                             onChange={(_, newValue) => handlePairChange(index, 'pick', newValue?.value || '')}
                             options={getFilteredPickOptions(index)}
                             getOptionLabel={(opt) => typeof opt === 'string' ? opt : opt.label}
-                            isOptionEqualToValue={(option, value) => option?.value === value}
+                            // isOptionEqualToValue={(option, value) => option?.value === value}
                             renderInput={(params) => (
                               <TextField {...params} variant="outlined" placeholder="Select player to pick" fullWidth className="mui-select-input" />
                             )}
